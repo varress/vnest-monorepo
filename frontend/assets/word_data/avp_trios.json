@@ -1,0 +1,43 @@
+[
+    { "id": 0, "verbId": 0, "agentId": 0, "patientId": 0, "isFitting": true },
+    { "id": 1, "verbId": 0, "agentId": 1, "patientId": 0, "isFitting": true },
+    { "id": 2, "verbId": 0, "agentId": 2, "patientId": 0, "isFitting": true },
+    { "id": 3, "verbId": 0, "agentId": 0, "patientId": 2, "isFitting": false },
+    { "id": 4, "verbId": 0, "agentId": 0, "patientId": 3, "isFitting": false },
+    { "id": 5, "verbId": 0, "agentId": 0, "patientId": 4, "isFitting": false },
+    
+    { "id": 6, "verbId": 1, "agentId": 0, "patientId": 1, "isFitting": true },
+    { "id": 7, "verbId": 1, "agentId": 1, "patientId": 1, "isFitting": true },
+    { "id": 8, "verbId": 1, "agentId": 7, "patientId": 1, "isFitting": true },
+    { "id": 9, "verbId": 1, "agentId": 0, "patientId": 0, "isFitting": false },
+    { "id": 10, "verbId": 1, "agentId": 0, "patientId": 2, "isFitting": false },
+    { "id": 11, "verbId": 1, "agentId": 0, "patientId": 3, "isFitting": false },
+    
+    { "id": 12, "verbId": 2, "agentId": 0, "patientId": 2, "isFitting": true },
+    { "id": 13, "verbId": 2, "agentId": 1, "patientId": 2, "isFitting": true },
+    { "id": 14, "verbId": 2, "agentId": 9, "patientId": 6, "isFitting": true },
+    { "id": 15, "verbId": 2, "agentId": 0, "patientId": 0, "isFitting": false },
+    { "id": 16, "verbId": 2, "agentId": 0, "patientId": 3, "isFitting": false },
+    { "id": 17, "verbId": 2, "agentId": 0, "patientId": 4, "isFitting": false },
+    
+    { "id": 18, "verbId": 3, "agentId": 0, "patientId": 3, "isFitting": true },
+    { "id": 19, "verbId": 3, "agentId": 1, "patientId": 3, "isFitting": true },
+    { "id": 20, "verbId": 3, "agentId": 8, "patientId": 10, "isFitting": true },
+    { "id": 21, "verbId": 3, "agentId": 0, "patientId": 0, "isFitting": false },
+    { "id": 22, "verbId": 3, "agentId": 0, "patientId": 2, "isFitting": false },
+    { "id": 23, "verbId": 3, "agentId": 0, "patientId": 5, "isFitting": false },
+    
+    { "id": 24, "verbId": 4, "agentId": 0, "patientId": 4, "isFitting": true },
+    { "id": 25, "verbId": 4, "agentId": 1, "patientId": 8, "isFitting": true },
+    { "id": 26, "verbId": 4, "agentId": 2, "patientId": 9, "isFitting": true },
+    { "id": 27, "verbId": 4, "agentId": 0, "patientId": 0, "isFitting": false },
+    { "id": 28, "verbId": 4, "agentId": 0, "patientId": 2, "isFitting": false },
+    { "id": 29, "verbId": 4, "agentId": 0, "patientId": 3, "isFitting": false },
+    
+    { "id": 30, "verbId": 5, "agentId": 0, "patientId": 5, "isFitting": true },
+    { "id": 31, "verbId": 5, "agentId": 1, "patientId": 5, "isFitting": true },
+    { "id": 32, "verbId": 5, "agentId": 6, "patientId": 5, "isFitting": true },
+    { "id": 33, "verbId": 5, "agentId": 0, "patientId": 0, "isFitting": false },
+    { "id": 34, "verbId": 5, "agentId": 0, "patientId": 2, "isFitting": false },
+    { "id": 35, "verbId": 5, "agentId": 0, "patientId": 3, "isFitting": false }
+]

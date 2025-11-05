@@ -1,0 +1,14 @@
+[
+  { "id": 0,  "value": "minä" },
+  { "id": 1,  "value": "sinä" },
+  { "id": 2,  "value": "hän" },
+  { "id": 3,  "value": "me" },
+  { "id": 4,  "value": "te" },
+  { "id": 5,  "value": "he" },
+  { "id": 6,  "value": "opettaja" },
+  { "id": 7,  "value": "opiskelija" },
+  { "id": 8,  "value": "lapsi" },
+  { "id": 9,  "value": "äiti" },
+  { "id": 10, "value": "isä" },
+  { "id": 11, "value": "koira" }
+]
