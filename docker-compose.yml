@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  database:
+    image: postgres:15
+    container_name: postgres-db
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: vnest-speech-therapy
+    depends_on:
+      - database
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/${POSTGRES_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      APP_USERS: ${APP_USERS}
+      SERVER_SERVLET_SESSION_TIMEOUT: ${SERVER_SERVLET_SESSION_TIMEOUT}
+
+    ports:
+      - "8080:8080"
+
+volumes:
+  postgres_data:
