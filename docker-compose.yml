@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: vnest-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-vnest_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-vnest_password}
+      POSTGRES_DB: ${POSTGRES_DB:-vnest_db}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - vnest-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-vnest_user}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Spring Boot API Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: vnest-backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-vnest_db}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-vnest_user}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-vnest_password}
+      SERVER_SERVLET_SESSION_TIMEOUT: ${SERVER_SERVLET_SESSION_TIMEOUT:-30m}
+      APP_USERS: ${APP_USERS}
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - vnest-network
+    restart: unless-stopped
+
+  # Expo React Native Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: vnest-frontend
+    environment:
+      EXPO_PUBLIC_API_URL: ${EXPO_PUBLIC_API_URL:-http://localhost:8080}
+      EXPO_DEVTOOLS_LISTEN_ADDRESS: 0.0.0.0
+    ports:
+      - "8081:8081"   # Metro bundler
+      - "19000:19000" # Expo DevTools
+      - "19001:19001" # Expo mobile connection
+      - "19002:19002" # Expo web
+    networks:
+      - vnest-network
+    depends_on:
+      - backend
+    stdin_open: true
+    tty: true
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  vnest-network:
+    driver: bridge
