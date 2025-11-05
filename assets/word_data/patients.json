@@ -1,0 +1,14 @@
+[
+  { "id": 0,  "value": "kirjan" },
+  { "id": 1,  "value": "kirjeen" },
+  { "id": 2,  "value": "auton" },
+  { "id": 3,  "value": "ruokaa" },
+  { "id": 4,  "value": "vettä" },
+  { "id": 5,  "value": "musiikkia" },
+  { "id": 6,  "value": "taloa" },
+  { "id": 7,  "value": "elokuvaa" },
+  { "id": 8,  "value": "kahvia" },
+  { "id": 9,  "value": "teetä" },
+  { "id": 10, "value": "leipää" },
+  { "id": 11, "value": "pitsaa" }
+]

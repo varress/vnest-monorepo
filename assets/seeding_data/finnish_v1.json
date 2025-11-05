@@ -1,0 +1,18 @@
+[
+  { "verb": "AJAA", "pairs": [["lapsi","pyörä"], ["maanviljelijä","traktori"], ["kuljettaja","Kilpa-auto"]] },
+  { "verb": "RAKENTAA", "pairs": [["puuseppä","pöydän"], ["tyttö","hiekkalinnan"], ["insinööri","silta"]] },
+  { "verb": "SYÖDÄ", "pairs": [["koira","luu"], ["orava","käpy"], ["nainen","hampurilainen"]] },
+  { "verb": "JUODA", "pairs": [["mies","kahvi"], ["kissa","vesi"], ["lapsi","pillimehu"]] },
+  { "verb": "SOITTAA", "pairs": [["muusikko","kitara"], ["nuori","puhelin"], ["postimies","ovikello"]] },
+  { "verb": "MENNÄ", "pairs": [["isä","työ"], ["pikkusisko","päiväkoti"], ["koira","koppi"]] },
+  { "verb": "KORJATA", "pairs": [["mekaanikko","auto"], ["rakentaja","katto"], ["suutari","kengät"]] },
+  { "verb": "PELATA", "pairs": [["urheilija","jalkapallo"], ["lapset","shakki"], ["isovanhemmat","piiloleikki"]] },
+  { "verb": "TEHDÄ", "pairs": [["isoäiti","ristikko"], ["pikkuveli","palapeli"], ["kokki","ruoka"]] },
+  { "verb": "KIRJOITTAA", "pairs": [["toimittaja","lehtiartikkeli"], ["oppilas","essee"], ["kirjailija","kirja"]] },
+  { "verb": "AVATA", "pairs": [["Isä","televisio"], ["hovimestari","ovi"], ["avain","lukko"]] },
+  { "verb": "MYYDÄ", "pairs": [["torimyyjä","mansikka"], ["ständimyydä","sähkö"], ["asuntomyyjä","talo"]] },
+  { "verb": "PESTÄ", "pairs": [["lapsi","kädet"], ["äiti","pyykit"], ["isä","auto"]] },
+  { "verb": "SULKEA", "pairs": [["vartija","kauppa"], ["poika","repun"], ["johtaja","kokous"]] },
+  { "verb": "LEIKATA", "pairs": [["kampaaja","hiukset"], ["käsityöopettaja","kangas"], ["kokki","lihaa"]] },
+  { "verb": "HEITTÄÄ", "pairs": [["setä","tikka"], ["lapsi","pallo"], ["urheilija","keihäs"]] }
+]
