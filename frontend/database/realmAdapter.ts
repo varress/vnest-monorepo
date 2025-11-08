@@ -8,7 +8,7 @@ const initializeRealm = async () => {
   if (!Realm) {
     const realmModule = await import('realm');
     Realm = realmModule.default;
-    const configModule = await import('./realm');
+    const configModule = await import('./realm.native');
     realmConfig = configModule.realmConfig;
   }
 };

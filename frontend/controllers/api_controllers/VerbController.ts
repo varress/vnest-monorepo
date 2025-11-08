@@ -1,10 +1,11 @@
-import { Verb } from '../../database/schemas';
-import { IVerbController } from '../interfaces/IVerbController';
-import { BaseController } from './BaseController';
+import { Verb } from "@/database/schemas";
+import { IVerbController } from "../interfaces/IVerbController";
+import { BaseController } from "./BaseController";
 
-export class VerbController extends BaseController<Verb> implements IVerbController {
-    schemaName =   'Verb';
-    jsonFileName = 'verbs';
+export class VerbController extends BaseController<Verb> implements IVerbController{
+    constructor() {
+        super("Verb", "VERB");
+    }
 
     async getRandomVerb(): Promise<Verb> {
         const all = await this.getAll();
@@ -19,4 +20,4 @@ export class VerbController extends BaseController<Verb> implements IVerbControl
     }
 }
 
-export const verbController_realm = new VerbController();
+export const verbController_api = new VerbController();
