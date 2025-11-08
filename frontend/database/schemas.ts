@@ -28,6 +28,13 @@ export type AgentVerbPatient_Trio = {
     readonly type: "AgentVerbPatient_Trio";
 };
 
+export type CorrectAnswer = {
+    id:        number;
+    trioId:    number;
+    createdAt: Date;
+    readonly type: "CorrectAnswer";
+}
+
 
 // Realm Schemas
 export const VerbSchema: ObjectSchema = {
@@ -73,17 +80,28 @@ export const AgentVerbPatient_Trio_Schema: ObjectSchema = {
     }
 };
 
+export const CorrectAnswer_Schema: ObjectSchema = {
+    name:          'CorrectAnswer',
+    primaryKey:    'id',
+    properties: {
+        id:        'int',
+        trioId:    'int',
+        createdAt: 'date',
+        type:      { type: 'string', default: 'CorrectAnswer' }
+    }
+}
+
 type ApiCombination = {
   id: number;
   subject: { id: number; text: string };
-  verb: { id: number; text: string };
-  object: { id: number; text: string };
+  verb:    { id: number; text: string };
+  object:  { id: number; text: string };
   sentence: string;
 };
 
 export type ApiResponse = {
   success: boolean;
-  data: ApiCombination[];
+  data:    ApiCombination[];
 };
 
 export function mapAVP_ApiToTrio(apiData: ApiResponse): AgentVerbPatient_Trio[] {
