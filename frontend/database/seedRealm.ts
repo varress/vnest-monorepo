@@ -1,6 +1,6 @@
 import data from '@/assets/seeding_data/english.json';
 import { deleteFile } from 'realm';
-import { getRealm_IgnoreSeeding } from "./realm";
+import { getRealm_IgnoreSeeding } from "./realm.native";
 
 export async function seedRealm() {
     deleteFile({ path: "default.realm" });

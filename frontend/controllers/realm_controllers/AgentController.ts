@@ -1,8 +1,9 @@
 import { getRealm } from '@/database/realm';
 import { Agent, AgentVerbPatient_Trio } from '../../database/schemas';
+import { ISubjectObjectController } from '../interfaces/ISubjectObjectController';
 import { BaseController } from './BaseController';
 
-export class AgentController extends BaseController<Agent> {
+export class AgentController extends BaseController<Agent> implements ISubjectObjectController<Agent> {
     schemaName =   'Agent';
     jsonFileName = 'agents';
 
@@ -17,4 +18,4 @@ export class AgentController extends BaseController<Agent> {
     }
 }
 
-export const agentController = new AgentController();
+export const agentController_realm = new AgentController();

@@ -12,7 +12,7 @@ import { IBaseController } from "../interfaces/IBaseController";
 export abstract class BaseController<T> implements IBaseController<T> {
     abstract schemaName: string;   // Database collection/table name
 
-    getRandomElements<T>(array: T[], count: number): T[] {
+    protected getRandomElements<T>(array: T[], count: number): T[] {
         const shuffled = [...array].sort(() => Math.random() - 0.5);
         return shuffled.slice(0, count);
     }

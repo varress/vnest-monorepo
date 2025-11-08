@@ -1,23 +1,25 @@
 import { ObjectSchema } from 'realm';
 
-export type Verb = {
-    id:      number;
-    value:   string;
+export type BaseWord = {
+  id: number;
+  value: string;
+  readonly type: "Verb" | "Agent" | "Patient";
+};
+
+export type Verb = BaseWord & {
     groupId: number;
     readonly type: "Verb";
 };
 
-export type Agent = {
-    id:    number;
-    value: string;
+export type Agent = BaseWord & {
     readonly type: "Agent";
 };
 
-export type Patient = {
-    id:    number;
-    value: string;
+export type Patient = BaseWord & {
     readonly type: "Patient";
 };
+
+export type Word = Verb | Agent | Patient;
 
 export type AgentVerbPatient_Trio = {
     id:        number;
@@ -27,13 +29,6 @@ export type AgentVerbPatient_Trio = {
     isFitting: boolean;
     readonly type: "AgentVerbPatient_Trio";
 };
-
-export type CorrectAnswer = {
-    id:        number;
-    trioId:    number;
-    createdAt: Date;
-    readonly type: "CorrectAnswer";
-}
 
 
 // Realm Schemas
@@ -80,31 +75,28 @@ export const AgentVerbPatient_Trio_Schema: ObjectSchema = {
     }
 };
 
-export const CorrectAnswer_Schema: ObjectSchema = {
-    name:          'CorrectAnswer',
-    primaryKey:    'id',
-    properties: {
-        id:        'int',
-        trioId:    'int',
-        createdAt: 'date',
-        type:      { type: 'string', default: 'CorrectAnswer' }
-    }
-}
-
-type ApiCombination = {
+export type ApiCombination = {
   id: number;
   subject: { id: number; text: string };
-  verb:    { id: number; text: string };
-  object:  { id: number; text: string };
+  verb: { id: number; text: string };
+  object: { id: number; text: string };
   sentence: string;
 };
 
-export type ApiResponse = {
+export type ApiWord = {
+    id: number;
+    text: string;
+    type: string;
+    group_id?: number;
+    created_at: string;
+}
+
+export type ApiResponse<T> = {
   success: boolean;
-  data:    ApiCombination[];
+  data: T[];
 };
 
-export function mapAVP_ApiToTrio(apiData: ApiResponse): AgentVerbPatient_Trio[] {
+export function mapAVP_ApiToTrio(apiData: ApiResponse<ApiCombination>): AgentVerbPatient_Trio[] {
     return apiData.data.map(item => ({
         id:        item.id,
         verbId:    item.verb.id,
@@ -115,3 +107,32 @@ export function mapAVP_ApiToTrio(apiData: ApiResponse): AgentVerbPatient_Trio[] 
 
     }));
 }
+
+export function mapAPIWord_UIWord (apiData: ApiResponse<ApiWord>):  Word[] {
+    return apiData.data.map((item): Word =>  {
+        switch (item.type) {
+            case "VERB":
+                return {
+                    id: item.id,
+                    value: item.text,
+                    groupId: item.group_id ?? 0,
+                    type: "Verb"
+                };
+            case "SUBJECT":
+                return {
+                    id: item.id,
+                    value: item.text,
+                    type: "Agent"
+                };
+            case "OBJECT":
+                return {
+                    id: item.id,
+                    value: item.text,
+                    type: "Patient"
+                };
+            default: {
+                throw new Error(`Only types VERB, OBJECT, SUBJECT allowed, but got ${item.type}`);
+            }
+        }
+    });
+}  
