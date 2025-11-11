@@ -4,7 +4,6 @@ import { isDesktop, responsiveFontSize, spacing } from '@/utils/responsive';
 import { useEffect, useRef } from 'react';
 import { Animated, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { GameCard } from './GameCard';
-import { ProgressBar } from './ProgressBar';
 
 interface FeedbackViewProps {
   feedback: string;
@@ -13,7 +12,9 @@ interface FeedbackViewProps {
   selectedSubject: Agent | null;
   selectedObject: Patient | null;
   currentVerb: Verb | null;
-  onNext: () => void;
+  correctAnswersCount: number;
+  requiredAnswers: number;
+  onContinue: () => void;
   onReset: () => void;
 }
 
@@ -24,7 +25,9 @@ export function FeedbackView({
   selectedSubject,
   selectedObject,
   currentVerb,
-  onNext,
+  correctAnswersCount,
+  requiredAnswers,
+  onContinue,
   onReset
 }: FeedbackViewProps) {
   const layout = useResponsiveLayout();
@@ -75,11 +78,24 @@ export function FeedbackView({
           </View>
         </Animated.View>
         
-        <ProgressBar 
-          current={currentVerbIndex + 1}
-          total={totalVerbs}
-        />
-
+        {/* Progress tracking */}
+        <View style={styles.progressContainer}>
+          <Text style={styles.progressText}>
+            Oikeat vastaukset: {correctAnswersCount} / {requiredAnswers}
+          </Text>
+          <View style={styles.progressBarContainer}>
+            {[...Array(requiredAnswers)].map((_, index) => (
+              <View
+                key={index}
+                style={[
+                  styles.progressDot,
+                  index < correctAnswersCount && styles.progressDotFilled
+                ]}
+              />
+            ))}
+          </View>
+        </View>
+        
         {/* Chosen cards displayed */}
         <View style={styles.mobileRow}>
           <View style={styles.cardColumn}>
@@ -98,7 +114,7 @@ export function FeedbackView({
         {isCorrect ? (
           <TouchableOpacity 
             style={[styles.nextButton, styles.mobileButton]} 
-            onPress={onNext}
+            onPress={onContinue}
           >
             <Text style={[styles.buttonText, { fontSize: isDesktop() ? 16 : responsiveFontSize(18) }]}>
               Jatka
@@ -139,11 +155,24 @@ export function FeedbackView({
         </View>
       </Animated.View>
       
-      <ProgressBar 
-        current={currentVerbIndex + 1}
-        total={totalVerbs}
-      />
-
+      {/* Progress tracking */}
+      <View style={styles.progressContainer}>
+        <Text style={styles.progressText}>
+          Oikeat vastaukset: {correctAnswersCount} / {requiredAnswers}
+        </Text>
+        <View style={styles.progressBarContainer}>
+          {[...Array(requiredAnswers)].map((_, index) => (
+            <View
+              key={index}
+              style={[
+                styles.progressDot,
+                index < correctAnswersCount && styles.progressDotFilled
+              ]}
+            />
+          ))}
+        </View>
+      </View>
+      
       {/* Chosen cards displayed */}
       <View style={styles.row}>
         <View style={styles.cardColumn}>
@@ -160,7 +189,7 @@ export function FeedbackView({
       </View>
 
       {isCorrect ? (
-        <TouchableOpacity style={styles.nextButton} onPress={onNext}>
+        <TouchableOpacity style={styles.nextButton} onPress={onContinue}>
           <Text style={[styles.buttonText, { fontSize: isDesktop() ? 18 : responsiveFontSize(22) }]}>
             Jatka
           </Text>
@@ -275,5 +304,34 @@ const styles = StyleSheet.create({
     color: '#fff', 
     textAlign: 'center',
     fontWeight: 'bold',
+  },
+  progressContainer: {
+    alignItems: 'center',
+    marginVertical: spacing.lg,
+    paddingHorizontal: spacing.md,
+  },
+  progressText: {
+    fontSize: responsiveFontSize(18),
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: spacing.sm,
+  },
+  progressBarContainer: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  progressDot: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    backgroundColor: '#e0e0e0',
+    borderWidth: 2,
+    borderColor: '#bdbdbd',
+  },
+  progressDotFilled: {
+    backgroundColor: '#4caf50',
+    borderColor: '#2e7d32',
   },
 });

@@ -3,6 +3,8 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 interface CongratsViewProps {
   currentSetId: number;
   verbCount?: number;
+  correctAnswersCount: number;
+  requiredAnswers: number;
   onReplay: () => void;
   onNextSet: () => void;
 }
@@ -10,6 +12,8 @@ interface CongratsViewProps {
 export function CongratsView({ 
   currentSetId, 
   verbCount, 
+  correctAnswersCount,
+  requiredAnswers,
   onReplay, 
   onNextSet 
 }: CongratsViewProps) {
@@ -26,12 +30,16 @@ export function CongratsView({
         <Text style={styles.congratsEmoji}>🎉</Text>
         <Text style={styles.congratsTitle}>Onnittelut!</Text>
         <Text style={styles.congratsSubtitle}>
-          Olet suorittanut Setti {currentSetId + 1} loppuun!
+          Olet saanut {correctAnswersCount} oikeaa vastausta!
         </Text>
         <Text style={styles.congratsMessage}>
-          {setNames[currentSetId] && `"${setNames[currentSetId]}" - `}
-          Hienoa työtä! Olet oppinut {verbCount} verbiä.
+          Hienoa työtä! Olet suorittanut {requiredAnswers} harjoitusta ja voit nyt siirtyä seuraavaan settiin.
         </Text>
+        {currentSetId < 3 && (
+          <Text style={styles.nextSetInfo}>
+            Seuraavaksi: Setti {currentSetId + 2} - {setNames[currentSetId + 1]}
+          </Text>
+        )}
       </View>
       
       <View style={styles.congratsButtons}>
@@ -83,8 +91,17 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#666',
     textAlign: 'center',
-    marginBottom: 40,
+    marginBottom: 20,
     lineHeight: 24,
+    paddingHorizontal: 20,
+  },
+  nextSetInfo: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#4caf50',
+    textAlign: 'center',
+    marginTop: 16,
+    paddingHorizontal: 20,
   },
   congratsButtons: {
     paddingHorizontal: 20,
