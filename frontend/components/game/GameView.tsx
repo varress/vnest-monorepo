@@ -1,8 +1,11 @@
 import { Agent, Patient, Verb } from '@/database/schemas';
 import { useResponsiveLayout } from '@/hooks/useResponsiveLayout';
+import { useCardConnections } from '@/hooks/useCardConnections';
 import { isDesktop, responsiveFontSize, spacing } from '@/utils/responsive';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, LayoutRectangle } from 'react-native';
 import { GameCard } from './GameCard';
+import { SVGConnectionLine } from './SVGConnectionLine';
+import { useRef, useEffect } from 'react';
 
 interface GameViewProps {
   subjects: Agent[];
@@ -22,6 +25,41 @@ export function GameView({
   onSelect 
 }: GameViewProps) {
   const layout = useResponsiveLayout();
+  const containerRef = useRef<View>(null);
+  
+  // Use the connection lines hook
+  const {
+    registerCardPosition,
+    createConnection,
+    removeConnection,
+    clearConnections,
+    connections
+  } = useCardConnections();
+
+  // Handle card layout updates
+  const handleCardLayout = (cardId: string | number, layout: LayoutRectangle) => {
+    registerCardPosition(cardId, layout);
+  };
+
+  // Create connections when cards are selected
+  useEffect(() => {
+    if (selectedSubject && currentVerb) {
+      createConnection(`subject-${selectedSubject.id}`, 'verb');
+    } else {
+      removeConnection('verb');
+    }
+  }, [selectedSubject, currentVerb, createConnection, removeConnection]);
+
+  useEffect(() => {
+    if (selectedObject && currentVerb) {
+      createConnection('verb', `object-${selectedObject.id}`);
+    }
+  }, [selectedObject, currentVerb, createConnection]);
+
+  // Clear connections when component unmounts or selections reset
+  useEffect(() => {
+    return () => clearConnections();
+  }, [clearConnections]);
   
   if (layout.isMobile) {
     // Mobile layout: vertical stacking
@@ -90,7 +128,7 @@ export function GameView({
 
   // Tablet/Desktop layout: horizontal columns
   return (
-    <>
+    <View ref={containerRef} style={styles.desktopContainer}>
       <Text style={[styles.title, { fontSize: layout.isDesktop ? 24 : responsiveFontSize(40) }]}>
         Yhdistä kortit
       </Text>
@@ -109,6 +147,9 @@ export function GameView({
           {subjects.map((subject) => (
             <GameCard
               key={subject.id}
+              cardId={`subject-${subject.id}`}
+              parentRef={containerRef}
+              onLayout={handleCardLayout}
               text={subject.value}
               isSelected={selectedSubject?.id === subject.id}
               onPress={() => onSelect(subject)}
@@ -121,6 +162,9 @@ export function GameView({
             {selectedSubject?.value || '[Kuka]'} {currentVerb?.value.toLowerCase() || '[verb]'} {selectedObject?.value.toLowerCase() || '[mitä]'}
           </Text>
           <GameCard 
+            cardId="verb"
+            parentRef={containerRef}
+            onLayout={handleCardLayout}
             text={currentVerb?.value ?? ""}
             variant="verb"
           />
@@ -133,6 +177,9 @@ export function GameView({
           {objects.map((object) => (
             <GameCard
               key={object.id}
+              cardId={`object-${object.id}`}
+              parentRef={containerRef}
+              onLayout={handleCardLayout}
               text={object.value}
               isSelected={selectedObject?.id === object.id}
               onPress={() => onSelect(object)}
@@ -140,12 +187,26 @@ export function GameView({
           ))}
         </View>
       </View>
-    </>
+
+      {/* Render connection lines */}
+      {connections.map((connection, index) => (
+        <SVGConnectionLine
+          key={`${connection.startCardId}-${connection.endCardId}-${index}`}
+          fromPosition={connection.startPosition}
+          toPosition={connection.endPosition}
+          color="#4CAF50"
+        />
+      ))}
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   // Desktop/Tablet styles
+  desktopContainer: {
+    flex: 1,
+    position: 'relative',
+  },
   title: { 
     fontWeight: 'bold', 
     marginBottom: 30, 

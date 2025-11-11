@@ -6,3 +6,5 @@ export { GameHeader } from './GameHeader';
 export { GameView } from './GameView';
 export { LoadingView } from './LoadingView';
 export { ProgressBar } from './ProgressBar';
+export { ConnectionLine } from './ConnectionLine';
+export { SVGConnectionLine } from './SVGConnectionLine';
