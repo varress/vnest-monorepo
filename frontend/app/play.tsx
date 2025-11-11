@@ -140,8 +140,8 @@ export default function PlayScreen() {
     try {
       const nextSetId = currentSetId + 1;
       
-      // For example if we have 6 sets (mapped to verb data in database service)
-      if (nextSetId <= 6) {
+      // We have 4 sets (0-3)
+      if (nextSetId <= 3) {
         await setCurrentSet(nextSetId);
         setCurrentSetId(nextSetId);
         setCurrentVerbIndex(0);

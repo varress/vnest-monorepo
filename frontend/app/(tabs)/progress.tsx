@@ -16,14 +16,12 @@ export default function ProgressScreen() {
   const { setCurrentSet } = useDatabaseWordData();
   const [selectedSet, setSelectedSet] = useState<number | null>(null);
 
-  // Finnish verb exercise sets
+  // Finnish verb exercise sets - 4 themed categories
   const sets: Set[] = [
-    { id: 1, name: "Setti 1" }, 
-    { id: 2, name: "Setti 2" }, 
-    { id: 3, name: "Setti 3" }, 
-    { id: 4, name: "Setti 4" }, 
-    { id: 5, name: "Sett 5" }, 
-    { id: 6, name: "Setti 6" }, 
+    { id: 0, name: "Ruoka ja juoma" }, 
+    { id: 1, name: "Liikenne ja liikunta" }, 
+    { id: 2, name: "Opiskelu ja työ" }, 
+    { id: 3, name: "Vapaa-aika ja harrastukset" }, 
   ];
 
   const handleSetSelect = async (setId: number) => {
@@ -39,7 +37,7 @@ export default function ProgressScreen() {
   };
 
   const handlePlaySet = () => {
-    if (selectedSet) {
+    if (selectedSet !== null) {
       console.log('Progress screen: Navigating to play with set', selectedSet);
       router.push('/play');
     }
@@ -73,7 +71,7 @@ export default function ProgressScreen() {
               { fontSize: isDesktop() ? 32 : responsiveFontSize(layout.isMobile ? 32 : 48) },
               selectedSet === set.id && styles.selectedSetText
             ]}>
-              {set.id}
+              {set.id + 1}
             </Text>
             
             <Text style={[
@@ -87,7 +85,7 @@ export default function ProgressScreen() {
         ))}
       </View>
 
-      {selectedSet && (
+      {selectedSet !== null && (
         <TouchableOpacity 
           style={[
             styles.playButton,
@@ -99,12 +97,12 @@ export default function ProgressScreen() {
             styles.playButtonText,
             { fontSize: isDesktop() ? 18 : responsiveFontSize(layout.isMobile ? 18 : 20) }
           ]}>
-            Aloita Setti {selectedSet}
+            Aloita Setti {selectedSet + 1}
           </Text>
         </TouchableOpacity>
       )}
       
-      {!selectedSet && (
+      {selectedSet === null && (
         <View style={styles.instructionContainer}>
           <Text style={[
             styles.instructionText,

@@ -1,7 +1,8 @@
 import { Agent, Patient, Verb } from '@/database/schemas';
 import { useResponsiveLayout } from '@/hooks/useResponsiveLayout';
 import { isDesktop, responsiveFontSize, spacing } from '@/utils/responsive';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useEffect, useRef } from 'react';
+import { Animated, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { GameCard } from './GameCard';
 import { ProgressBar } from './ProgressBar';
 
@@ -28,16 +29,51 @@ export function FeedbackView({
 }: FeedbackViewProps) {
   const layout = useResponsiveLayout();
   const isCorrect = feedback.includes('✅');
+  
+  // Animation for feedback
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const scaleAnim = useRef(new Animated.Value(0.8)).current;
+  
+  useEffect(() => {
+    // Reset and animate when feedback changes
+    fadeAnim.setValue(0);
+    scaleAnim.setValue(0.8);
+    
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 400,
+        useNativeDriver: true,
+      }),
+      Animated.spring(scaleAnim, {
+        toValue: 1,
+        friction: 6,
+        tension: 40,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, [feedback, fadeAnim, scaleAnim]);
 
   if (layout.isMobile) {
     return (
       <ScrollView style={styles.mobileContainer} showsVerticalScrollIndicator={false}>
-        <Text style={[
-          styles.title, 
-          { fontSize: isDesktop() ? 20 : responsiveFontSize(28) }
-        ]}>
-          {feedback}
-        </Text>
+        <Animated.View style={{ 
+          opacity: fadeAnim,
+          transform: [{ scale: scaleAnim }],
+        }}>
+          <View style={[
+            styles.feedbackBanner,
+            isCorrect ? styles.correctBanner : styles.incorrectBanner
+          ]}>
+            <Text style={[
+              styles.title, 
+              styles.bannerText,
+              { fontSize: isDesktop() ? 20 : responsiveFontSize(28) }
+            ]}>
+              {feedback}
+            </Text>
+          </View>
+        </Animated.View>
         
         <ProgressBar 
           current={currentVerbIndex + 1}
@@ -85,9 +121,23 @@ export function FeedbackView({
   // Desktop/tablet layout
   return (
     <View style={styles.container}>
-      <Text style={[styles.title, { fontSize: isDesktop() ? 24 : responsiveFontSize(40) }]}>
-        {feedback}
-      </Text>
+      <Animated.View style={{ 
+        opacity: fadeAnim,
+        transform: [{ scale: scaleAnim }],
+      }}>
+        <View style={[
+          styles.feedbackBanner,
+          isCorrect ? styles.correctBanner : styles.incorrectBanner
+        ]}>
+          <Text style={[
+            styles.title,
+            styles.bannerText,
+            { fontSize: isDesktop() ? 24 : responsiveFontSize(40) }
+          ]}>
+            {feedback}
+          </Text>
+        </View>
+      </Animated.View>
       
       <ProgressBar 
         current={currentVerbIndex + 1}
@@ -133,6 +183,33 @@ const styles = StyleSheet.create({
   mobileContainer: {
     flex: 1,
     paddingHorizontal: spacing.md,
+  },
+  feedbackBanner: {
+    padding: spacing.lg,
+    borderRadius: 16,
+    marginBottom: spacing.lg,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 8,
+  },
+  correctBanner: {
+    backgroundColor: '#4caf50',
+  },
+  incorrectBanner: {
+    backgroundColor: '#f44336',
+  },
+  bannerText: {
+    color: '#fff',
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
   title: { 
     fontWeight: 'bold', 

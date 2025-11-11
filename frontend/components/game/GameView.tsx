@@ -31,6 +31,12 @@ export function GameView({
           Yhdistä kortit
         </Text>
         
+        <View style={styles.instructionBox}>
+          <Text style={[styles.instructionText, { fontSize: responsiveFontSize(16) }]}>
+            💡 Valitse ensin <Text style={styles.boldText}>Kuka</Text>, sitten <Text style={styles.boldText}>Mitä</Text>
+          </Text>
+        </View>
+        
         <Text style={[styles.mobileSentence, { fontSize: isDesktop() ? 16 : responsiveFontSize(18) }]}>
           {selectedSubject?.value || '[Kuka]'} {currentVerb?.value.toLowerCase() || '[verb]'} {selectedObject?.value.toLowerCase() || '[mitä]'}
         </Text>
@@ -88,6 +94,13 @@ export function GameView({
       <Text style={[styles.title, { fontSize: layout.isDesktop ? 24 : responsiveFontSize(40) }]}>
         Yhdistä kortit
       </Text>
+      
+      <View style={styles.instructionBox}>
+        <Text style={[styles.instructionText, { fontSize: layout.isDesktop ? 16 : responsiveFontSize(18) }]}>
+          💡 Valitse <Text style={styles.boldText}>Kuka</Text> ja <Text style={styles.boldText}>Mitä</Text> muodostaaksesi oikean lauseen
+        </Text>
+      </View>
+      
       <View style={styles.row}>
         <View style={styles.cardColumn}>
           <Text style={[styles.sectionTitle, { fontSize: layout.isDesktop ? 18 : responsiveFontSize(24) }]}>
@@ -191,5 +204,22 @@ const styles = StyleSheet.create({
   },
   mobileCard: {
     marginBottom: spacing.md,
+  },
+  instructionBox: {
+    backgroundColor: '#e3f2fd',
+    padding: spacing.md,
+    borderRadius: 12,
+    marginBottom: spacing.lg,
+    borderLeftWidth: 4,
+    borderLeftColor: '#2196f3',
+  },
+  instructionText: {
+    color: '#1565c0',
+    textAlign: 'center',
+    lineHeight: 22,
+  },
+  boldText: {
+    fontWeight: 'bold',
+    color: '#0d47a1',
   },
 });

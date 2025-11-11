@@ -1,4 +1,4 @@
-import data from '@/assets/seeding_data/english.json';
+import data from '@/assets/seeding_data/finnish_v2.json';
 import { deleteFile } from 'realm';
 import { getRealm_IgnoreSeeding } from "./realm.native";
 
@@ -7,12 +7,6 @@ export async function seedRealm() {
     console.log("Putting in data now")
 
     const realm = await getRealm_IgnoreSeeding();
-    // if (!realm.isClosed) {
-    //     realm.close();
-    // }
-
-    // deleteFile({ path: realmConfig.path });
-    // console.log("Realm file deleted");
 
     const agentMap =   new Map<string, number>();
     const patientMap = new Map<string, number>();
@@ -21,13 +15,14 @@ export async function seedRealm() {
 
     realm.write(() => {
         for (const entry of data) {
-            const { verb, pairs } = entry;
+            const { verb, groupId, pairs } = entry;
             
             verbId++;
             realm.create("Verb", { 
-                id:    verbId, 
-                value: verb, 
-                type:  "Verb" });
+                id:      verbId, 
+                value:   verb,
+                groupId: groupId,
+                type:    "Verb" });
 
             for (const [agentValue, patientValue] of pairs) {
 
@@ -56,12 +51,12 @@ export async function seedRealm() {
                     agentId:   agentMap.get(agentValue)!, 
                     patientId: patientMap.get(patientValue)!, 
                     isFitting: true, 
-                    groupId: 0,
+                    groupId:   groupId,
                     type:      "AgentVerbPatient_Trio" });
             }
         }
     });
 
-    console.log("Application seeded data succesfully");
-    console.log(`Added ${verbId} Verbs, ${agentId} distince Subjects and ${patientId} distinct Objects in ${trioId} pairs.`);
+    console.log("Application seeded data successfully");
+    console.log(`Added ${verbId + 1} Verbs, ${agentId + 1} distinct Subjects and ${patientId + 1} distinct Objects in ${trioId + 1} pairs.`);
 }

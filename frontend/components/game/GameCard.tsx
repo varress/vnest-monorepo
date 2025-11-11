@@ -1,5 +1,6 @@
 import { getCardDimensions, getVerbCardDimensions } from '@/utils/responsive';
-import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { useEffect, useRef } from 'react';
+import { Animated, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 interface GameCardProps {
   text: string;
@@ -19,6 +20,29 @@ export function GameCard({
   const isVerb = variant === 'verb';
   const cardDimensions = isVerb ? getVerbCardDimensions() : getCardDimensions();
   
+  // Animation for selection
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+  
+  useEffect(() => {
+    if (isSelected) {
+      Animated.sequence([
+        Animated.spring(scaleAnim, {
+          toValue: 1.05,
+          friction: 3,
+          tension: 40,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    } else {
+      Animated.spring(scaleAnim, {
+        toValue: 1,
+        friction: 3,
+        tension: 40,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [isSelected, scaleAnim]);
+  
   // Get margin values separately for verb cards
   const verbMarginVertical = isVerb && 'marginVertical' in cardDimensions 
     ? cardDimensions.marginVertical 
@@ -26,31 +50,36 @@ export function GameCard({
   
   return (
     <TouchableOpacity
-      style={[
-        styles.baseCard,
-        {
-          width: cardDimensions.width,
-          height: cardDimensions.height,
-          marginVertical: isVerb ? verbMarginVertical : 6,
-        },
-        isVerb ? styles.verbCard : styles.card,
-        isSelected && styles.selectedCard,
-        style
-      ]}
       onPress={onPress}
       disabled={!onPress}
       activeOpacity={0.7}
     >
-      <Text 
+      <Animated.View
         style={[
-          isVerb ? styles.verbText : styles.cardText,
-          { fontSize: cardDimensions.fontSize }
+          styles.baseCard,
+          {
+            width: cardDimensions.width,
+            height: cardDimensions.height,
+            marginVertical: isVerb ? verbMarginVertical : 6,
+            transform: [{ scale: scaleAnim }],
+          },
+          isVerb ? styles.verbCard : styles.card,
+          isSelected && styles.selectedCard,
+          style
         ]}
-        numberOfLines={2}
-        adjustsFontSizeToFit
       >
-        {text}
-      </Text>
+        <Text 
+          style={[
+            isVerb ? styles.verbText : styles.cardText,
+            isSelected && styles.selectedText,
+            { fontSize: cardDimensions.fontSize }
+          ]}
+          numberOfLines={2}
+          adjustsFontSizeToFit
+        >
+          {text}
+        </Text>
+      </Animated.View>
     </TouchableOpacity>
   );
 }
@@ -72,16 +101,23 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: '#f2f2f2',
     padding: 16,
+    borderWidth: 2,
+    borderColor: 'transparent',
   },
   selectedCard: { 
     backgroundColor: '#34C759',
-    shadowOpacity: 0.2,
-    elevation: 5,
+    borderColor: '#28A745',
+    shadowOpacity: 0.25,
+    elevation: 6,
   },
   cardText: { 
     fontWeight: '600',
     textAlign: 'center',
     color: '#333',
+  },
+  selectedText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
   verbCard: {
     backgroundColor: '#007AFF',

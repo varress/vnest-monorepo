@@ -13,15 +13,23 @@ export function CongratsView({
   onReplay, 
   onNextSet 
 }: CongratsViewProps) {
+  const setNames = [
+    "Ruoka ja juoma",
+    "Liikenne ja liikunta", 
+    "Opiskelu ja työ",
+    "Vapaa-aika ja harrastukset"
+  ];
+  
   return (
     <>
       <View style={styles.congratsContainer}>
         <Text style={styles.congratsEmoji}>🎉</Text>
         <Text style={styles.congratsTitle}>Onnittelut!</Text>
         <Text style={styles.congratsSubtitle}>
-          Olet suorittanut Setti {currentSetId} loppuun!
+          Olet suorittanut Setti {currentSetId + 1} loppuun!
         </Text>
         <Text style={styles.congratsMessage}>
+          {setNames[currentSetId] && `"${setNames[currentSetId]}" - `}
           Hienoa työtä! Olet oppinut {verbCount} verbiä.
         </Text>
       </View>

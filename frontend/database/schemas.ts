@@ -27,6 +27,7 @@ export type AgentVerbPatient_Trio = {
     agentId:   number;
     patientId: number;
     isFitting: boolean;
+    groupId:   number;
     readonly type: "AgentVerbPatient_Trio";
 };
 
@@ -77,6 +78,7 @@ export const AgentVerbPatient_Trio_Schema: ObjectSchema = {
         agentId:   'int',
         verbId:    'int',
         patientId: 'int',
+        groupId:   { type: 'int', default: 0 },
         type:      { type: 'string', default: 'AgentVerbPatient_Trio' }
     }
 };
@@ -120,6 +122,7 @@ export function mapAVP_ApiToTrio(apiData: ApiResponse<ApiCombination>): AgentVer
         agentId:   item.subject.id,
         patientId: item.object.id,
         isFitting: true,
+        groupId:   0,
         type:      "AgentVerbPatient_Trio"
 
     }));
