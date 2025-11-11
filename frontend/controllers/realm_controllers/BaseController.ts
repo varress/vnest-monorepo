@@ -1,4 +1,4 @@
-import { getRealm } from "@/database/realm";
+import { database } from "@/database";
 import { IBaseController } from "../interfaces/IBaseController";
 
 /**
@@ -8,6 +8,8 @@ import { IBaseController } from "../interfaces/IBaseController";
  * - CRUD operations with type safety
  * 
  * Each concrete controller specifies its schema name.
+ * Uses the database adapter which automatically selects Realm for native
+ * and WebStorageAdapter for web platforms.
  */
 export abstract class BaseController<T> implements IBaseController<T> {
     abstract schemaName: string;   // Database collection/table name
@@ -23,9 +25,7 @@ export abstract class BaseController<T> implements IBaseController<T> {
      * @returns The item or null if not found
      */
     async getById(id: number): Promise<T | null> {
-        const realm = await getRealm();
-        const obj =   realm.objectForPrimaryKey<T>(this.schemaName, id as any);
-        return obj ?? null;
+        return await database.findById<T>(this.schemaName, id);
     }
 
     /**
@@ -33,7 +33,6 @@ export abstract class BaseController<T> implements IBaseController<T> {
      * @returns Array of all items in the collection
      */
     async getAll(): Promise<T[]> {
-        const realm = await getRealm();
-        return realm.objects<T>(this.schemaName).map(obj => ({ ...obj }));
+        return await database.query<T>(this.schemaName);
     }
 }

@@ -62,42 +62,90 @@ export class WebStorageAdapter implements DatabaseAdapter {
   /**
    * Seeds the database with authentic Finnish language learning data from JSON files
    * 
-   * Uses dynamic imports to load the same Finnish language data that the native app uses,
-   * ensuring cross-platform consistency while maintaining web compatibility.
-   * 
-   * Data loaded includes:
-   * - Agents: Finnish pronouns and subjects (minä, sinä, hän, etc.)
-   * - Verbs: Common Finnish verbs in first person (luen, kirjoitan, syön, etc.)
-   * - Patients: Objects in correct Finnish case forms (kirjan, ruokaa, etc.)
-   * - Valid Agent-Verb-Patient combinations for grammar exercises
+   * Uses the same finnish_v2.json data structure as the native app for consistency.
+   * Processes the seed data to extract verbs, agents, patients, and their combinations.
    */
   private async seedData(): Promise<void> {
     try {
-      // Use dynamic imports for web compatibility - static imports can cause bundling issues
-      const [agentsModule, verbsModule, patientsModule, triosModule] = await Promise.all([
-        import('@/assets/default_words/agents.json'),
-        import('@/assets/default_words/verbs.json'),
-        import('@/assets/default_words/patients.json'),
-        import('@/assets/default_words/avp_trios.json')
-      ]);
+      // Load the seed data file (same as native app uses)
+      const seedDataModule = await import('../assets/seeding_data/finnish_v2.json');
+      const seedData = seedDataModule.default || seedDataModule;
       
-      // Extract data from modules (handle both default exports and direct exports)
-      const agents = agentsModule.default || agentsModule;
-      const verbs = verbsModule.default || verbsModule;
-      const patients = patientsModule.default || patientsModule;
-      const avp_trios = triosModule.default || triosModule;
+      // Maps to track unique agents and patients
+      const agentMap = new Map<string, Agent>();
+      const patientMap = new Map<string, Patient>();
+      const verbs: Verb[] = [];
+      const trios: AgentVerbPatient_Trio[] = [];
       
-      // Load the authentic Finnish language data into memory
+      let verbId = -1, agentId = -1, patientId = -1, trioId = -1;
+      
+      // Process seed data to extract all entities
+      for (const entry of seedData as any[]) {
+        const { verb, groupId, pairs } = entry;
+        
+        // Create verb
+        verbId++;
+        verbs.push({
+          id: verbId,
+          value: verb,
+          groupId: groupId || 0,
+          type: "Verb"
+        });
+        
+        // Process each pair for this verb
+        for (const [agentValue, patientValue] of pairs) {
+          // Create or reuse agent
+          if (!agentMap.has(agentValue)) {
+            agentId++;
+            agentMap.set(agentValue, {
+              id: agentId,
+              value: agentValue,
+              type: "Agent"
+            });
+          }
+          
+          // Create or reuse patient
+          if (!patientMap.has(patientValue)) {
+            patientId++;
+            patientMap.set(patientValue, {
+              id: patientId,
+              value: patientValue,
+              type: "Patient"
+            });
+          }
+          
+          // Create trio
+          trioId++;
+          trios.push({
+            id: trioId,
+            verbId: verbId,
+            agentId: agentMap.get(agentValue)!.id,
+            patientId: patientMap.get(patientValue)!.id,
+            isFitting: true,
+            groupId: groupId || 0,
+            type: "AgentVerbPatient_Trio"
+          });
+        }
+      }
+      
+      // Load the processed data into memory
       this.data = {
-        Agent: (agents as Agent[]) || [],
-        Patient: (patients as Patient[]) || [],
-        Verb: (verbs as Verb[]) || [],
-        AgentVerbPatient_Trio: (avp_trios as AgentVerbPatient_Trio[]) || []
+        Agent: Array.from(agentMap.values()),
+        Patient: Array.from(patientMap.values()),
+        Verb: verbs,
+        AgentVerbPatient_Trio: trios
       };
       
+      console.log('WebStorageAdapter: Loaded data from finnish_v2.json', {
+        agents: this.data.Agent.length,
+        patients: this.data.Patient.length,
+        verbs: this.data.Verb.length,
+        trios: this.data.AgentVerbPatient_Trio.length
+      });
+      
     } catch (error) {
-      console.error('WebStorageAdapter: Failed to load JSON files:', error);
-      // Fallback to empty arrays if JSON loading fails
+      console.error('WebStorageAdapter: Failed to load seed data:', error);
+      // Fallback to empty arrays if loading fails
       this.data = {
         Agent: [],
         Patient: [],

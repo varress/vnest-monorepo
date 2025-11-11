@@ -1,9 +1,9 @@
 import { Agent, Patient, Verb } from '@/database/schemas';
 import { useResponsiveLayout } from '@/hooks/useResponsiveLayout';
 import { isDesktop, responsiveFontSize, spacing } from '@/utils/responsive';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useEffect, useRef } from 'react';
+import { Animated, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { GameCard } from './GameCard';
-import { ProgressBar } from './ProgressBar';
 
 interface FeedbackViewProps {
   feedback: string;
@@ -12,7 +12,9 @@ interface FeedbackViewProps {
   selectedSubject: Agent | null;
   selectedObject: Patient | null;
   currentVerb: Verb | null;
-  onNext: () => void;
+  correctAnswersCount: number;
+  requiredAnswers: number;
+  onContinue: () => void;
   onReset: () => void;
 }
 
@@ -23,27 +25,77 @@ export function FeedbackView({
   selectedSubject,
   selectedObject,
   currentVerb,
-  onNext,
+  correctAnswersCount,
+  requiredAnswers,
+  onContinue,
   onReset
 }: FeedbackViewProps) {
   const layout = useResponsiveLayout();
   const isCorrect = feedback.includes('✅');
+  
+  // Animation for feedback
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const scaleAnim = useRef(new Animated.Value(0.8)).current;
+  
+  useEffect(() => {
+    // Reset and animate when feedback changes
+    fadeAnim.setValue(0);
+    scaleAnim.setValue(0.8);
+    
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 400,
+        useNativeDriver: true,
+      }),
+      Animated.spring(scaleAnim, {
+        toValue: 1,
+        friction: 6,
+        tension: 40,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, [feedback, fadeAnim, scaleAnim]);
 
   if (layout.isMobile) {
     return (
       <ScrollView style={styles.mobileContainer} showsVerticalScrollIndicator={false}>
-        <Text style={[
-          styles.title, 
-          { fontSize: isDesktop() ? 20 : responsiveFontSize(28) }
-        ]}>
-          {feedback}
-        </Text>
+        <Animated.View style={{ 
+          opacity: fadeAnim,
+          transform: [{ scale: scaleAnim }],
+        }}>
+          <View style={[
+            styles.feedbackBanner,
+            isCorrect ? styles.correctBanner : styles.incorrectBanner
+          ]}>
+            <Text style={[
+              styles.title, 
+              styles.bannerText,
+              { fontSize: isDesktop() ? 20 : responsiveFontSize(28) }
+            ]}>
+              {feedback}
+            </Text>
+          </View>
+        </Animated.View>
         
-        <ProgressBar 
-          current={currentVerbIndex + 1}
-          total={totalVerbs}
-        />
-
+        {/* Progress tracking */}
+        <View style={styles.progressContainer}>
+          <Text style={styles.progressText}>
+            Oikeat vastaukset: {correctAnswersCount} / {requiredAnswers}
+          </Text>
+          <View style={styles.progressBarContainer}>
+            {[...Array(requiredAnswers)].map((_, index) => (
+              <View
+                key={index}
+                style={[
+                  styles.progressDot,
+                  index < correctAnswersCount && styles.progressDotFilled
+                ]}
+              />
+            ))}
+          </View>
+        </View>
+        
         {/* Chosen cards displayed */}
         <View style={styles.mobileRow}>
           <View style={styles.cardColumn}>
@@ -62,7 +114,7 @@ export function FeedbackView({
         {isCorrect ? (
           <TouchableOpacity 
             style={[styles.nextButton, styles.mobileButton]} 
-            onPress={onNext}
+            onPress={onContinue}
           >
             <Text style={[styles.buttonText, { fontSize: isDesktop() ? 16 : responsiveFontSize(18) }]}>
               Jatka
@@ -85,15 +137,42 @@ export function FeedbackView({
   // Desktop/tablet layout
   return (
     <View style={styles.container}>
-      <Text style={[styles.title, { fontSize: isDesktop() ? 24 : responsiveFontSize(40) }]}>
-        {feedback}
-      </Text>
+      <Animated.View style={{ 
+        opacity: fadeAnim,
+        transform: [{ scale: scaleAnim }],
+      }}>
+        <View style={[
+          styles.feedbackBanner,
+          isCorrect ? styles.correctBanner : styles.incorrectBanner
+        ]}>
+          <Text style={[
+            styles.title,
+            styles.bannerText,
+            { fontSize: isDesktop() ? 24 : responsiveFontSize(40) }
+          ]}>
+            {feedback}
+          </Text>
+        </View>
+      </Animated.View>
       
-      <ProgressBar 
-        current={currentVerbIndex + 1}
-        total={totalVerbs}
-      />
-
+      {/* Progress tracking */}
+      <View style={styles.progressContainer}>
+        <Text style={styles.progressText}>
+          Oikeat vastaukset: {correctAnswersCount} / {requiredAnswers}
+        </Text>
+        <View style={styles.progressBarContainer}>
+          {[...Array(requiredAnswers)].map((_, index) => (
+            <View
+              key={index}
+              style={[
+                styles.progressDot,
+                index < correctAnswersCount && styles.progressDotFilled
+              ]}
+            />
+          ))}
+        </View>
+      </View>
+      
       {/* Chosen cards displayed */}
       <View style={styles.row}>
         <View style={styles.cardColumn}>
@@ -110,7 +189,7 @@ export function FeedbackView({
       </View>
 
       {isCorrect ? (
-        <TouchableOpacity style={styles.nextButton} onPress={onNext}>
+        <TouchableOpacity style={styles.nextButton} onPress={onContinue}>
           <Text style={[styles.buttonText, { fontSize: isDesktop() ? 18 : responsiveFontSize(22) }]}>
             Jatka
           </Text>
@@ -133,6 +212,33 @@ const styles = StyleSheet.create({
   mobileContainer: {
     flex: 1,
     paddingHorizontal: spacing.md,
+  },
+  feedbackBanner: {
+    padding: spacing.lg,
+    borderRadius: 16,
+    marginBottom: spacing.lg,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 8,
+  },
+  correctBanner: {
+    backgroundColor: '#4caf50',
+  },
+  incorrectBanner: {
+    backgroundColor: '#f44336',
+  },
+  bannerText: {
+    color: '#fff',
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
   title: { 
     fontWeight: 'bold', 
@@ -198,5 +304,34 @@ const styles = StyleSheet.create({
     color: '#fff', 
     textAlign: 'center',
     fontWeight: 'bold',
+  },
+  progressContainer: {
+    alignItems: 'center',
+    marginVertical: spacing.lg,
+    paddingHorizontal: spacing.md,
+  },
+  progressText: {
+    fontSize: responsiveFontSize(18),
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: spacing.sm,
+  },
+  progressBarContainer: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  progressDot: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    backgroundColor: '#e0e0e0',
+    borderWidth: 2,
+    borderColor: '#bdbdbd',
+  },
+  progressDotFilled: {
+    backgroundColor: '#4caf50',
+    borderColor: '#2e7d32',
   },
 });

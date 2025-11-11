@@ -20,23 +20,17 @@
 import { ISubjectObjectController } from '@/controllers/interfaces/ISubjectObjectController';
 import { IVerbController } from '@/controllers/interfaces/IVerbController';
 import { Agent, AgentVerbPatient_Trio, Patient, Verb } from '@/database/schemas';
-import { Platform } from 'react-native';
+import { database } from '@/database';
 import { avpService } from './avpService';
 
 let agentController:   ISubjectObjectController<Agent>;
 let patientController: ISubjectObjectController<Patient>;
 let verbController:    IVerbController;
 
-if (Platform.OS === "web") {
-    ({ agentController_api:     agentController } =   require("@/controllers/api_controllers/AgentController"));
-    ({ patientController_api:   patientController } = require("@/controllers/api_controllers/PatientController"));
-    ({ verbController_api:      verbController } =    require("@/controllers/api_controllers/VerbController"));
-}
-else {
-    ({ agentController_realm:   agentController } =   require("@/controllers/realm_controllers/AgentController"));
-    ({ patientController_realm: patientController } = require("@/controllers/realm_controllers/PatientController"));
-    ({ verbController_realm:    verbController } =    require("@/controllers/realm_controllers/VerbController"));
-}
+// Use realm controllers for all platforms (web will use WebStorageAdapter automatically)
+({ agentController_realm:   agentController } =   require("@/controllers/realm_controllers/AgentController"));
+({ patientController_realm: patientController } = require("@/controllers/realm_controllers/PatientController"));
+({ verbController_realm:    verbController } =    require("@/controllers/realm_controllers/VerbController"));
 
 export interface DatabaseWordData {
   verbs: Verb[];              // All available Finnish verbs
@@ -51,20 +45,24 @@ class DatabaseService {
   private currentGroupId: number = 0;  // Current learning group, e.g. 4 groups, thematically differentiated
   private verbsInGroup: Verb[] = [];
 
-  private initialized: Promise<void>;
+  private initialized: Promise<void> | null = null;
 
   constructor() {
-    this.initialized = this.initialize(0).catch(err => 
-      console.error("DatabaseService auto-init failed:", err)
-    );
+    // Don't auto-initialize - wait for explicit call
   }
 
   async ensureInitialized(): Promise<void> {
+    if (!this.initialized) {
+      this.initialized = this.initialize(0).catch(err => {
+        console.error("DatabaseService auto-init failed:", err);
+        throw err;
+      });
+    }
     await this.initialized;
   }
 
   async initialize(groupId: number): Promise<void> {
-    console.log('Initializing database service...');
+    console.log('Initializing database service with groupId:', groupId);
     this.currentGroupId = groupId;
     await this.setCurrentGroup(groupId);
     await this.getNextVerb();
@@ -94,8 +92,10 @@ class DatabaseService {
   }
 
   async setCurrentGroup(groupId: number): Promise<void> {
+    console.log(`📚 Setting current group to: ${groupId}`);
     this.currentGroupId = groupId;
     this.verbsInGroup   = await verbController.getAllVerbsByGroupId(this.currentGroupId);
+    console.log(`📖 Loaded ${this.verbsInGroup.length} verbs for group ${groupId}:`, this.verbsInGroup.map(v => v.value));
   }
 
   async getNextVerb(): Promise<Verb | null> {
