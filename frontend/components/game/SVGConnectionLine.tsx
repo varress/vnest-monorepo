@@ -6,12 +6,14 @@ interface SVGConnectionLineProps {
   fromPosition: { x: number; y: number } | null;
   toPosition: { x: number; y: number } | null;
   color?: string;
+  strokeWidth?: number;
 }
 
 export const SVGConnectionLine: React.FC<SVGConnectionLineProps> = ({
   fromPosition,
   toPosition,
-  color = '#0ea5e9'
+  color = '#4CAF50',
+  strokeWidth = 4
 }) => {
   if (!fromPosition || !toPosition) {
     return null;
@@ -23,26 +25,15 @@ export const SVGConnectionLine: React.FC<SVGConnectionLineProps> = ({
   const toX = toPosition.x;
   const toY = toPosition.y;
 
-  console.log('SVG Connection Line - Container-relative positions:', {
-    from: { x: fromX, y: fromY },
-    to: { x: toX, y: toY },
-    note: 'These should be small values relative to container, not huge screen coordinates'
-  });
-
-  // Calculate SVG container dimensions to fit the line
-  const minX = Math.min(fromX, toX) - 10;
-  const minY = Math.min(fromY, toY) - 10;
-  const maxX = Math.max(fromX, toX) + 10;
-  const maxY = Math.max(fromY, toY) + 10;
+  // Calculate SVG container dimensions to fit the line with padding
+  const padding = 20; // Extra space for dots and glow effects
+  const minX = Math.min(fromX, toX) - padding;
+  const minY = Math.min(fromY, toY) - padding;
+  const maxX = Math.max(fromX, toX) + padding;
+  const maxY = Math.max(fromY, toY) + padding;
   
   const svgWidth = maxX - minX;
   const svgHeight = maxY - minY;
-
-  console.log('SVG Container calculated bounds:', {
-    minX, minY, maxX, maxY,
-    svgWidth, svgHeight,
-    svgPosition: { left: minX, top: minY }
-  });
 
   // Adjust coordinates relative to SVG container
   const relativeFromX = fromX - minX;
@@ -50,13 +41,8 @@ export const SVGConnectionLine: React.FC<SVGConnectionLineProps> = ({
   const relativeToX = toX - minX;
   const relativeToY = toY - minY;
 
-  console.log('Final line coordinates within SVG:', {
-    relativeFrom: { x: relativeFromX, y: relativeFromY },
-    relativeTo: { x: relativeToX, y: relativeToY }
-  });
-
   return (
-    <View style={[StyleSheet.absoluteFillObject, { pointerEvents: 'none' }]}>
+    <View style={[StyleSheet.absoluteFillObject, { pointerEvents: 'none', zIndex: 5 }]}>
       <Svg
         width={svgWidth}
         height={svgHeight}
@@ -67,37 +53,63 @@ export const SVGConnectionLine: React.FC<SVGConnectionLineProps> = ({
         }}
       >
         <Defs>
-          <LinearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <Stop offset="0%" stopColor={color} stopOpacity="0.8" />
+          <LinearGradient id={`lineGradient-${fromX}-${fromY}`} x1="0%" y1="0%" x2="100%" y2="0%">
+            <Stop offset="0%" stopColor={color} stopOpacity="0.7" />
             <Stop offset="50%" stopColor={color} stopOpacity="1" />
-            <Stop offset="100%" stopColor={color} stopOpacity="0.8" />
+            <Stop offset="100%" stopColor={color} stopOpacity="0.7" />
           </LinearGradient>
         </Defs>
         
-        {/* Connection line */}
+        {/* Glow effect line (behind main line) */}
         <Line
           x1={relativeFromX}
           y1={relativeFromY}
           x2={relativeToX}
           y2={relativeToY}
-          stroke="url(#lineGradient)"
-          strokeWidth="3"
+          stroke={color}
+          strokeWidth={strokeWidth + 6}
+          strokeLinecap="round"
+          opacity={0.3}
+        />
+        
+        {/* Main connection line */}
+        <Line
+          x1={relativeFromX}
+          y1={relativeFromY}
+          x2={relativeToX}
+          y2={relativeToY}
+          stroke={`url(#lineGradient-${fromX}-${fromY})`}
+          strokeWidth={strokeWidth}
           strokeLinecap="round"
         />
         
-        {/* Start dot */}
+        {/* Start dot with glow */}
         <Circle
           cx={relativeFromX}
           cy={relativeFromY}
-          r="4"
+          r="8"
+          fill={color}
+          opacity={0.3}
+        />
+        <Circle
+          cx={relativeFromX}
+          cy={relativeFromY}
+          r="5"
           fill={color}
         />
         
-        {/* End dot */}
+        {/* End dot with glow */}
         <Circle
           cx={relativeToX}
           cy={relativeToY}
-          r="4"
+          r="8"
+          fill={color}
+          opacity={0.3}
+        />
+        <Circle
+          cx={relativeToX}
+          cy={relativeToY}
+          r="5"
           fill={color}
         />
       </Svg>

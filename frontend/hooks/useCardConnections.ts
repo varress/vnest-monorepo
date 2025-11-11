@@ -99,26 +99,58 @@ export function useCardConnections() {
 
       // Calculate intersection with rectangle edges for start card
       let startEdgeX, startEdgeY;
-      if (Math.abs(unitX) * startHalfHeight > Math.abs(unitY) * startHalfWidth) {
-        // Line hits left/right edge
-        startEdgeX = startCard.centerX + Math.sign(unitX) * startHalfWidth;
-        startEdgeY = startCard.centerY + unitY * (startHalfWidth / Math.abs(unitX));
+      
+      // For better UX, connect from the edge facing the target card
+      if (Math.abs(deltaX) > Math.abs(deltaY)) {
+        // Horizontal connection is dominant - connect from left/right edge
+        if (deltaX > 0) {
+          // Target is to the right - connect from right edge of start card
+          startEdgeX = startCard.centerX + startHalfWidth;
+          startEdgeY = startCard.centerY;
+        } else {
+          // Target is to the left - connect from left edge of start card
+          startEdgeX = startCard.centerX - startHalfWidth;
+          startEdgeY = startCard.centerY;
+        }
       } else {
-        // Line hits top/bottom edge
-        startEdgeX = startCard.centerX + unitX * (startHalfHeight / Math.abs(unitY));
-        startEdgeY = startCard.centerY + Math.sign(unitY) * startHalfHeight;
+        // Vertical connection is dominant - connect from top/bottom edge
+        if (deltaY > 0) {
+          // Target is below - connect from bottom edge of start card
+          startEdgeX = startCard.centerX;
+          startEdgeY = startCard.centerY + startHalfHeight;
+        } else {
+          // Target is above - connect from top edge of start card
+          startEdgeX = startCard.centerX;
+          startEdgeY = startCard.centerY - startHalfHeight;
+        }
       }
 
       // Calculate intersection with rectangle edges for end card  
       let endEdgeX, endEdgeY;
-      if (Math.abs(unitX) * endHalfHeight > Math.abs(unitY) * endHalfWidth) {
-        // Line hits left/right edge
-        endEdgeX = endCard.centerX - Math.sign(unitX) * endHalfWidth;
-        endEdgeY = endCard.centerY - unitY * (endHalfWidth / Math.abs(unitX));
+      
+      // For end card, connect to the edge facing the start card
+      if (Math.abs(deltaX) > Math.abs(deltaY)) {
+        // Horizontal connection is dominant
+        if (deltaX > 0) {
+          // Start is to the left - connect to left edge of end card
+          endEdgeX = endCard.centerX - endHalfWidth;
+          endEdgeY = endCard.centerY;
+        } else {
+          // Start is to the right - connect to right edge of end card
+          endEdgeX = endCard.centerX + endHalfWidth;
+          endEdgeY = endCard.centerY;
+        }
       } else {
-        // Line hits top/bottom edge
-        endEdgeX = endCard.centerX - unitX * (endHalfHeight / Math.abs(unitY));
-        endEdgeY = endCard.centerY - Math.sign(unitY) * endHalfHeight;
+        // Vertical connection is dominant
+        if (deltaY > 0) {
+          // Start is above - connect to top edge of end card
+          endEdgeX = endCard.centerX;
+          endEdgeY = endCard.centerY - endHalfHeight;
+        } else {
+          // Start is below - connect to bottom edge of end card
+          endEdgeX = endCard.centerX;
+          endEdgeY = endCard.centerY + endHalfHeight;
+        }
       }
 
       const startPosition = {

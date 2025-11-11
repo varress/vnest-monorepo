@@ -32,17 +32,26 @@ export function GameCard({
 
   const handleLayout = (event: any) => {
     if (cardId && onLayout && parentRef?.current) {
-      // Use measureLayout to get position relative to parent container
+      // Small delay to ensure parent layout is complete
       setTimeout(() => {
-        cardRef.current?.measureLayout(
-          parentRef.current,
-          (x: number, y: number, width: number, height: number) => {
-            console.log(`Card ${cardId} relative position: x=${x}, y=${y}, w=${width}, h=${height}`);
-            onLayout(cardId, { x, y, width, height });
-          },
-          (error: any) => console.error('measureLayout error:', error)
-        );
-      }, 50); // Small delay to ensure layout is complete
+        if (cardRef.current && parentRef.current) {
+          cardRef.current?.measureLayout(
+            parentRef.current,
+            (x: number, y: number, width: number, height: number) => {
+              console.log(`📍 Card ${cardId} positioned at:`, { 
+                x: Math.round(x), 
+                y: Math.round(y), 
+                w: Math.round(width), 
+                h: Math.round(height),
+                centerX: Math.round(x + width/2),
+                centerY: Math.round(y + height/2)
+              });
+              onLayout(cardId, { x, y, width, height });
+            },
+            (error: any) => console.error('❌ measureLayout error:', error)
+          );
+        }
+      }, 100); // Increased delay for more reliable measurements
     }
   };
   

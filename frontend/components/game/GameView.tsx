@@ -44,15 +44,19 @@ export function GameView({
   // Create connections when cards are selected
   useEffect(() => {
     if (selectedSubject && currentVerb) {
-      createConnection(`subject-${selectedSubject.id}`, 'verb');
-    } else {
-      removeConnection('verb');
+      // Small delay to ensure card positions are registered
+      setTimeout(() => {
+        createConnection(`subject-${selectedSubject.id}`, 'verb');
+      }, 150);
     }
-  }, [selectedSubject, currentVerb, createConnection, removeConnection]);
+  }, [selectedSubject, currentVerb, createConnection]);
 
   useEffect(() => {
     if (selectedObject && currentVerb) {
-      createConnection('verb', `object-${selectedObject.id}`);
+      // Small delay to ensure card positions are registered
+      setTimeout(() => {
+        createConnection('verb', `object-${selectedObject.id}`);
+      }, 150);
     }
   }, [selectedObject, currentVerb, createConnection]);
 
