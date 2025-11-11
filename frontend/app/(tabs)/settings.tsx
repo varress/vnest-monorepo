@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, ScrollView } from 'react-native';
 import { useResponsiveLayout } from '@/hooks/useResponsiveLayout';
 import { responsiveFontSize, isDesktop } from '@/utils/responsive';
+import { AppColors } from '@/constants/theme';
 
 const spacing = {
   sm: 8,
@@ -207,44 +208,44 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: spacing.xl,
-    backgroundColor: '#fff',
+    backgroundColor: AppColors.Colors.white,
   },
   mobileContainer: {
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.xl,
   },
   highContrastContainer: {
-    backgroundColor: '#0fb1deff',
+    backgroundColor: AppColors.SemanticColors.highContrastBackground,
   },
   highContrastText: {
-    color: '#000',
+    color: AppColors.SemanticColors.highContrastText,
   },
   highContrastButton: {
     borderWidth: 3,
-    borderColor: '#000',
+    borderColor: AppColors.SemanticColors.highContrastBorder,
   },
   highContrastPreview: {
     borderWidth: 2,
-    borderColor: '#000',
+    borderColor: AppColors.SemanticColors.highContrastBorder,
   },
   title: {
     fontWeight: 'bold',
     marginBottom: spacing.xl,
     textAlign: 'center',
-    color: '#222',
+    color: AppColors.NeutralColors.textDark,
   },
   section: {
     marginBottom: spacing.xl,
     padding: spacing.lg,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: AppColors.NeutralColors.backgroundLightGray,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: AppColors.NeutralColors.border,
   },
   sectionTitle: {
     fontWeight: 'bold',
     marginBottom: spacing.lg,
-    color: '#333',
+    color: AppColors.NeutralColors.text,
     textAlign: 'center',
   },
   
@@ -257,36 +258,36 @@ const styles = StyleSheet.create({
   },
   presetButton: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: AppColors.Colors.white,
     padding: spacing.md,
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: '#e0e0e0',
+    borderColor: AppColors.NeutralColors.border,
     alignItems: 'center',
     minHeight: 90,
     justifyContent: 'center',
   },
   presetButtonActive: {
-    backgroundColor: '#e3f2fd',
-    borderColor: '#2196f3',
+    backgroundColor: AppColors.BrandColors.primaryLight,
+    borderColor: AppColors.BrandColors.primary,
     borderWidth: 3,
   },
   presetIcon: {
     fontWeight: 'bold',
-    color: '#666',
+    color: AppColors.NeutralColors.textLight,
     marginBottom: 4,
   },
   presetIconActive: {
-    color: '#2196f3',
+    color: AppColors.BrandColors.primary,
   },
   presetLabel: {
     fontSize: 14,
-    color: '#666',
+    color: AppColors.NeutralColors.textLight,
     fontWeight: '600',
     textAlign: 'center',
   },
   presetLabelActive: {
-    color: '#2196f3',
+    color: AppColors.BrandColors.primary,
     fontWeight: 'bold',
   },
   
@@ -297,65 +298,65 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   fontButton: {
-    backgroundColor: '#2196f3',
+    backgroundColor: AppColors.BrandColors.primary,
     width: 60,
     height: 60,
     borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 3,
-    shadowColor: '#000',
+    shadowColor: AppColors.ShadowColors.shadow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
   },
   fontButtonDisabled: {
-    backgroundColor: '#e0e0e0',
+    backgroundColor: AppColors.SemanticColors.buttonDisabled,
   },
   fontButtonText: {
     fontSize: 32,
-    color: '#fff',
+    color: AppColors.SemanticColors.buttonText,
     fontWeight: 'bold',
   },
   fontButtonTextDisabled: {
-    color: '#999',
+    color: AppColors.SemanticColors.buttonTextDisabled,
   },
   fontPreview: {
     flex: 1,
     marginHorizontal: spacing.md,
-    backgroundColor: '#fff',
+    backgroundColor: AppColors.Colors.white,
     padding: spacing.md,
     borderRadius: 12,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: AppColors.NeutralColors.border,
   },
   previewText: {
     fontWeight: 'bold',
     marginBottom: 4,
-    color: '#333',
+    color: AppColors.NeutralColors.text,
   },
   fontSizeLabel: {
     fontSize: 14,
-    color: '#666',
+    color: AppColors.NeutralColors.textLight,
   },
   
   // Contrast toggle
   toggleButton: {
-    backgroundColor: '#fff',
+    backgroundColor: AppColors.Colors.white,
     padding: spacing.lg,
     borderRadius: 12,
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: '#e0e0e0',
+    borderColor: AppColors.NeutralColors.border,
     flexDirection: 'row',
     justifyContent: 'center',
     gap: spacing.md,
     minHeight: 80,
   },
   toggleButtonActive: {
-    backgroundColor: '#e3f2fd',
-    borderColor: '#2196f3',
+    backgroundColor: AppColors.BrandColors.primaryLight,
+    borderColor: AppColors.BrandColors.primary,
     borderWidth: 3,
   },
   toggleIcon: {
@@ -363,10 +364,10 @@ const styles = StyleSheet.create({
   },
   toggleText: {
     fontWeight: '600',
-    color: '#666',
+    color: AppColors.NeutralColors.textLight,
   },
   toggleTextActive: {
-    color: '#2196f3',
+    color: AppColors.BrandColors.primary,
     fontWeight: 'bold',
   },
 });
