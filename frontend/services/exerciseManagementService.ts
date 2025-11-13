@@ -20,7 +20,6 @@
 import { ISubjectObjectController } from '@/controllers/interfaces/ISubjectObjectController';
 import { IVerbController } from '@/controllers/interfaces/IVerbController';
 import { Agent, AgentVerbPatient_Trio, Patient, Verb } from '@/database/schemas';
-import { database } from '@/database';
 import { avpService } from './avpService';
 
 let agentController:   ISubjectObjectController<Agent>;

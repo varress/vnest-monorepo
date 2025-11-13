@@ -11,6 +11,7 @@ let patientController: ISubjectObjectController<Patient>;
 let verbController:    IVerbController;
 let avpTrioController: IAVPTrioController;
 
+
 // Use realm controllers for all platforms (web will use WebStorageAdapter automatically)
 ({ agentController_realm:   agentController } =   require("@/controllers/realm_controllers/AgentController"));
 ({ patientController_realm: patientController } = require("@/controllers/realm_controllers/PatientController"));
