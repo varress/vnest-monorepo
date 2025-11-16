@@ -38,6 +38,18 @@ public class SuggestionController {
     }
 
     /**
+     * GET /api/suggestions - Get exercise data for frontend.
+     */
+    @GetMapping("/{verb_id}")
+    public ResponseEntity<ApiResponse<SuggestionResponse>> getSuggestionsByVerb(
+            @PathVariable Long verb_id) {
+
+        SuggestionResponse suggestionResponse = combinationService.getSuggestionsByVerb(verb_id);
+
+        return ResponseEntity.ok(new ApiResponse<>(true, suggestionResponse));
+    }
+
+    /**
      * POST /api/suggestions/validate - Validate a user-formed sentence.
      */
     @PostMapping("/validate")

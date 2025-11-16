@@ -3,7 +3,6 @@ package fi.vnest.speechtherapy.api.controller;
 import fi.vnest.speechtherapy.api.dto.*;
 import fi.vnest.speechtherapy.api.model.AllowedCombination;
 import fi.vnest.speechtherapy.api.service.CombinationService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +42,6 @@ public class CombinationController {
     }
 
 
-
     /**
      * DELETE /api/combinations/:id - Delete a specific combination.
      */
@@ -62,5 +60,13 @@ public class CombinationController {
         combinationService.deleteCombinationsByVerb(verb_id);
         // Return 204 No Content for successful deletion
         return new ResponseEntity<>(new ApiResponse<>(true, null), HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<CombinationResponse>> getCombination(@PathVariable Long id) {
+        AllowedCombination combination = combinationService.findById(id);
+        CombinationResponse combinationResponse = CombinationResponse.fromEntity(combination);
+        return ResponseEntity.ok(new ApiResponse<>(true, combinationResponse));
+
     }
 }

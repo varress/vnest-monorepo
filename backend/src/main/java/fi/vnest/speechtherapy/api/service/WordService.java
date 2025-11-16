@@ -40,6 +40,7 @@ public class WordService {
 
     /**
      * Creates a new Word entity.
+     *
      * @param request DTO containing word text and type.
      * @return The saved Word entity.
      */
@@ -51,7 +52,8 @@ public class WordService {
 
     /**
      * Updates an existing Word entity.
-     * @param id The ID of the word to update.
+     *
+     * @param id      The ID of the word to update.
      * @param request DTO containing new word text and type.
      * @return The updated Word entity.
      * @throws NoSuchElementException if the word is not found.
@@ -69,6 +71,7 @@ public class WordService {
 
     /**
      * Deletes a Word entity and combinations associated with it.
+     *
      * @param id The ID of the word to delete.
      * @throws NoSuchElementException if the word is not found.
      */
@@ -79,5 +82,16 @@ public class WordService {
         }
 
         wordRepository.deleteById(id);
+    }
+
+    /**
+     * Find word by id.
+     *
+     * @param id The ID of the word.
+     * @throws NoSuchElementException if the word is not found.
+     */
+    public Word findById(Long id) {
+        return wordRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Word not found with ID: " + id));
     }
 }

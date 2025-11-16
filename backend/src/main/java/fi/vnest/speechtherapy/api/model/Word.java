@@ -29,6 +29,10 @@ public class Word {
     @Column(name = "updated_at")
     private Instant updatedAt = Instant.now();
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "group_id", foreignKey = @ForeignKey(name = "fk_word_group"))
+    private WordGroup group;
+
     public Word() {
     }
 
@@ -77,10 +81,15 @@ public class Word {
         this.updatedAt = updatedAt;
     }
 
-    // --- Utility Methods (Optional but Recommended) ---
-
+    @PrePersist
     @PreUpdate
-    protected void onUpdate() {
+    private void onPersistOrUpdate() {
+        // 1. Update the updatedAt timestamp
         this.updatedAt = Instant.now();
+
+        // Ensures that a group is only set if the word type is VERB.
+        if (this.type != WordType.VERB && this.group != null) {
+            throw new IllegalArgumentException("Group can only be set for WordType.VERB.");
+        }
     }
 }

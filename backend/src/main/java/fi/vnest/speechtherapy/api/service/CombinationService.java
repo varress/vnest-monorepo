@@ -116,6 +116,42 @@ public class CombinationService {
     }
 
     /**
+     * Retrieves a SuggestionResponse for a specific verb.
+     *
+     * @param verbId The ID of the verb.
+     * @return A SuggestionResponse containing the verb, subjects, and objects.
+     */
+    public SuggestionResponse getSuggestionsByVerb(Long verbId) {
+        List<AllowedCombination> combinations = combinationRepository.findByVerbId(verbId);
+
+        if (combinations.isEmpty()) {
+            throw new NoSuchElementException("No combinations found for verb ID: " + verbId);
+        }
+
+        Word verb = combinations.get(0).getVerb();
+
+        Set<Long> subjectIds = combinations.stream()
+                .map(combo -> combo.getSubject().getId())
+                .collect(Collectors.toSet());
+
+        Set<Long> objectIds = combinations.stream()
+                .map(combo -> combo.getObject().getId())
+                .collect(Collectors.toSet());
+
+        List<WordReference> subjects = fetchWordReferences(subjectIds);
+        List<WordReference> objects = fetchWordReferences(objectIds);
+
+        VerbSuggestion verbSuggestion = new VerbSuggestion(
+                verb.getId(),
+                verb.getText(),
+                subjectIds.stream().toList(),
+                objectIds.stream().toList()
+        );
+
+        return new SuggestionResponse(List.of(verbSuggestion), subjects, objects);
+    }
+
+    /**
      * Validates if a specific S-V-O combination exists.
      */
     public ValidationResponse validateCombination(ValidationRequest request) {
@@ -126,6 +162,11 @@ public class CombinationService {
         );
 
         return combination.map(this::buildValidResponse).orElseGet(() -> buildInvalidResponse(request));
+    }
+
+    public AllowedCombination findById(Long id) {
+        return combinationRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Allowed combination not found with ID: " + id));
     }
 
     private Word findWordOrThrow(Long wordId, String wordType) {

@@ -39,4 +39,12 @@ public class WordController {
         return ResponseEntity.ok(new ApiResponse<>(true, responseData));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<WordResponse>> getWord(@PathVariable Long id) {
+        Word word = wordService.findById(id);
+        WordResponse wordResponse = WordResponse.fromEntity(word);
+        return ResponseEntity.ok(new ApiResponse<>(true, wordResponse));
+
+    }
+
 }
