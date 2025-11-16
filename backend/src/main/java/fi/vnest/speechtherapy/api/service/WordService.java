@@ -1,13 +1,16 @@
 package fi.vnest.speechtherapy.api.service;
 
 import fi.vnest.speechtherapy.api.model.Word;
+import fi.vnest.speechtherapy.api.model.WordGroup;
 import fi.vnest.speechtherapy.api.model.WordType;
+import fi.vnest.speechtherapy.api.repository.GroupRepository;
 import fi.vnest.speechtherapy.api.repository.WordRepository;
 import fi.vnest.speechtherapy.api.dto.WordRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -18,10 +21,12 @@ import java.util.NoSuchElementException;
 public class WordService {
 
     private final WordRepository wordRepository;
+    private final GroupRepository groupRepository;
 
     @Autowired
-    public WordService(WordRepository wordRepository) {
+    public WordService(WordRepository wordRepository, GroupRepository groupRepository) {
         this.wordRepository = wordRepository;
+        this.groupRepository = groupRepository;
     }
 
     /**
@@ -56,7 +61,7 @@ public class WordService {
      * @param id      The ID of the word to update.
      * @param request DTO containing new word text and type.
      * @return The updated Word entity.
-     * @throws NoSuchElementException if the word is not found.
+     * @throws NoSuchElementException if the word or group is not found.
      */
     @Transactional
     public Word updateWord(Long id, WordRequest request) {
@@ -65,6 +70,9 @@ public class WordService {
 
         word.setText(request.getText());
         word.setType(request.getType());
+
+        WordGroup group = groupRepository.findById(request.getGroupId()).orElseThrow(() -> new NoSuchElementException("Group not found with ID: " + id));
+        word.setGroup(group);
 
         return wordRepository.save(word);
     }
@@ -93,5 +101,12 @@ public class WordService {
     public Word findById(Long id) {
         return wordRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Word not found with ID: " + id));
+    }
+
+    /**
+     * Get all groups
+     */
+    public List<WordGroup> getAllGroups() {
+        return groupRepository.findAll();
     }
 }

@@ -144,6 +144,7 @@ public class CombinationService {
         VerbSuggestion verbSuggestion = new VerbSuggestion(
                 verb.getId(),
                 verb.getText(),
+                verb.getGroup().getId(),
                 subjectIds.stream().toList(),
                 objectIds.stream().toList()
         );
@@ -247,6 +248,7 @@ public class CombinationService {
                 .map(verb -> new VerbSuggestion(
                         verb.getId(),
                         verb.getText(),
+                        verb.getGroup().getId(),
                         grouping.verbToSubjectIds.getOrDefault(verb.getId(), Collections.emptySet()).stream().toList(),
                         grouping.verbToObjectIds.getOrDefault(verb.getId(), Collections.emptySet()).stream().toList()
                 ))

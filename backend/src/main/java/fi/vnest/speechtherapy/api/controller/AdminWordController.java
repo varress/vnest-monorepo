@@ -1,6 +1,7 @@
 package fi.vnest.speechtherapy.api.controller;
 
 import fi.vnest.speechtherapy.api.dto.ApiResponse;
+import fi.vnest.speechtherapy.api.dto.GroupResponse;
 import fi.vnest.speechtherapy.api.dto.WordRequest;
 import fi.vnest.speechtherapy.api.dto.WordResponse;
 import fi.vnest.speechtherapy.api.model.Word;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -36,6 +38,19 @@ public class AdminWordController {
         WordResponse responseData = WordResponse.fromEntity(newWord);
 
         return new ResponseEntity<>(new ApiResponse<>(true, responseData), HttpStatus.CREATED);
+    }
+
+    /**
+     * GET /admin/words/groups - Get all available groups
+     */
+    @GetMapping("/groups")
+    public ResponseEntity<ApiResponse<List<GroupResponse>>> getAllGroups() {
+        List<GroupResponse> groups = wordService.getAllGroups()
+                .stream()
+                .map(GroupResponse::fromEntity)
+                .toList();
+
+        return ResponseEntity.ok(new ApiResponse<>(true, groups));
     }
 
     /**

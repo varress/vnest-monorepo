@@ -39,11 +39,17 @@
                     </div>
                     <div class="form-group">
                         <label for="word-type">Type</label>
-                        <select id="word-type" required>
+                        <select id="word-type" required onchange="toggleGroupField('word-group')">
                             <option value="">Select type...</option>
                             <option value="VERB">Verb</option>
                             <option value="SUBJECT">Subject</option>
                             <option value="OBJECT">Object</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="word-group-container" style="display: none;">
+                        <label for="word-group">Group</label>
+                        <select id="word-group">
+                            <option value="">Select group...</option>
                         </select>
                     </div>
                 </div>
@@ -115,6 +121,37 @@
             </div>
             <div id="combinations-list"></div>
         </div>
+    </div>
+</div>
+
+<!-- Edit Word Modal -->
+<div id="edit-word-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close" onclick="closeEditWordModal()">&times;</span>
+        <h2>Edit Word</h2>
+        <form id="edit-word-form">
+            <input type="hidden" id="edit-word-id">
+            <div class="form-group">
+                <label for="edit-word-text">Text</label>
+                <input type="text" id="edit-word-text" required>
+            </div>
+            <div class="form-group">
+                <label for="edit-word-type">Type</label>
+                <select id="edit-word-type" required onchange="toggleGroupField('edit-word-group')">
+                    <option value="VERB">Verb</option>
+                    <option value="SUBJECT">Subject</option>
+                    <option value="OBJECT">Object</option>
+                </select>
+            </div>
+            <div class="form-group" id="edit-word-group-container" style="display: none;">
+                <label for="edit-word-group">Group</label>
+                <select id="edit-word-group"></select>
+            </div>
+            <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                <button type="button" class="btn btn-secondary" onclick="closeEditWordModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+        </form>
     </div>
 </div>
 

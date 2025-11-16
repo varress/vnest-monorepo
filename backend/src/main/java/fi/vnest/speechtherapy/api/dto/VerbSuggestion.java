@@ -12,6 +12,9 @@ public record VerbSuggestion(
 
         String text,
 
+        @JsonProperty("group_id")
+        Long groupId,
+
         @JsonProperty("compatible_subject_ids")
         List<Long> compatibleSubjectIds,
 

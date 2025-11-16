@@ -81,6 +81,14 @@ public class Word {
         this.updatedAt = updatedAt;
     }
 
+    public WordGroup getGroup() {
+        return group;
+    }
+
+    public void setGroup(WordGroup group) {
+        this.group = group;
+    }
+
     @PrePersist
     @PreUpdate
     private void onPersistOrUpdate() {

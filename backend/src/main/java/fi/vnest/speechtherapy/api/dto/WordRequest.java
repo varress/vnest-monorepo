@@ -1,5 +1,6 @@
 package fi.vnest.speechtherapy.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import fi.vnest.speechtherapy.api.model.WordType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -15,6 +16,9 @@ public class WordRequest {
     @NotNull(message = "Type must be specified (SUBJECT, VERB, or OBJECT)")
     private WordType type;
 
+    @JsonProperty("group_id")
+    private Long groupId;
+
     public String getText() {
         return text;
     }
@@ -29,5 +33,13 @@ public class WordRequest {
 
     public void setType(WordType type) {
         this.type = type;
+    }
+
+    public Long getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(Long groupId) {
+        this.groupId = groupId;
     }
 }

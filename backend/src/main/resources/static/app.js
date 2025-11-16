@@ -1,7 +1,71 @@
 // app.js
 const API_BASE = '/api';
-const ADMIN_BASE = '/admin'
+const ADMIN_BASE = '/admin';
 let currentEditId = null;
+let allGroups = [];
+let allWords = [];
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    loadGroups();
+    loadWords();
+});
+
+// Load all groups
+async function loadGroups() {
+    try {
+        const response = await fetch(`${ADMIN_BASE}/words/groups`);
+        const result = await response.json();
+
+        if (result.success && result.data) {
+            allGroups = result.data;
+            populateGroupSelects();
+        }
+    } catch (error) {
+        showAlert('Failed to load groups: ' + error.message, 'error');
+    }
+}
+
+// Populate all group dropdowns
+function populateGroupSelects() {
+    const selects = ['word-group', 'edit-word-group'];
+
+    selects.forEach(selectId => {
+        const select = document.getElementById(selectId);
+        if (select) {
+            select.innerHTML = '<option value="">Select group...</option>';
+            allGroups.forEach(group => {
+                const option = document.createElement('option');
+                option.value = group.id;
+                option.textContent = group.name;
+                select.appendChild(option);
+            });
+        }
+    });
+}
+
+// Toggle group field visibility based on word type
+function toggleGroupField(selectId) {
+    const typeSelect = selectId === 'word-group' ?
+        document.getElementById('word-type') :
+        document.getElementById('edit-word-type');
+
+    const containerId = selectId === 'word-group' ?
+        'word-group-container' :
+        'edit-word-group-container';
+
+    const container = document.getElementById(containerId);
+
+    if (typeSelect && typeSelect.value === 'VERB') {
+        container.style.display = 'block';
+    } else {
+        container.style.display = 'none';
+        const groupSelect = document.getElementById(selectId);
+        if (groupSelect) {
+            groupSelect.value = '';
+        }
+    }
+}
 
 // Tab switching
 function switchTab(tab) {
@@ -39,6 +103,7 @@ async function loadWords() {
         const result = await response.json();
 
         if (result.success && result.data) {
+            allWords = result.data;
             displayWords(result.data);
         }
     } catch (error) {
@@ -61,6 +126,7 @@ function displayWords(words) {
                     <th>ID</th>
                     <th>Text</th>
                     <th>Type</th>
+                    <th>Group</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -68,10 +134,12 @@ function displayWords(words) {
                 ${words.map(word => `
                     <tr>
                         <td>${word.id}</td>
-                        <td>${word.text}</td>
-                        <td>${word.type}</td>
+                        <td>${escapeHtml(word.text)}</td>
+                        <td><span class="badge badge-${word.type.toLowerCase()}">${word.type}</span></td>
+                        <td>${word.type === 'VERB' && word.groupName ? escapeHtml(word.groupName) : '-'}</td>
                         <td class="actions">
-                            <button class="btn btn-danger" onclick="deleteWord(${word.id})">Delete</button>
+                            <button class="btn btn-primary btn-small" onclick="openEditWordModal(${word.id})">Edit</button>
+                            <button class="btn btn-danger btn-small" onclick="deleteWord(${word.id})">Delete</button>
                         </td>
                     </tr>
                 `).join('')}
@@ -82,13 +150,28 @@ function displayWords(words) {
     container.innerHTML = table;
 }
 
+// Escape HTML to prevent XSS
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// Create word form handler
 document.getElementById('word-form').addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const data = {
-        text: document.getElementById('word-text').value,
-        type: document.getElementById('word-type').value,
-    };
+    const text = document.getElementById('word-text').value.trim();
+    const type = document.getElementById('word-type').value;
+    const groupId = document.getElementById('word-group').value;
+
+    const data = { text, type };
+
+    // Only include groupId for VERB types
+    if (type === 'VERB' && groupId) {
+        data.groupId = parseInt(groupId);
+    }
 
     try {
         const response = await fetch(`${ADMIN_BASE}/words`, {
@@ -102,9 +185,74 @@ document.getElementById('word-form').addEventListener('submit', async (e) => {
         if (result.success) {
             showAlert('Word created successfully!');
             e.target.reset();
+            document.getElementById('word-group-container').style.display = 'none';
             loadWords();
         } else {
             showAlert('Failed to create word', 'error');
+        }
+    } catch (error) {
+        showAlert('Error: ' + error.message, 'error');
+    }
+});
+
+// Open edit word modal
+function openEditWordModal(wordId) {
+    const word = allWords.find(w => w.id === wordId);
+    if (!word) return;
+
+    document.getElementById('edit-word-id').value = word.id;
+    document.getElementById('edit-word-text').value = word.text;
+    document.getElementById('edit-word-type').value = word.type;
+
+    // Show/hide group field based on word type
+    const groupContainer = document.getElementById('edit-word-group-container');
+    if (word.type === 'VERB') {
+        groupContainer.style.display = 'block';
+        document.getElementById('edit-word-group').value = word.groupId || '';
+    } else {
+        groupContainer.style.display = 'none';
+    }
+
+    document.getElementById('edit-word-modal').style.display = 'block';
+}
+
+// Close edit word modal
+function closeEditWordModal() {
+    document.getElementById('edit-word-modal').style.display = 'none';
+    document.getElementById('edit-word-form').reset();
+}
+
+// Update word form handler
+document.getElementById('edit-word-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const id = document.getElementById('edit-word-id').value;
+    const text = document.getElementById('edit-word-text').value.trim();
+    const type = document.getElementById('edit-word-type').value;
+    const groupId = document.getElementById('edit-word-group').value;
+
+    const data = { text, type };
+
+    // Only include groupId for VERB types
+    if (type === 'VERB' && groupId) {
+        data.groupId = parseInt(groupId);
+    }
+
+    try {
+        const response = await fetch(`${ADMIN_BASE}/words/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            showAlert('Word updated successfully!');
+            closeEditWordModal();
+            loadWords();
+        } else {
+            showAlert('Failed to update word', 'error');
         }
     } catch (error) {
         showAlert('Error: ' + error.message, 'error');
@@ -206,9 +354,9 @@ function displayCombinations(combinations) {
         <table>
             <thead>
                 <tr>
-                    <th>Object</th>
-                    <th>Verb</th>
                     <th>Subject</th>
+                    <th>Verb</th>
+                    <th>Object</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -217,7 +365,7 @@ function displayCombinations(combinations) {
                     <tr>
                         <td>${combo.subject.text} (${combo.subject.id})</td>
                         <td>${combo.verb.text} (${combo.verb.id})</td>
-                        <td>${combo.object.text} (${combo.object.id})}</td>
+                        <td>${combo.object.text} (${combo.object.id})</td>
                         <td class="actions">
                             <button class="btn btn-danger" onclick="deleteCombination(${combo.id})">Delete</button>
                         </td>
@@ -319,6 +467,3 @@ async function deleteCombination(id) {
         showAlert('Error: ' + error.message, 'error');
     }
 }
-
-// Initialize
-loadWords();
