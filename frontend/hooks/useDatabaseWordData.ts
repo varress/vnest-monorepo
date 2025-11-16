@@ -24,6 +24,8 @@ export function useDatabaseWordData(): UseDatabaseWordDataReturn {
     try {
       setIsLoading(true);
       setError(null);
+
+      await databaseService.ensureInitialized();
       
       await refreshData();
       
@@ -74,7 +76,6 @@ export function useDatabaseWordData(): UseDatabaseWordDataReturn {
   const randomVerb = useCallback(async () => {
     try {
       setIsLoading(true);
-      await databaseService.getNextVerb();
       await refreshData();
     } catch (err) {
       console.error('Error getting random verb:', err);

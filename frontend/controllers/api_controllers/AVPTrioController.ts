@@ -1,5 +1,5 @@
 import { API_URL } from "@/config";
-import { AgentVerbPatient_Trio, ApiResponse, mapAVP_ApiToTrio } from "@/database/schemas";
+import { AgentVerbPatient_Trio, ApiCombination, ApiResponse, mapAVP_ApiToTrio } from "@/database/schemas";
 import { IAVPTrioController } from "../interfaces/IAVPTrioController";
 
 export class AVPTrioController implements IAVPTrioController {
@@ -13,7 +13,7 @@ export class AVPTrioController implements IAVPTrioController {
             method: 'GET'
         });
         if (!res.ok) return [];
-        const apiResult: ApiResponse = await res.json();
+        const apiResult: ApiResponse<ApiCombination> = await res.json();
         return mapAVP_ApiToTrio(apiResult);
     }
 

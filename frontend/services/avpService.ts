@@ -1,15 +1,22 @@
-import { avpTrioController_api } from "@/controllers/api_controllers/AVPTrioController";
 import { IAVPTrioController } from "@/controllers/interfaces/IAVPTrioController";
-import { agentController } from "@/controllers/realm_controllers/AgentController";
-import { avpTrioController_realm } from "@/controllers/realm_controllers/AVPTrioController";
-import { patientController } from "@/controllers/realm_controllers/PatientController";
-import { verbController } from "@/controllers/realm_controllers/VerbController";
+import { ISubjectObjectController } from "@/controllers/interfaces/ISubjectObjectController";
+import { IVerbController } from "@/controllers/interfaces/IVerbController";
 import { Agent, Patient, Verb } from "@/database/schemas";
-import { Platform } from 'react-native';
 import { WordBundle } from "./wordBundle";
 
-const avpTrioController: IAVPTrioController = 
-    Platform.OS === 'web' ? avpTrioController_api : avpTrioController_realm;
+// Dynamic imports, to make sure that Realm is never imported, when the web version is being used.
+
+let agentController:   ISubjectObjectController<Agent>;
+let patientController: ISubjectObjectController<Patient>;
+let verbController:    IVerbController;
+let avpTrioController: IAVPTrioController;
+
+
+// Use realm controllers for all platforms (web will use WebStorageAdapter automatically)
+({ agentController_realm:   agentController } =   require("@/controllers/realm_controllers/AgentController"));
+({ patientController_realm: patientController } = require("@/controllers/realm_controllers/PatientController"));
+({ verbController_realm:    verbController } =    require("@/controllers/realm_controllers/VerbController"));
+({ avpTrioController_realm: avpTrioController } = require("@/controllers/realm_controllers/AVPTrioController"));
 
 export const avpService = {
     getWordBundleByVerbId: async (id: number | null): Promise<WordBundle | null> => {

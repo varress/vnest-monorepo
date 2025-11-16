@@ -1,5 +1,6 @@
 import { getCardDimensions, getVerbCardDimensions } from '@/utils/responsive';
-import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { useEffect, useRef } from 'react';
+import { LayoutRectangle, StyleSheet, Text, TouchableOpacity, View, Animated } from 'react-native';
 
 interface GameCardProps {
   text: string;
@@ -7,6 +8,9 @@ interface GameCardProps {
   onPress?: () => void;
   variant?: 'default' | 'verb';
   style?: object;
+  cardId?: string | number;
+  parentRef?: React.RefObject<View | null>;
+  onLayout?: (cardId: string | number, layout: LayoutRectangle) => void;
 }
 
 export function GameCard({ 
@@ -14,10 +18,62 @@ export function GameCard({
   isSelected = false, 
   onPress, 
   variant = 'default',
-  style 
+  style,
+  cardId,
+  parentRef,
+  onLayout 
 }: GameCardProps) {
   const isVerb = variant === 'verb';
   const cardDimensions = isVerb ? getVerbCardDimensions() : getCardDimensions();
+  const cardRef = useRef<any>(null);
+  
+  // Animation for selection
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+
+  const handleLayout = (event: any) => {
+    if (cardId && onLayout && parentRef?.current) {
+      // Small delay to ensure parent layout is complete
+      setTimeout(() => {
+        if (cardRef.current && parentRef.current) {
+          cardRef.current?.measureLayout(
+            parentRef.current,
+            (x: number, y: number, width: number, height: number) => {
+              console.log(`📍 Card ${cardId} positioned at:`, { 
+                x: Math.round(x), 
+                y: Math.round(y), 
+                w: Math.round(width), 
+                h: Math.round(height),
+                centerX: Math.round(x + width/2),
+                centerY: Math.round(y + height/2)
+              });
+              onLayout(cardId, { x, y, width, height });
+            },
+            (error: any) => console.error('❌ measureLayout error:', error)
+          );
+        }
+      }, 100); // Increased delay for more reliable measurements
+    }
+  };
+  
+  useEffect(() => {
+    if (isSelected) {
+      Animated.sequence([
+        Animated.spring(scaleAnim, {
+          toValue: 1.05,
+          friction: 3,
+          tension: 40,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    } else {
+      Animated.spring(scaleAnim, {
+        toValue: 1,
+        friction: 3,
+        tension: 40,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [isSelected, scaleAnim]);
   
   // Get margin values separately for verb cards
   const verbMarginVertical = isVerb && 'marginVertical' in cardDimensions 
@@ -26,31 +82,38 @@ export function GameCard({
   
   return (
     <TouchableOpacity
-      style={[
-        styles.baseCard,
-        {
-          width: cardDimensions.width,
-          height: cardDimensions.height,
-          marginVertical: isVerb ? verbMarginVertical : 6,
-        },
-        isVerb ? styles.verbCard : styles.card,
-        isSelected && styles.selectedCard,
-        style
-      ]}
       onPress={onPress}
       disabled={!onPress}
       activeOpacity={0.7}
+      ref={cardRef}
+      onLayout={handleLayout}
     >
-      <Text 
+      <Animated.View
         style={[
-          isVerb ? styles.verbText : styles.cardText,
-          { fontSize: cardDimensions.fontSize }
+          styles.baseCard,
+          {
+            width: cardDimensions.width,
+            height: cardDimensions.height,
+            marginVertical: isVerb ? verbMarginVertical : 6,
+            transform: [{ scale: scaleAnim }],
+          },
+          isVerb ? styles.verbCard : styles.card,
+          isSelected && styles.selectedCard,
+          style
         ]}
-        numberOfLines={2}
-        adjustsFontSizeToFit
       >
-        {text}
-      </Text>
+        <Text 
+          style={[
+            isVerb ? styles.verbText : styles.cardText,
+            isSelected && styles.selectedText,
+            { fontSize: cardDimensions.fontSize }
+          ]}
+          numberOfLines={2}
+          adjustsFontSizeToFit
+        >
+          {text}
+        </Text>
+      </Animated.View>
     </TouchableOpacity>
   );
 }
@@ -72,16 +135,23 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: '#f2f2f2',
     padding: 16,
+    borderWidth: 2,
+    borderColor: 'transparent',
   },
   selectedCard: { 
     backgroundColor: '#34C759',
-    shadowOpacity: 0.2,
-    elevation: 5,
+    borderColor: '#28A745',
+    shadowOpacity: 0.25,
+    elevation: 6,
   },
   cardText: { 
     fontWeight: '600',
     textAlign: 'center',
     color: '#333',
+  },
+  selectedText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
   verbCard: {
     backgroundColor: '#007AFF',

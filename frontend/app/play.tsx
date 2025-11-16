@@ -56,6 +56,8 @@ export default function PlayScreen() {
   const [feedback, setFeedback] = useState<string | null>(null);
   const [showCongrats, setShowCongrats] = useState(false);
   const [currentSetId, setCurrentSetId] = useState<number>(0);
+  const [correctAnswersCount, setCorrectAnswersCount] = useState<number>(0);
+  const REQUIRED_CORRECT_ANSWERS = 5;
 
   const [verbs, setVerbs] = useState<Verb[]>([]);
   const [subjects, setSubjects] = useState<Agent[]>([]);
@@ -74,22 +76,28 @@ export default function PlayScreen() {
     if (wordData && selectedSubject && selectedObject && wordData.currentVerb) {
       const timer = setTimeout(async () => {
         const isCorrect = await avpService.isCorrectCombination(selectedSubject, verbs[0], selectedObject);
-        setFeedback(isCorrect ? '✅ Hyvin tehty!' : '❌ Yritä uudelleen');
         
-        // If correct, automatically move to next verb after a short delay
+        // If correct, increment the counter before showing feedback
         if (isCorrect) {
-          setTimeout(async () => {
-            await handleCorrectAnswer();
-          }, 1500); // Show success message for 1.5 seconds, then move to next verb
+          setCorrectAnswersCount(prev => prev + 1);
         }
+        
+        setFeedback(isCorrect ? '✅ Hyvin tehty!' : '❌ Yritä uudelleen');
       }, 800); // Time delay before showing feedback
 
       return () => clearTimeout(timer); // Cleanup timer if component unmounts or dependencies change
     }
   }, [selectedSubject, selectedObject, wordData, isCorrectCombination]);
 
-  const handleCorrectAnswer = async () => {
+  const handleContinue = async () => {
     try {
+      // Check if user has reached the milestone (5 correct answers)
+      if (correctAnswersCount >= REQUIRED_CORRECT_ANSWERS) {
+        // Show congrats view - user can now move to next set
+        setShowCongrats(true);
+        return;
+      }
+      
       // Move to next verb and refresh data
       await nextVerb();
       // Reset selections for the new verb
@@ -107,21 +115,6 @@ export default function PlayScreen() {
     else throw new TypeError (`Expects type Agent or Patient, but ${typeof word} was given.`) 
   };
 
-  const handleNext = () => {
-    setSelectedSubject(null);
-    setSelectedObject(null);
-    setFeedback(null);
-    if (wordData) {
-      const nextIndex = currentVerbIndex + 1;
-      if (nextIndex >= wordData.verbs.length) {
-        // Set completed! Show congrats view for navigation to next set
-        setShowCongrats(true);
-      } else {
-        setCurrentVerbIndex(nextIndex);
-      }
-    }
-  };
-
   const handleReset = () => {
     setSelectedSubject(null);
     setSelectedObject(null);
@@ -134,14 +127,18 @@ export default function PlayScreen() {
     setSelectedObject(null);
     setFeedback(null);
     setShowCongrats(false);
+    setCorrectAnswersCount(0);
   };
 
   const handleNextSet = async () => {
     try {
       const nextSetId = currentSetId + 1;
       
-      // For example if we have 6 sets (mapped to verb data in database service)
-      if (nextSetId <= 6) {
+      // Reset correct answers count for new set
+      setCorrectAnswersCount(0);
+      
+      // We have 4 sets (0-3)
+      if (nextSetId <= 3) {
         await setCurrentSet(nextSetId);
         setCurrentSetId(nextSetId);
         setCurrentVerbIndex(0);
@@ -200,6 +197,8 @@ export default function PlayScreen() {
           <CongratsView
             currentSetId={currentSetId}
             verbCount={wordData?.verbs.length}
+            correctAnswersCount={correctAnswersCount}
+            requiredAnswers={REQUIRED_CORRECT_ANSWERS}
             onReplay={handleReplay}
             onNextSet={handleNextSet}
           />
@@ -220,7 +219,9 @@ export default function PlayScreen() {
             selectedSubject={selectedSubject}
             selectedObject={selectedObject}
             currentVerb={currentVerb}
-            onNext={handleNext}
+            correctAnswersCount={correctAnswersCount}
+            requiredAnswers={REQUIRED_CORRECT_ANSWERS}
+            onContinue={handleContinue}
             onReset={handleReset}
           />
         )}
