@@ -6,6 +6,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { Platform } from 'react-native';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -39,6 +40,15 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <Ionicons size={28} name="settings-sharp" color={color} />,
         }}
       />
+      {/* {Platform.OS !== 'web' && ( */}
+      <Tabs.Screen
+        name="history"
+        options={{
+          title: 'Historia',
+           tabBarIcon: ({ color }) => <Ionicons size={28} name="trending-up-outline" color={color} />
+        }}
+      />
+      {/* )} */}
     </Tabs>
   );
 }

@@ -8,6 +8,7 @@ export type BaseWord = {
 
 export type Verb = BaseWord & {
     groupId: number;
+    groupName: string;
     readonly type: "Verb";
 };
 
@@ -46,6 +47,7 @@ export const VerbSchema: ObjectSchema = {
         id:      'int',
         value:   'string',
         groupId: { type: 'int', default: 0},
+        groupName: { type: 'string', default: "" },
         type:    { type: 'string', default: 'Verb' }
     }
 };
@@ -136,6 +138,7 @@ export function mapAPIWord_UIWord (apiData: ApiResponse<ApiWord>):  Word[] {
                     id: item.id,
                     value: item.text,
                     groupId: item.group_id ?? 0,
+                    groupName: "",
                     type: "Verb"
                 };
             case "SUBJECT":

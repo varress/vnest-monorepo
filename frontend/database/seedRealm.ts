@@ -19,10 +19,11 @@ export async function seedRealm() {
             
             verbId++;
             realm.create("Verb", { 
-                id:      verbId, 
-                value:   verb,
-                groupId: groupId,
-                type:    "Verb" });
+                id:        verbId, 
+                value:     verb,
+                groupId:   groupId,
+                groupName: "",
+                type:      "Verb" });
 
             for (const [agentValue, patientValue] of pairs) {
 
