@@ -3,6 +3,7 @@ package fi.vnest.speechtherapy.api.service;
 import fi.vnest.speechtherapy.api.dto.*;
 import fi.vnest.speechtherapy.api.model.AllowedCombination;
 import fi.vnest.speechtherapy.api.model.Word;
+import fi.vnest.speechtherapy.api.model.WordGroup;
 import fi.vnest.speechtherapy.api.model.WordType;
 import fi.vnest.speechtherapy.api.repository.AllowedCombinationRepository;
 import fi.vnest.speechtherapy.api.repository.WordRepository;
@@ -34,10 +35,12 @@ class CombinationServiceTest {
     private Word subjectWord;
     private Word verbWord;
     private Word objectWord;
+    private WordGroup group;
     private AllowedCombination allowedCombination;
 
     @BeforeEach
     void setUp() {
+        group = new WordGroup("animals", "animal related");
         subjectWord = new Word();
         subjectWord.setId(1L);
         subjectWord.setText("cat");
@@ -47,6 +50,7 @@ class CombinationServiceTest {
         verbWord.setId(2L);
         verbWord.setText("eats");
         verbWord.setType(WordType.valueOf("VERB"));
+        verbWord.setGroup(group);
 
         objectWord = new Word();
         objectWord.setId(3L);

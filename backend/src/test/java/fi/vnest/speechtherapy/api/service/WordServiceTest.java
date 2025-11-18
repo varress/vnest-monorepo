@@ -2,7 +2,9 @@ package fi.vnest.speechtherapy.api.service;
 
 import fi.vnest.speechtherapy.api.dto.WordRequest;
 import fi.vnest.speechtherapy.api.model.Word;
+import fi.vnest.speechtherapy.api.model.WordGroup;
 import fi.vnest.speechtherapy.api.model.WordType;
+import fi.vnest.speechtherapy.api.repository.GroupRepository;
 import fi.vnest.speechtherapy.api.repository.WordRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,15 +27,21 @@ class WordServiceTest {
     @Mock
     private WordRepository wordRepository;
 
+    @Mock
+    GroupRepository groupRepository;
+
     @InjectMocks
     private WordService wordService;
 
     private Word subjectWord;
     private Word verbWord;
     private Word objectWord;
+    private WordGroup group;
 
     @BeforeEach
     void setUp() {
+        group = new WordGroup("animals", "animal related");
+
         subjectWord = new Word();
         subjectWord.setId(1L);
         subjectWord.setText("cat");
@@ -43,6 +51,7 @@ class WordServiceTest {
         verbWord.setId(2L);
         verbWord.setText("eats");
         verbWord.setType(WordType.VERB);
+        verbWord.setGroup(group);
 
         objectWord = new Word();
         objectWord.setId(3L);
