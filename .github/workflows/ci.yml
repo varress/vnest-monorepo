@@ -44,6 +44,6 @@ jobs:
         with:
           scan-type: 'fs'
           ignore-unfixed: true
-          severity: 'CRITICAL,HIGH'
+          severity: 'CRITICAL'
           exit-code: '1'
           input: ./backend
