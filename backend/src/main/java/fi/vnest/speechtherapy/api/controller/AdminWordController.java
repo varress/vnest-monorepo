@@ -1,10 +1,8 @@
 package fi.vnest.speechtherapy.api.controller;
 
-import fi.vnest.speechtherapy.api.dto.ApiResponse;
-import fi.vnest.speechtherapy.api.dto.GroupResponse;
-import fi.vnest.speechtherapy.api.dto.WordRequest;
-import fi.vnest.speechtherapy.api.dto.WordResponse;
+import fi.vnest.speechtherapy.api.dto.*;
 import fi.vnest.speechtherapy.api.model.Word;
+import fi.vnest.speechtherapy.api.model.WordGroup;
 import fi.vnest.speechtherapy.api.service.WordService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,6 +80,52 @@ public class AdminWordController {
         } catch (NoSuchElementException e) {
             // Return 404 Not Found if the word ID does not exist
             return new ResponseEntity<>(new ApiResponse<>(false, null), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    /**
+     * POST /admin/words/groups - Create a new group/theme
+     */
+    @PostMapping("/groups")
+    public ResponseEntity<ApiResponse<GroupResponse>> createGroup(
+            @RequestBody GroupRequest request) {
+
+        WordGroup newGroup = wordService.createGroup(request);
+        GroupResponse responseData = GroupResponse.fromEntity(newGroup);
+
+        return new ResponseEntity<>(new ApiResponse<>(true, responseData), HttpStatus.CREATED);
+    }
+
+    /**
+     * PUT /admin/groups/:id - Update an existing group/theme
+     */
+    @PutMapping("/groups/{id}")
+    public ResponseEntity<ApiResponse<GroupResponse>> updateGroup(
+            @PathVariable Long id,
+            @Valid @RequestBody GroupRequest request) {
+        try {
+            WordGroup updatedGroup = wordService.updateGroup(id, request);
+            GroupResponse responseData = GroupResponse.fromEntity(updatedGroup);
+            return ResponseEntity.ok(new ApiResponse<>(true, responseData));
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>(new ApiResponse<>(false, null), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    /**
+     * DELETE /admin/words/groups/:id - Delete a group/theme
+     */
+    @DeleteMapping("/groups/{id}")
+    public ResponseEntity<ApiResponse<Void>> deleteGroup(@PathVariable Long id) {
+        try {
+            wordService.deleteGroup(id);
+            return new ResponseEntity<>(new ApiResponse<>(true, null), HttpStatus.NO_CONTENT);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>(new ApiResponse<>(false, null), HttpStatus.NOT_FOUND);
+        } catch (IllegalStateException e) {
+            // If group is in use by words
+            return ResponseEntity.badRequest()
+                    .body(new ApiResponse<>(false, null));
         }
     }
 

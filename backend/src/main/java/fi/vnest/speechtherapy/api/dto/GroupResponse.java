@@ -8,11 +8,13 @@ import fi.vnest.speechtherapy.api.model.WordGroup;
 public class GroupResponse {
     private Long id;
     private String name;
+    private String description;
 
     public static GroupResponse fromEntity(WordGroup group) {
         GroupResponse dto = new GroupResponse();
         dto.setId(group.getId());
         dto.setName(group.getName());
+        dto.setDescription(group.getDescription());
         return dto;
     }
 
@@ -30,5 +32,13 @@ public class GroupResponse {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

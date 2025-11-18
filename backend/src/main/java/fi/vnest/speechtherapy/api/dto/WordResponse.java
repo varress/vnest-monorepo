@@ -26,7 +26,7 @@ public class WordResponse {
         dto.setType(word.getType());
         dto.setCreatedAt(word.getCreatedAt());
 
-        if (word.getType().equals(WordType.VERB)) {
+        if (word.getType().equals(WordType.VERB) && word.getGroup() != null) {
             dto.setGroupId(word.getGroup().getId());
             dto.setGroupName(word.getGroup().getName());
         }

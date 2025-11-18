@@ -1,5 +1,6 @@
 package fi.vnest.speechtherapy.api.service;
 
+import fi.vnest.speechtherapy.api.dto.GroupRequest;
 import fi.vnest.speechtherapy.api.model.Word;
 import fi.vnest.speechtherapy.api.model.WordGroup;
 import fi.vnest.speechtherapy.api.model.WordType;
@@ -10,6 +11,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -52,6 +54,15 @@ public class WordService {
     @Transactional
     public Word createWord(WordRequest request) {
         Word word = new Word(request.getText(), request.getType());
+
+        // If groupId is provided and type is VERB do attach the group
+        if (request.getGroupId() != null && request.getType() == WordType.VERB) {
+            WordGroup group = groupRepository.findById(request.getGroupId())
+                    .orElseThrow(() -> new IllegalArgumentException("Group not found: " + request.getGroupId()));
+
+            word.setGroup(group);
+        }
+
         return wordRepository.save(word);
     }
 
@@ -71,7 +82,7 @@ public class WordService {
         word.setText(request.getText());
         word.setType(request.getType());
 
-        WordGroup group = groupRepository.findById(request.getGroupId()).orElseThrow(() -> new NoSuchElementException("Group not found with ID: " + id));
+        WordGroup group = groupRepository.getReferenceById(request.getGroupId());
         word.setGroup(group);
 
         return wordRepository.save(word);
@@ -108,5 +119,46 @@ public class WordService {
      */
     public List<WordGroup> getAllGroups() {
         return groupRepository.findAll();
+    }
+
+    @Transactional
+    public WordGroup createGroup(GroupRequest request) {
+        WordGroup group = new WordGroup();
+        group.setName(request.getName());
+        group.setDescription(request.getDescription());
+
+        return groupRepository.save(group);
+    }
+
+    /**
+     * Update an existing group
+     */
+    @Transactional
+    public WordGroup updateGroup(Long id, GroupRequest request) {
+        WordGroup group = groupRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Group not found with id: " + id));
+
+        group.setName(request.getName());
+        group.setDescription(request.getDescription());
+
+        return groupRepository.save(group);
+    }
+
+    /**
+     * Delete a group
+     * Note: This will fail if any words are still using this group
+     */
+    @Transactional
+    public void deleteGroup(Long id) {
+        WordGroup group = groupRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Group not found with id: " + id));
+
+        // Check if any words are using this group
+        long wordCount = wordRepository.countByGroup(group);
+        if (wordCount > 0) {
+            throw new IllegalStateException("Cannot delete group that is in use by " + wordCount + " word(s)");
+        }
+
+        groupRepository.delete(group);
     }
 }
