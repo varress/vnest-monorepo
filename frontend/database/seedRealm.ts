@@ -22,7 +22,7 @@ export async function seedRealm() {
                 id:        verbId, 
                 value:     verb,
                 groupId:   groupId,
-                groupName: "",
+                groupName: "TestGroupName",
                 type:      "Verb" });
 
             for (const [agentValue, patientValue] of pairs) {

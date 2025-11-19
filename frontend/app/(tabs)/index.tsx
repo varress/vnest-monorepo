@@ -4,7 +4,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function HomeScreen() {
   const { wordData, isLoading, error } = useDatabaseWordData();
@@ -35,6 +35,12 @@ export default function HomeScreen() {
       <TouchableOpacity style={styles.button} onPress={() => router.push('/settings')}>
         <Text style={styles.buttonText}><Ionicons size={48} name="settings-sharp" color="black" /></Text>
       </TouchableOpacity>
+
+      {Platform.OS !== 'web' && (
+        <TouchableOpacity style={styles.button} onPress={() => router.push('/history')}>
+          <Text style={styles.buttonText}><Ionicons size={48} name="trending-up-outline" color="black" /></Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }

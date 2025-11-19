@@ -3,6 +3,7 @@ import Realm from 'realm';
 import {
     AgentSchema,
     AgentVerbPatient_Trio_Schema,
+    CorrectAnswer_Schema,
     PatientSchema,
     VerbSchema
 } from './schemas';
@@ -13,7 +14,7 @@ let seeded = false;
 
 export const realmConfig: Realm.Configuration = {
     path: "default.realm",
-    schema: [AgentSchema, VerbSchema, PatientSchema, AgentVerbPatient_Trio_Schema],
+    schema: [AgentSchema, VerbSchema, PatientSchema, AgentVerbPatient_Trio_Schema, CorrectAnswer_Schema],
     deleteRealmIfMigrationNeeded: true
 
 };

@@ -40,15 +40,15 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <Ionicons size={28} name="settings-sharp" color={color} />,
         }}
       />
-      {/* {Platform.OS !== 'web' && ( */}
-      <Tabs.Screen
-        name="history"
-        options={{
-          title: 'Historia',
-           tabBarIcon: ({ color }) => <Ionicons size={28} name="trending-up-outline" color={color} />
-        }}
-      />
-      {/* )} */}
+      {Platform.OS !== 'web' && (
+        <Tabs.Screen
+          name="history"
+          options={{
+            title: 'Historia',
+            tabBarIcon: ({ color }) => <Ionicons size={28} name="trending-up-outline" color={color} />
+          }}
+        />
+      )}
     </Tabs>
   );
 }
