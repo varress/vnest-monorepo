@@ -5,6 +5,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Colors } from '@/constants/colors';
 
 export default function HomeScreen() {
   const { wordData, isLoading, error } = useDatabaseWordData();
@@ -22,18 +23,18 @@ export default function HomeScreen() {
       ) : (
         <Text>No data available</Text>
       )}
-      <Text style={styles.title}>VNeST App</Text>
+      <Text style={styles.title}>Puhupala</Text>
 
       <TouchableOpacity style={styles.button} onPress={() => router.push('/play')}>
-        <Text style={styles.buttonText}><FontAwesome name="play" size={48} color="black" /></Text>
+        <Text style={styles.buttonText}><FontAwesome name="play" size={48} color="black" /> Aloita peli</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.button} onPress={() => router.push('/progress')}>
-        <Text style={styles.buttonText}><Entypo name="bar-graph" size={48} color="black" /></Text>
+        <Text style={styles.buttonText}><Entypo name="bar-graph" size={48} color="black" /> Edistyminen</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.button} onPress={() => router.push('/settings')}>
-        <Text style={styles.buttonText}><Ionicons size={48} name="settings-sharp" color="black" /></Text>
+        <Text style={styles.buttonText}><Ionicons size={48} name="settings-sharp" color="black" /> Asetukset</Text>
       </TouchableOpacity>
     </View>
   );
@@ -45,7 +46,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.background,
   },
   title: {
     fontSize: 48,
@@ -54,7 +55,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   button: {
-    backgroundColor: '#007AFF',
+    backgroundColor: Colors.buttonPrimary,
     paddingVertical: 20,
     paddingHorizontal: 40,
     borderRadius: 10,
@@ -65,7 +66,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonText: {
-    color: '#fff',
+    color: Colors.buttonText,
     fontSize: 28,
     textAlign: 'center',
   },

@@ -4,6 +4,7 @@ import { isDesktop, responsiveFontSize, spacing } from '@/utils/responsive';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Colors } from '@/constants/colors';
 
 interface Set {
   id: number;
@@ -132,11 +133,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.background,
   },
   mobileContainer: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.background,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.lg,
   },
@@ -144,11 +145,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 10,
     textAlign: 'center',
-    color: '#333',
+    color: Colors.textDark,
   },
   subtitle: {
     textAlign: 'center',
-    color: '#666',
+    color: Colors.textLight,
     marginBottom: 30,
   },
   setsContainer: {
@@ -161,17 +162,17 @@ const styles = StyleSheet.create({
     paddingBottom: spacing.xxl,
   },
   setCard: {
-    backgroundColor: '#f8f9fa',
+    backgroundColor: Colors.buttonPrimary,
     borderRadius: 20,
     padding: 28,
     marginVertical: 14,
     borderWidth: 3,
-    borderColor: '#dee2e6',
+    borderColor: Colors.borderLight,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
     elevation: 3,
-    shadowColor: '#000',
+    shadowColor: Colors.shadow,
     shadowOffset: {
       width: 0,
       height: 3,
@@ -181,17 +182,17 @@ const styles = StyleSheet.create({
     minHeight: 100,
   },
   mobileSetCard: {
-    backgroundColor: '#f8f9fa',
+    backgroundColor: Colors.buttonPrimary,
     borderRadius: 20,
     padding: spacing.xl,
     marginVertical: spacing.md,
     borderWidth: 3,
-    borderColor: '#dee2e6',
+    borderColor: Colors.borderLight,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
     elevation: 4,
-    shadowColor: '#000',
+    shadowColor: Colors.shadow,
     shadowOffset: {
       width: 0,
       height: 3,
@@ -201,15 +202,15 @@ const styles = StyleSheet.create({
     minHeight: 110,
   },
   selectedSet: {
-    backgroundColor: '#e3f2fd',
-    borderColor: '#2196f3',
+    backgroundColor: Colors.buttonSecondary,
+    borderColor: Colors.primary,
     borderWidth: 4,
     transform: [{ scale: 1.03 }],
     elevation: 6,
     shadowOpacity: 0.3,
   },
   setNumberContainer: {
-    backgroundColor: '#fff',
+    backgroundColor: Colors.white,
     borderRadius: 16,
     width: 70,
     height: 70,
@@ -217,18 +218,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 20,
     borderWidth: 2,
-    borderColor: '#e9ecef',
+    borderColor: Colors.border,
   },
   setNumber: {
     fontWeight: 'bold',
-    color: '#2196f3',
+    color: Colors.primary,
   },
   setNameContainer: {
     flex: 1,
   },
   setName: {
     fontWeight: '600',
-    color: '#333',
+    color: Colors.textDark,
     marginBottom: 8,
   },
   progressIndicator: {
@@ -240,26 +241,26 @@ const styles = StyleSheet.create({
     width: 12,
     height: 12,
     borderRadius: 6,
-    backgroundColor: '#e0e0e0',
+    backgroundColor: Colors.backgroundGray,
     borderWidth: 1,
-    borderColor: '#bdbdbd',
+    borderColor: Colors.border,
   },
   progressDotComplete: {
-    backgroundColor: '#4caf50',
-    borderColor: '#2e7d32',
+    backgroundColor: Colors.success,
+    borderColor: Colors.successDark,
   },
   selectedSetText: {
-    color: '#2196f3',
+    color: Colors.primary,
   },
   playButton: {
-    backgroundColor: '#4caf50',
+    backgroundColor: Colors.success,
     paddingVertical: 16,
     paddingHorizontal: 24,
     borderRadius: 12,
     alignItems: 'center',
     marginTop: 20,
     elevation: 3,
-    shadowColor: '#000',
+    shadowColor: Colors.shadow,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -275,7 +276,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
   },
   playButtonText: {
-    color: '#fff',
+    color: Colors.textDark,
     fontWeight: 'bold',
   },
   instructionContainer: {
@@ -284,7 +285,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   instructionText: {
-    color: '#888',
+    color: Colors.textLight,
     textAlign: 'center',
   },
 });

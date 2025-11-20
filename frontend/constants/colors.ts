@@ -12,11 +12,11 @@
 // 1. BRAND COLORS (Primary Identity)
 // ============================================
 export const BrandColors = {
-  primary: '#2196f3',      // Blue - Primary actions, selected states
+  primary: '#EFD48C',      // Blue - Primary actions, selected states
   primaryLight: '#e3f2fd', // Light blue - Backgrounds, highlights
   primaryDark: '#1565c0',  // Dark blue - Text on light backgrounds
   
-  secondary: '#007AFF',    // iOS blue - Alternative primary
+  secondary: '#EDAB7C',    // iOS blue - Alternative primary
   
   // Aphasia-friendly color system
   success: '#4caf50',      // ✅ Green - Correct answers, completion
@@ -66,12 +66,12 @@ export const NeutralColors = {
 // ============================================
 export const SemanticColors = {
   // Card states
-  cardBackground: '#f2f2f2',
-  cardSelected: '#34C759',      // Green when selected
+  cardBackground: '#D6A2A7',
+  cardSelected: '#B2829F',      
   cardSelectedBorder: '#28A745',
   
   // Verb cards (special)
-  verbBackground: '#007AFF',
+  verbBackground: '#B2829F',
   verbText: '#ffffff',
   
   // Feedback states
@@ -85,11 +85,11 @@ export const SemanticColors = {
   progressIncompleteBorder: '#bdbdbd',
   
   // Buttons
-  buttonPrimary: '#4caf50',      // Green - Positive action
-  buttonSecondary: '#2196f3',    // Blue - Secondary action
-  buttonDanger: '#f44336',       // Red - Destructive action
+  buttonPrimary: '#EFD48C',      
+  buttonSecondary: '#D6A2A7',    
+  buttonDanger: '#f44336',       
   buttonDisabled: '#e0e0e0',
-  buttonText: '#ffffff',
+  buttonText: '#000000',
   buttonTextDisabled: '#999999',
   
   // High contrast mode
@@ -182,7 +182,7 @@ export const Colors = {
 } as const;
 
 // ============================================
-// 9. DARK MODE SUPPORT (Future-ready)
+// 9. DARK MODE SUPPORT 
 // ============================================
 export const DarkModeColors = {
   background: '#151718',
@@ -190,7 +190,6 @@ export const DarkModeColors = {
   primary: '#64B5F6', // Lighter blue for dark backgrounds
   success: '#66BB6A',
   error: '#EF5350',
-  // ... add more as needed
 } as const;
 
 // Export types for TypeScript autocomplete

@@ -3,6 +3,7 @@ import { StyleSheet, Text, TouchableOpacity, View, ScrollView } from 'react-nati
 import { useResponsiveLayout } from '@/hooks/useResponsiveLayout';
 import { responsiveFontSize, isDesktop } from '@/utils/responsive';
 import { AppColors } from '@/constants/theme';
+import { Colors } from '@/constants/colors';
 
 const spacing = {
   sm: 8,

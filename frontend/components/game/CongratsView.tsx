@@ -1,4 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Colors } from '@/constants/colors';
 
 interface CongratsViewProps {
   currentSetId: number;
@@ -76,20 +77,20 @@ const styles = StyleSheet.create({
   congratsTitle: {
     fontSize: 48,
     fontWeight: 'bold',
-    color: '#4caf50',
+    color: Colors.success,
     textAlign: 'center',
     marginBottom: 16,
   },
   congratsSubtitle: {
     fontSize: 24,
     fontWeight: '600',
-    color: '#333',
+    color: Colors.text,
     textAlign: 'center',
     marginBottom: 12,
   },
   congratsMessage: {
     fontSize: 18,
-    color: '#666',
+    color: Colors.textLight,
     textAlign: 'center',
     marginBottom: 20,
     lineHeight: 24,
@@ -98,7 +99,7 @@ const styles = StyleSheet.create({
   nextSetInfo: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#4caf50',
+    color: Colors.success,
     textAlign: 'center',
     marginTop: 16,
     paddingHorizontal: 20,
@@ -109,13 +110,13 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   replayButton: {
-    backgroundColor: '#2196f3',
+    backgroundColor: Colors.primary,
     paddingVertical: 16,
     paddingHorizontal: 24,
     borderRadius: 12,
     alignItems: 'center',
     elevation: 3,
-    shadowColor: '#000',
+    shadowColor: Colors.shadow,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -124,18 +125,18 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   replayButtonText: {
-    color: '#fff',
+    color: Colors.white,
     fontSize: 20,
     fontWeight: 'bold',
   },
   nextSetButton: {
-    backgroundColor: '#4caf50',
+    backgroundColor: Colors.success,
     paddingVertical: 16,
     paddingHorizontal: 24,
     borderRadius: 12,
     alignItems: 'center',
     elevation: 3,
-    shadowColor: '#000',
+    shadowColor: Colors.shadow,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -144,7 +145,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   nextSetButtonText: {
-    color: '#fff',
+    color: Colors.white,
     fontSize: 20,
     fontWeight: 'bold',
   },
