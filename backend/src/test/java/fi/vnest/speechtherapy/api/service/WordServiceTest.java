@@ -1,5 +1,6 @@
 package fi.vnest.speechtherapy.api.service;
 
+import fi.vnest.speechtherapy.api.dto.GroupRequest;
 import fi.vnest.speechtherapy.api.dto.WordRequest;
 import fi.vnest.speechtherapy.api.model.Word;
 import fi.vnest.speechtherapy.api.model.WordGroup;
@@ -297,5 +298,138 @@ class WordServiceTest {
         assertTrue(exception.getMessage().contains("Word not found with ID: " + wordId));
         verify(wordRepository).existsById(wordId);
         verify(wordRepository, never()).deleteById(any());
+    }
+
+    @Test
+    void getAllGroups_ReturnsListOfGroups() {
+        List<WordGroup> groups = List.of(group);
+        when(groupRepository.findAll()).thenReturn(groups);
+
+        List<WordGroup> result = wordService.getAllGroups();
+
+        assertEquals(1, result.size());
+        assertEquals(groups, result);
+        verify(groupRepository).findAll();
+    }
+
+    @Test
+    void createGroup_WithValidRequest_CreatesAndReturnsGroup() {
+        GroupRequest request = new GroupRequest();
+        request.setName("new group");
+        request.setDescription("desc");
+
+        WordGroup saved = new WordGroup("new group", "desc");
+        saved.setId(10L);
+
+        when(groupRepository.save(any(WordGroup.class))).thenReturn(saved);
+
+        WordGroup result = wordService.createGroup(request);
+
+        assertNotNull(result);
+        assertEquals(10L, result.getId());
+        assertEquals("new group", result.getName());
+        assertEquals("desc", result.getDescription());
+
+        verify(groupRepository).save(argThat(g ->
+                g.getName().equals("new group") &&
+                        g.getDescription().equals("desc")
+        ));
+    }
+
+    @Test
+    void updateGroup_WithValidId_UpdatesAndReturnsGroup() {
+        Long id = 1L;
+
+        GroupRequest request = new GroupRequest();
+        request.setName("updated");
+        request.setDescription("updated desc");
+
+        when(groupRepository.findById(id)).thenReturn(Optional.of(group));
+
+        WordGroup saved = new WordGroup("updated", "updated desc");
+        saved.setId(id);
+
+        when(groupRepository.save(any(WordGroup.class))).thenReturn(saved);
+
+        WordGroup result = wordService.updateGroup(id, request);
+
+        assertEquals(id, result.getId());
+        assertEquals("updated", result.getName());
+        assertEquals("updated desc", result.getDescription());
+
+        verify(groupRepository).findById(id);
+        verify(groupRepository).save(argThat(g ->
+                g.getName().equals("updated") &&
+                        g.getDescription().equals("updated desc")
+        ));
+    }
+
+    @Test
+    void updateGroup_WithNonExistentId_ThrowsNoSuchElementException() {
+        Long id = 999L;
+        GroupRequest request = new GroupRequest();
+        request.setName("x");
+        request.setDescription("y");
+
+        when(groupRepository.findById(id)).thenReturn(Optional.empty());
+
+        NoSuchElementException ex = assertThrows(
+                NoSuchElementException.class,
+                () -> wordService.updateGroup(id, request)
+        );
+
+        assertTrue(ex.getMessage().contains("Group not found with id: " + id));
+
+        verify(groupRepository).findById(id);
+        verify(groupRepository, never()).save(any());
+    }
+
+    @Test
+    void deleteGroup_WhenUnused_DeletesSuccessfully() {
+        Long id = 1L;
+
+        when(groupRepository.findById(id)).thenReturn(Optional.of(group));
+        when(wordRepository.countByGroup(group)).thenReturn(0L);
+
+        wordService.deleteGroup(id);
+
+        verify(groupRepository).findById(id);
+        verify(wordRepository).countByGroup(group);
+        verify(groupRepository).delete(group);
+    }
+
+    @Test
+    void deleteGroup_WhenInUse_ThrowsIllegalStateException() {
+        Long id = 1L;
+
+        when(groupRepository.findById(id)).thenReturn(Optional.of(group));
+        when(wordRepository.countByGroup(group)).thenReturn(3L);
+
+        IllegalStateException ex = assertThrows(
+                IllegalStateException.class,
+                () -> wordService.deleteGroup(id)
+        );
+
+        assertTrue(ex.getMessage().contains("Cannot delete group that is in use"));
+
+        verify(wordRepository).countByGroup(group);
+        verify(groupRepository, never()).delete(any());
+    }
+
+    @Test
+    void deleteGroup_WithNonExistentId_ThrowsNoSuchElementException() {
+        Long id = 999L;
+        when(groupRepository.findById(id)).thenReturn(Optional.empty());
+
+        NoSuchElementException ex = assertThrows(
+                NoSuchElementException.class,
+                () -> wordService.deleteGroup(id)
+        );
+
+        assertTrue(ex.getMessage().contains("Group not found with id: " + id));
+
+        verify(groupRepository).findById(id);
+        verify(wordRepository, never()).countByGroup(any());
+        verify(groupRepository, never()).delete(any());
     }
 }
