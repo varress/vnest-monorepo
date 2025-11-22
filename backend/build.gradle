@@ -3,6 +3,7 @@ plugins {
 	id 'org.springframework.boot' version '3.5.6'
 	id 'io.spring.dependency-management' version '1.1.7'
 	id 'com.github.spotbugs' version '6.0.18'
+	id 'jacoco'
 }
 
 group = 'fi.vnest.speechtherapy'
@@ -39,8 +40,13 @@ spotbugs {
 	excludeFilter = file("config/spotBugs/excludeFilter.xml")
 }
 
+jacoco {
+	toolVersion = '0.8.11'
+}
+
 tasks.named('test') {
 	useJUnitPlatform()
+	finalizedBy jacocoTestReport
 }
 
 tasks.withType(com.github.spotbugs.snom.SpotBugsTask).configureEach {
@@ -49,4 +55,23 @@ tasks.withType(com.github.spotbugs.snom.SpotBugsTask).configureEach {
 		html.required = true
 	}
 	ignoreFailures = false
+}
+
+jacocoTestReport {
+	dependsOn test
+	reports {
+		xml.required = true
+		html.required = true
+		csv.required = false
+	}
+}
+
+jacocoTestCoverageVerification {
+	violationRules {
+		rule {
+			limit {
+				minimum = 0.70
+			}
+		}
+	}
 }
