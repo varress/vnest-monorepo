@@ -46,4 +46,6 @@ jobs:
           ignore-unfixed: true
           severity: 'CRITICAL'
           exit-code: '1'
-          input: ./backend
+          scan-ref: '.'
+          skip-dirs: '.gradle,build'
+          scanners: 'vuln'
