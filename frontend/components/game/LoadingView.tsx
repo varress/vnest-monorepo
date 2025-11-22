@@ -1,4 +1,5 @@
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { Colors } from '@/constants/colors';
 
 export function LoadingView() {
   return (
@@ -14,11 +15,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: Colors.background,
   },
   loadingText: {
     fontSize: 18,
     marginTop: 20,
-    color: '#666',
+    color: Colors.textLight,
   },
 });

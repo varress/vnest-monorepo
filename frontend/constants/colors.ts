@@ -22,8 +22,8 @@ export const BrandColors = {
   success: '#4caf50',      // ✅ Green - Correct answers, completion
   successDark: '#2e7d32',  // Dark green - Borders, emphasis
   
-  error: '#f44336',        // ❌ Red - Wrong answers, warnings
-  errorDark: '#c62828',    // Dark red - Emphasis
+  error: '#CD5656',        // ❌ Red - Wrong answers, warnings
+  errorDark: '#AF3E3E',    // Dark red - Emphasis
   
   warning: '#ffc107',      // ⚠️ Yellow - Caution (use sparingly)
   warningDark: '#f57c00',  // Orange - Emphasis
@@ -92,10 +92,16 @@ export const SemanticColors = {
   buttonText: '#000000',
   buttonTextDisabled: '#999999',
   
-  // High contrast mode
-  highContrastBackground: '#0fb1de',
-  highContrastText: '#000000',
-  highContrastBorder: '#000000',
+  // High contrast dark mode
+  highContrastBackground: '#000000', 
+  highContrastText: '#c11c84', 
+  highContrastBorder: '#ec4c4cff', 
+  highContrastButton: '#FFD93D', 
+  highContrastButtonText: '#a53d11ff', 
+  highContrastButtonActive: '#2196f3', 
+  highContrastButtonSuccess: '#4caf50', 
+  highContrastButtonDisabled: '#e14c4cff', 
+  highContrastButtonTextDisabled: '#8515e1ff', 
 } as const;
 
 // ============================================
@@ -117,11 +123,11 @@ export const ShadowColors = {
 // 5. CONNECTION LINE COLORS (Visual Feedback)
 // ============================================
 export const ConnectionColors = {
-  line: '#4CAF50',           // Green - Successful connections
-  lineGradientStart: 'rgba(76, 175, 80, 0.7)',
-  lineGradientMid: 'rgba(76, 175, 80, 1)',
-  lineGradientEnd: 'rgba(76, 175, 80, 0.7)',
-  lineGlow: 'rgba(76, 175, 80, 0.3)',
+  line: '#B2161A',           
+  lineGradientStart: 'rgba(178, 22, 26, 0.7)',
+  lineGradientMid: 'rgba(178, 22, 26, 1)',
+  lineGradientEnd: 'rgba(178, 22, 26, 0.7)',
+  lineGlow: 'rgba(178, 22, 26, 0.3)',
 } as const;
 
 // ============================================

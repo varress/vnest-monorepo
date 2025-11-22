@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, ScrollView } from 'react-native';
 import { useResponsiveLayout } from '@/hooks/useResponsiveLayout';
 import { responsiveFontSize, isDesktop } from '@/utils/responsive';
-import { AppColors } from '@/constants/theme';
 import { Colors } from '@/constants/colors';
 
 const spacing = {
@@ -68,7 +67,7 @@ export default function SettingsScreen() {
           highContrast && styles.highContrastText,
           { fontSize: isDesktop() ? 20 : responsiveFontSize(layout.isMobile ? 20 : 24) }
         ]}>
-          📝 Tekstin koko
+          Tekstin koko
         </Text>
         
         {/* Quick preset buttons */}
@@ -171,7 +170,7 @@ export default function SettingsScreen() {
           highContrast && styles.highContrastText,
           { fontSize: isDesktop() ? 20 : responsiveFontSize(layout.isMobile ? 20 : 24) }
         ]}>
-          🎨 Värikontrasti
+          Värikontrasti
         </Text>
         
         <TouchableOpacity
@@ -186,12 +185,6 @@ export default function SettingsScreen() {
           accessibilityRole="switch"
           accessibilityState={{ checked: highContrast }}
         >
-          <Text style={[
-            styles.toggleIcon,
-            { fontSize: isDesktop() ? 32 : responsiveFontSize(layout.isMobile ? 32 : 40) }
-          ]}>
-            {highContrast ? '👁️' : '👁️‍🗨️'}
-          </Text>
           <Text style={[
             styles.toggleText,
             highContrast && styles.toggleTextActive,
@@ -209,44 +202,49 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: spacing.xl,
-    backgroundColor: AppColors.Colors.white,
+    backgroundColor: Colors.white,
   },
   mobileContainer: {
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.xl,
   },
   highContrastContainer: {
-    backgroundColor: AppColors.SemanticColors.highContrastBackground,
+    backgroundColor: Colors.highContrastBackground,
   },
   highContrastText: {
-    color: AppColors.SemanticColors.highContrastText,
+    color: Colors.highContrastText,
   },
   highContrastButton: {
     borderWidth: 3,
-    borderColor: AppColors.SemanticColors.highContrastBorder,
+    borderColor: Colors.highContrastBorder,
+    backgroundColor: Colors.highContrastButton,
   },
   highContrastPreview: {
     borderWidth: 2,
-    borderColor: AppColors.SemanticColors.highContrastBorder,
+    borderColor: Colors.highContrastBorder,
   },
   title: {
     fontWeight: 'bold',
     marginBottom: spacing.xl,
     textAlign: 'center',
-    color: AppColors.NeutralColors.textDark,
+    color: Colors.textDark,
   },
   section: {
     marginBottom: spacing.xl,
     padding: spacing.lg,
-    backgroundColor: AppColors.NeutralColors.backgroundLightGray,
+    backgroundColor: Colors.backgroundGray,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: AppColors.NeutralColors.border,
+    borderColor: Colors.border,
+  },
+  sectionHighContrast: {
+    backgroundColor: Colors.highContrastBackground,
+    borderColor: Colors.highContrastBorder,
   },
   sectionTitle: {
     fontWeight: 'bold',
     marginBottom: spacing.lg,
-    color: AppColors.NeutralColors.text,
+    color: Colors.text,
     textAlign: 'center',
   },
   
@@ -259,36 +257,43 @@ const styles = StyleSheet.create({
   },
   presetButton: {
     flex: 1,
-    backgroundColor: AppColors.Colors.white,
+    backgroundColor: Colors.white,
     padding: spacing.md,
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: AppColors.NeutralColors.border,
+    borderColor: Colors.border,
     alignItems: 'center',
     minHeight: 90,
     justifyContent: 'center',
   },
+  presetButtonHighContrast: {
+    backgroundColor: Colors.highContrastBackground,
+    borderColor: Colors.highContrastBorder,
+  },
   presetButtonActive: {
-    backgroundColor: AppColors.BrandColors.primaryLight,
-    borderColor: AppColors.BrandColors.primary,
+    backgroundColor: Colors.primaryLight,
+    borderColor: Colors.primary,
     borderWidth: 3,
   },
   presetIcon: {
     fontWeight: 'bold',
-    color: AppColors.NeutralColors.textLight,
+    color: Colors.textLight,
     marginBottom: 4,
   },
   presetIconActive: {
-    color: AppColors.BrandColors.primary,
+    color: Colors.primary,
   },
   presetLabel: {
     fontSize: 14,
-    color: AppColors.NeutralColors.textLight,
+    color: Colors.textLight,
     fontWeight: '600',
     textAlign: 'center',
   },
+  presetLabelHighContrast: {
+    color: Colors.highContrastText,
+  },
   presetLabelActive: {
-    color: AppColors.BrandColors.primary,
+    color: Colors.primary,
     fontWeight: 'bold',
   },
   
@@ -299,76 +304,122 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   fontButton: {
-    backgroundColor: AppColors.BrandColors.primary,
+    backgroundColor: Colors.primary,
     width: 60,
     height: 60,
     borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 3,
-    shadowColor: AppColors.ShadowColors.shadow,
+    shadowColor: Colors.shadow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
   },
+  fontButtonHighContrast: {
+    backgroundColor: Colors.highContrastButton,
+    borderColor: Colors.highContrastBorder,
+  },
   fontButtonDisabled: {
-    backgroundColor: AppColors.SemanticColors.buttonDisabled,
+    backgroundColor: Colors.buttonDisabled,
+  },
+  fontButtonDisabledHighContrast: {
+    backgroundColor: Colors.highContrastButtonDisabled,
+    borderColor: Colors.highContrastBorder,
   },
   fontButtonText: {
     fontSize: 32,
-    color: AppColors.SemanticColors.buttonText,
+    color: Colors.buttonText,
     fontWeight: 'bold',
   },
+  fontButtonTextHighContrast: {
+    color: Colors.highContrastButtonText,
+  },
+  fontButtonTextDisabledHighContrast: {
+    color: Colors.highContrastButtonTextDisabled,
+  },
   fontButtonTextDisabled: {
-    color: AppColors.SemanticColors.buttonTextDisabled,
+    color: Colors.buttonTextDisabled,
   },
   fontPreview: {
     flex: 1,
     marginHorizontal: spacing.md,
-    backgroundColor: AppColors.Colors.white,
+    backgroundColor: Colors.white,
     padding: spacing.md,
     borderRadius: 12,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: AppColors.NeutralColors.border,
+    borderColor: Colors.border,
+  },
+  fontPreviewHighContrast: {
+    backgroundColor: Colors.highContrastBackground,
+    borderColor: Colors.highContrastBorder,
   },
   previewText: {
     fontWeight: 'bold',
     marginBottom: 4,
-    color: AppColors.NeutralColors.text,
+    color: Colors.textDark,
+  },
+  previewTextHighContrast: {
+    color: Colors.highContrastButtonText,
   },
   fontSizeLabel: {
     fontSize: 14,
-    color: AppColors.NeutralColors.textLight,
+    color: Colors.textLight,
+  },
+  fontSizeLabelHighContrast: {
+    color: Colors.highContrastButtonText,
   },
   
   // Contrast toggle
   toggleButton: {
-    backgroundColor: AppColors.Colors.white,
+    backgroundColor: Colors.white,
     padding: spacing.lg,
     borderRadius: 12,
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: AppColors.NeutralColors.border,
+    borderColor: Colors.border,
     flexDirection: 'row',
     justifyContent: 'center',
     gap: spacing.md,
     minHeight: 80,
   },
+  toggleButtonHighContrastBg: {
+    backgroundColor: Colors.highContrastBackground,
+    borderColor: Colors.highContrastBorder,
+  },
+  toggleButtonHighContrast: {
+    backgroundColor: Colors.highContrastButton,
+    borderColor: Colors.highContrastBorder,
+  },
   toggleButtonActive: {
-    backgroundColor: AppColors.BrandColors.primaryLight,
-    borderColor: AppColors.BrandColors.primary,
+    backgroundColor: Colors.primaryLight,
+    borderColor: Colors.primary,
     borderWidth: 3,
+  },
+  toggleButtonActiveHighContrast: {
+    backgroundColor: Colors.highContrastButtonActive,
+    borderColor: Colors.highContrastBorder,
   },
   toggleIcon: {
     marginRight: spacing.sm,
   },
   toggleText: {
     fontWeight: '600',
-    color: AppColors.NeutralColors.textLight,
+    color: Colors.highContrastButtonText,
+  },
+  toggleTextHighContrastColor: {
+    color: Colors.highContrastText,
+  },
+  toggleTextHighContrast: {
+    color: Colors.highContrastButtonText,
   },
   toggleTextActive: {
-    color: AppColors.BrandColors.primary,
+    color: Colors.highContrastButtonText,
+    fontWeight: 'bold',
+  },
+  toggleTextActiveHighContrast: {
+    color: Colors.highContrastButtonText,
     fontWeight: 'bold',
   },
 });
