@@ -121,7 +121,6 @@ export class WebStorageAdapter implements DatabaseAdapter {
             verbId: verbId,
             agentId: agentMap.get(agentValue)!.id,
             patientId: patientMap.get(patientValue)!.id,
-            isFitting: true,
             groupId: groupId || 0,
             type: "AgentVerbPatient_Trio"
           });

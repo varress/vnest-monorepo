@@ -33,8 +33,14 @@ export class AVPTrioController extends BaseController<AgentVerbPatient_Trio> imp
         patientId: number
     ): Promise<boolean> {
         const all = await this.getAllByVerbId(verbId);
-        const filtered = all.filter(e => e.isFitting === true && e.agentId === agentId && e.patientId === patientId);
+        const filtered = all.filter(e => e.agentId === agentId && e.patientId === patientId);
         return filtered.length >= 1;
+    }
+
+    async GetIdByAgentVerbPatient(agentId: number, verbId: number, patientId: number): Promise<number> {
+        const all =   await this.getAllByVerbId(verbId);
+        const match = all.find(e => e.agentId === agentId && e.patientId === patientId);
+        return match ? match.id : -1;
     }
 }
 

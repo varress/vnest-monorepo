@@ -1,4 +1,4 @@
-import data from '@/assets/seeding_data/finnish_v2.json';
+import data from '@/assets/seeding_data/english.json';
 import { deleteFile } from 'realm';
 import { getRealm_IgnoreSeeding } from "./realm.native";
 
@@ -15,14 +15,14 @@ export async function seedRealm() {
 
     realm.write(() => {
         for (const entry of data) {
-            const { verb, groupId, pairs } = entry;
+            const { verb, groupId, groupName, pairs } = entry;
             
             verbId++;
             realm.create("Verb", { 
                 id:        verbId, 
                 value:     verb,
                 groupId:   groupId,
-                groupName: "TestGroupName",
+                groupName: groupName,
                 type:      "Verb" });
 
             for (const [agentValue, patientValue] of pairs) {
@@ -50,8 +50,7 @@ export async function seedRealm() {
                     id:        trioId, 
                     verbId:    verbId, 
                     agentId:   agentMap.get(agentValue)!, 
-                    patientId: patientMap.get(patientValue)!, 
-                    isFitting: true, 
+                    patientId: patientMap.get(patientValue)!,
                     groupId:   groupId,
                     type:      "AgentVerbPatient_Trio" });
             }

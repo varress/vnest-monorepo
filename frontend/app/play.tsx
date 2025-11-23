@@ -66,7 +66,6 @@ export default function PlayScreen() {
   // Initialize data on component mount
   useEffect(() => {
   if (wordData && wordData.currentVerb) {
-    console.log('wordData loaded, populating verbs, subjects, objects');
     setVerbs([wordData.currentVerb]);
     setSubjects(wordData.subjects);
     setObjects(wordData.objects);

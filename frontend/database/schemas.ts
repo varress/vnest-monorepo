@@ -27,7 +27,6 @@ export type AgentVerbPatient_Trio = {
     verbId:    number;
     agentId:   number;
     patientId: number;
-    isFitting: boolean;
     groupId:   number;
     readonly type: "AgentVerbPatient_Trio";
 };
@@ -123,7 +122,6 @@ export function mapAVP_ApiToTrio(apiData: ApiResponse<ApiCombination>): AgentVer
         verbId:    item.verb.id,
         agentId:   item.subject.id,
         patientId: item.object.id,
-        isFitting: true,
         groupId:   0,
         type:      "AgentVerbPatient_Trio"
 

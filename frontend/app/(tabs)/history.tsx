@@ -35,12 +35,12 @@ export default function HistoryScreen() {
                 <View key={group.groupId} style={[styles.groupRow, {height: barHeight}]}>
                     <View style={styles.bar}>
                         <View style={styles.barBackground}>
-                            <View style={[styles.correct, {width: `20%`}]}>
+                            <View style={[styles.correct, {width: `${group.percentage}%`}]}>
                             </View>
                             <Text style={[styles.text, {position: "absolute", top: "50%", transform: [{translateY: -19}], right: 20}]}>{group.groupName}</Text>
                         </View>
                     </View>
-                    <Text style={[styles.text, {textAlign: "right", marginLeft: 10}]}>{Math.round(group.percentage)}%</Text>
+                    <Text style={[styles.text, {textAlign: "right", marginLeft: 10, width: 60}]}>{Math.round(group.percentage)}%</Text>
                 </View>
             ))}
         </View>

@@ -18,7 +18,7 @@ export default function HomeScreen() {
       ) : error ? (
         <Text>Error: {error}</Text>
       ) : wordData?.currentVerb ? (
-        <Text>Current verb: {wordData.currentVerb.value} (Subjects: {wordData.subjects.length}, Objects: {wordData.objects.length})</Text>
+        <Text></Text>
       ) : (
         <Text>No data available</Text>
       )}

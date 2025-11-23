@@ -4,6 +4,7 @@ import { IVerbController } from "@/controllers/interfaces/IVerbController";
 import { Agent, Patient, Verb } from "@/database/schemas";
 import { WordBundle } from "./wordBundle";
 import { historyService } from "./historyService";
+import { Platform } from "react-native";
 
 // Dynamic imports, to make sure that Realm is never imported, when the web version is being used.
 
@@ -53,7 +54,7 @@ export const avpService = {
     isCorrectCombination: async (agent: Agent, verb: Verb, patient: Patient): Promise<boolean> => {
         if (agent === null || verb === null || patient === null) return false;
         const answer = await avpTrioController.IsCorrentCombination(agent.id, verb.id, patient.id);
-        if (answer) { 
+        if (answer && Platform.OS !== "web") { 
             const trioId = await avpTrioController.GetIdByAgentVerbPatient(agent.id, verb.id, patient.id);
             historyService.set(trioId);
         }
