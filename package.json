@@ -1,5 +1,11 @@
 {
   "dependencies": {
     "react-native-svg": "^15.14.0"
+  },
+  "scripts": {
+    "test": "jest --config frontend/testing/jest.config.js"
+  },
+  "devDependencies": {
+    "jest": "29.7.0"
   }
 }
