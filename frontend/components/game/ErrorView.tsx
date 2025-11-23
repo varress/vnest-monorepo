@@ -1,3 +1,4 @@
+import { Colors } from '@/constants/colors';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 interface ErrorViewProps {
@@ -16,7 +17,7 @@ export function ErrorView({ error, onRetry, onForceReload }: ErrorViewProps) {
         <Text style={styles.buttonText}>Retry</Text>
       </TouchableOpacity>
       <TouchableOpacity 
-        style={[styles.retryButton, { backgroundColor: '#c71910ff', marginTop: 10 }]} 
+        style={[styles.retryButton, { backgroundColor: Colors.error, marginTop: 10 }]} 
         onPress={onForceReload}
       >
         <Text style={styles.buttonText}>Force Reload Data</Text>
@@ -31,23 +32,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 24,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.background,
   },
   errorText: {
     fontSize: 18,
-    color: '#c71910ff',
+    color: Colors.error,
     textAlign: 'center',
     marginBottom: 20,
   },
   retryButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: Colors.buttonPrimary,
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 10,
     alignItems: 'center',
   },
   buttonText: {
-    color: '#fff',
+    color: Colors.buttonText,
     fontSize: 16,
   },
 });

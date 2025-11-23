@@ -4,6 +4,7 @@ import { isDesktop, responsiveFontSize, spacing } from '@/utils/responsive';
 import { useEffect, useRef } from 'react';
 import { Animated, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { GameCard } from './GameCard';
+import { Colors } from '@/constants/colors';
 
 interface FeedbackViewProps {
   feedback: string;
@@ -229,13 +230,13 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   correctBanner: {
-    backgroundColor: '#4caf50',
+    backgroundColor: Colors.success,
   },
   incorrectBanner: {
-    backgroundColor: '#f44336',
+    backgroundColor: Colors.error,
   },
   bannerText: {
-    color: '#fff',
+    color: Colors.buttonText,
     textShadowColor: 'rgba(0, 0, 0, 0.3)',
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 2,
@@ -244,7 +245,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold', 
     marginBottom: 30, 
     textAlign: 'center',
-    color: '#333',
+    color: Colors.text,
   },
   row: { 
     flexDirection: 'row', 
@@ -264,14 +265,14 @@ const styles = StyleSheet.create({
     marginVertical: spacing.sm,
   },
   nextButton: {
-    backgroundColor: '#4caf50',
+    backgroundColor: Colors.success,
     paddingVertical: 16,
     borderRadius: 12,
     alignItems: 'center',
     marginTop: 40,
     marginHorizontal: 40,
     elevation: 3,
-    shadowColor: '#000',
+    shadowColor: Colors.shadow,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -280,14 +281,14 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   resetButton: {
-    backgroundColor: '#f44336',
+    backgroundColor: Colors.error,
     paddingVertical: 16,
     borderRadius: 12,
     alignItems: 'center',
     marginTop: 40,
     marginHorizontal: 40,
     elevation: 3,
-    shadowColor: '#000',
+    shadowColor: Colors.shadow,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -301,7 +302,7 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.lg,
   },
   buttonText: { 
-    color: '#fff', 
+    color: Colors.buttonText, 
     textAlign: 'center',
     fontWeight: 'bold',
   },
@@ -313,7 +314,7 @@ const styles = StyleSheet.create({
   progressText: {
     fontSize: responsiveFontSize(18),
     fontWeight: '600',
-    color: '#333',
+    color: Colors.text,
     marginBottom: spacing.sm,
   },
   progressBarContainer: {
@@ -326,12 +327,12 @@ const styles = StyleSheet.create({
     width: 16,
     height: 16,
     borderRadius: 8,
-    backgroundColor: '#e0e0e0',
+    backgroundColor: Colors.backgroundGray,
     borderWidth: 2,
-    borderColor: '#bdbdbd',
+    borderColor: Colors.border,
   },
   progressDotFilled: {
-    backgroundColor: '#4caf50',
-    borderColor: '#2e7d32',
+    backgroundColor: Colors.success,
+    borderColor: Colors.successDark,
   },
 });

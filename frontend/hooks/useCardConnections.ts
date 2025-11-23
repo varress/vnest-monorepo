@@ -34,13 +34,13 @@ export function useCardConnections() {
     const centerX = layout.x + layout.width / 2;
     const centerY = layout.y + layout.height / 2;
 
-    console.log(`Card ${cardId} registered:`, { 
-      cardId, 
-      layout, 
-      center: { x: centerX, y: centerY },
-      cardType: cardId.toString().includes('verb') ? 'verb' : 
-                cardId.toString().includes('subject') ? 'subject' : 'object'
-    });
+    // console.log(`Card ${cardId} registered:`, { 
+    //   cardId, 
+    //   layout, 
+    //   center: { x: centerX, y: centerY },
+    //   cardType: cardId.toString().includes('verb') ? 'verb' : 
+    //             cardId.toString().includes('subject') ? 'subject' : 'object'
+    // });
 
     setCardPositions(prev => {
       const newPositions = new Map(prev);
@@ -88,7 +88,7 @@ export function useCardConnections() {
       const unitX = deltaX / distance;
       const unitY = deltaY / distance;
       
-      console.log('🎯 Unit vector:', { unitX, unitY });
+      // console.log('🎯 Unit vector:', { unitX, unitY });
       
       // Better rectangular edge calculation instead of circular approximation
       // Calculate which edge of the rectangle the line intersects

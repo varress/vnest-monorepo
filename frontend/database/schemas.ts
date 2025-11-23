@@ -8,6 +8,7 @@ export type BaseWord = {
 
 export type Verb = BaseWord & {
     groupId: number;
+    groupName: string;
     readonly type: "Verb";
 };
 
@@ -26,7 +27,6 @@ export type AgentVerbPatient_Trio = {
     verbId:    number;
     agentId:   number;
     patientId: number;
-    isFitting: boolean;
     groupId:   number;
     readonly type: "AgentVerbPatient_Trio";
 };
@@ -46,6 +46,7 @@ export const VerbSchema: ObjectSchema = {
         id:      'int',
         value:   'string',
         groupId: { type: 'int', default: 0},
+        groupName: { type: 'string', default: "" },
         type:    { type: 'string', default: 'Verb' }
     }
 };
@@ -121,7 +122,6 @@ export function mapAVP_ApiToTrio(apiData: ApiResponse<ApiCombination>): AgentVer
         verbId:    item.verb.id,
         agentId:   item.subject.id,
         patientId: item.object.id,
-        isFitting: true,
         groupId:   0,
         type:      "AgentVerbPatient_Trio"
 
@@ -136,6 +136,7 @@ export function mapAPIWord_UIWord (apiData: ApiResponse<ApiWord>):  Word[] {
                     id: item.id,
                     value: item.text,
                     groupId: item.group_id ?? 0,
+                    groupName: "",
                     type: "Verb"
                 };
             case "SUBJECT":

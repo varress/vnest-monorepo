@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import Svg, { Circle, Defs, Line, LinearGradient, Stop } from 'react-native-svg';
+import { Colors } from '@/constants/colors';
 
 interface SVGConnectionLineProps {
   fromPosition: { x: number; y: number } | null;
@@ -12,7 +13,7 @@ interface SVGConnectionLineProps {
 export const SVGConnectionLine: React.FC<SVGConnectionLineProps> = ({
   fromPosition,
   toPosition,
-  color = '#4CAF50',
+  color = Colors.line,
   strokeWidth = 4
 }) => {
   if (!fromPosition || !toPosition) {

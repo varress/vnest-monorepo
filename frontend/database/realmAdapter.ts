@@ -20,6 +20,9 @@ export class RealmAdapter implements DatabaseAdapter {
     if (!this.realm) {
       await initializeRealm();
       this.realm = await Realm.open(realmConfig);
+
+      const { seedRealm } = await import('./seedRealm');
+      await seedRealm();
     }
   }
 
@@ -30,11 +33,12 @@ export class RealmAdapter implements DatabaseAdapter {
     if (!filter) return Array.from(results);
     
     // Convert filter to Realm query string if needed
-    const filterString = Object.keys(filter)
-      .map(key => `${key} = $${key}`)
-      .join(' AND ');
-    
-    const filtered = results.filtered(filterString, filter);
+    const keys =         Object.keys(filter);
+    const filterString = keys.map((key, i) => `${key} = $${i}`).join(' AND ');
+    const values =       keys.map(key => filter[key]);
+
+    const filtered = results.filtered(filterString, ...values);
+
     return Array.from(filtered);
   }
 

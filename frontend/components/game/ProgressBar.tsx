@@ -1,6 +1,7 @@
 import { useResponsiveLayout } from '@/hooks/useResponsiveLayout';
 import { isDesktop, responsiveFontSize, spacing } from '@/utils/responsive';
 import { StyleSheet, Text, View } from 'react-native';
+import { Colors } from '@/constants/colors';
 
 interface ProgressBarProps {
   current: number;
@@ -47,12 +48,12 @@ const styles = StyleSheet.create({
     alignItems: 'center', 
     justifyContent: 'center',
     marginBottom: 40,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: Colors.background,
     padding: spacing.md,
     borderRadius: 12, 
     width: '70%',
     alignSelf: 'center',
-    shadowColor: '#000',
+    shadowColor: Colors.shadow,
     shadowOffset: {
       width: 0,
       height: 1,
@@ -65,13 +66,13 @@ const styles = StyleSheet.create({
     alignItems: 'center', 
     justifyContent: 'center',
     marginBottom: spacing.lg,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: Colors.backgroundLightGray,
     padding: spacing.md,
     borderRadius: 12, 
     width: '90%',
     alignSelf: 'center',
     marginHorizontal: spacing.md,
-    shadowColor: '#000',
+    shadowColor: Colors.shadow,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -82,7 +83,7 @@ const styles = StyleSheet.create({
   },
   progress: {
     textAlign: 'center',
-    color: '#555',
+    color: Colors.textLight,
     fontWeight: '600',
   },
   progressBarContainer: {
@@ -101,16 +102,16 @@ const styles = StyleSheet.create({
   progressBarBackground: {
     width: '100%',
     height: 16,
-    backgroundColor: '#E0E0E0',
+    backgroundColor: Colors.backgroundLightGray,
     borderRadius: 8,
     overflow: 'hidden',
     marginBottom: 10,
   },
   progressBarFill: {
     height: '100%',
-    backgroundColor: '#4caf50',
+    backgroundColor: Colors.success,
     borderRadius: 8,
-    shadowColor: '#4caf50',
+    shadowColor: Colors.success,
     shadowOffset: {
       width: 0,
       height: 1,

@@ -1,6 +1,7 @@
 import { getCardDimensions, getVerbCardDimensions } from '@/utils/responsive';
 import { useEffect, useRef } from 'react';
 import { LayoutRectangle, StyleSheet, Text, TouchableOpacity, View, Animated } from 'react-native';
+import { Colors } from '@/constants/colors';
 
 interface GameCardProps {
   text: string;
@@ -38,14 +39,14 @@ export function GameCard({
           cardRef.current?.measureLayout(
             parentRef.current,
             (x: number, y: number, width: number, height: number) => {
-              console.log(`📍 Card ${cardId} positioned at:`, { 
-                x: Math.round(x), 
-                y: Math.round(y), 
-                w: Math.round(width), 
-                h: Math.round(height),
-                centerX: Math.round(x + width/2),
-                centerY: Math.round(y + height/2)
-              });
+              // console.log(`📍 Card ${cardId} positioned at:`, { 
+              //   x: Math.round(x), 
+              //   y: Math.round(y), 
+              //   w: Math.round(width), 
+              //   h: Math.round(height),
+              //   centerX: Math.round(x + width/2),
+              //   centerY: Math.round(y + height/2)
+              // });
               onLayout(cardId, { x, y, width, height });
             },
             (error: any) => console.error('❌ measureLayout error:', error)
@@ -123,7 +124,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 12,
-    shadowColor: '#000',
+    shadowColor: Colors.shadow,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -133,32 +134,32 @@ const styles = StyleSheet.create({
     elevation: 3, // Android shadow
   },
   card: {
-    backgroundColor: '#f2f2f2',
+    backgroundColor: Colors.cardBackground,
     padding: 16,
     borderWidth: 2,
     borderColor: 'transparent',
   },
   selectedCard: { 
-    backgroundColor: '#34C759',
-    borderColor: '#28A745',
+    backgroundColor: Colors.cardSelected,
+    borderColor: Colors.cardSelectedBorder,
     shadowOpacity: 0.25,
     elevation: 6,
   },
   cardText: { 
     fontWeight: '600',
     textAlign: 'center',
-    color: '#333',
+    color: Colors.text,
   },
   selectedText: {
-    color: '#fff',
+    color: Colors.text,
     fontWeight: 'bold',
   },
   verbCard: {
-    backgroundColor: '#007AFF',
+    backgroundColor: Colors.cardSelected,
     padding: 20,
   },
   verbText: { 
-    color: '#fff', 
+    color: Colors.text,
     fontWeight: 'bold',
     textAlign: 'center',
     textShadowColor: 'rgba(0, 0, 0, 0.3)',

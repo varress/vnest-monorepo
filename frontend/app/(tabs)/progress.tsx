@@ -4,6 +4,7 @@ import { isDesktop, responsiveFontSize, spacing } from '@/utils/responsive';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Colors } from '@/constants/colors';
 
 interface Set {
   id: number;
@@ -16,12 +17,12 @@ export default function ProgressScreen() {
   const { setCurrentSet } = useDatabaseWordData();
   const [selectedSet, setSelectedSet] = useState<number | null>(null);
 
-  // Finnish verb exercise sets - 4 themed categories
+  // Finnish verb exercise sets - 4 themed categories with emojis for better recognition
   const sets: Set[] = [
-    { id: 0, name: "Ruoka ja juoma" }, 
-    { id: 1, name: "Liikenne ja liikunta" }, 
-    { id: 2, name: "Opiskelu ja työ" }, 
-    { id: 3, name: "Vapaa-aika ja harrastukset" }, 
+    { id: 0, name: "🍽️ Ruoka ja juoma" }, 
+    { id: 1, name: "🚗 Liikenne ja liikunta" }, 
+    { id: 2, name: "📚 Opiskelu ja työ" }, 
+    { id: 3, name: "🎨 Vapaa-aika ja harrastukset" }, 
   ];
 
   const handleSetSelect = async (setId: number) => {
@@ -48,11 +49,11 @@ export default function ProgressScreen() {
 
   return (
     <ScrollView style={containerStyle} showsVerticalScrollIndicator={false}>
-      <Text style={[styles.title, { fontSize: isDesktop() ? 28 : responsiveFontSize(layout.isMobile ? 28 : 36) }]}>
-        Valitse setti
+      <Text style={[styles.title, { fontSize: isDesktop() ? 32 : responsiveFontSize(layout.isMobile ? 32 : 40) }]}>
+        Valitse harjoitussetti
       </Text>
-      <Text style={[styles.subtitle, { fontSize: isDesktop() ? 16 : responsiveFontSize(layout.isMobile ? 16 : 18) }]}>
-        Klikkaa settiä aloittaaksesi
+      <Text style={[styles.subtitle, { fontSize: isDesktop() ? 18 : responsiveFontSize(layout.isMobile ? 18 : 22) }]}>
+        💡 Napauta settiä aloittaaksesi
       </Text>
       
       <View style={setsContainerStyle}>
@@ -64,23 +65,32 @@ export default function ProgressScreen() {
               selectedSet === set.id && styles.selectedSet
             ]}
             onPress={() => handleSetSelect(set.id)}
-            activeOpacity={0.8}
+            activeOpacity={0.7}
+            accessibilityLabel={`Setti ${set.id + 1}: ${set.name}`}
+            accessibilityRole="button"
+            accessibilityState={{ selected: selectedSet === set.id }}
           >
-            <Text style={[
-              styles.setNumber,
-              { fontSize: isDesktop() ? 32 : responsiveFontSize(layout.isMobile ? 32 : 48) },
-              selectedSet === set.id && styles.selectedSetText
-            ]}>
-              {set.id + 1}
-            </Text>
+            <View style={styles.setNumberContainer}>
+              <Text style={[
+                styles.setNumber,
+                { fontSize: isDesktop() ? 36 : responsiveFontSize(layout.isMobile ? 36 : 52) },
+                selectedSet === set.id && styles.selectedSetText
+              ]}>
+                {set.id + 1}
+              </Text>
+            </View>
             
-            <Text style={[
-              styles.setName,
-              { fontSize: isDesktop() ? 18 : responsiveFontSize(layout.isMobile ? 18 : 24) },
-              selectedSet === set.id && styles.selectedSetText
-            ]}>
-              {set.name}
-            </Text>
+            <View style={styles.setNameContainer}>
+              <Text style={[
+                styles.setName,
+                { fontSize: isDesktop() ? 20 : responsiveFontSize(layout.isMobile ? 20 : 26) },
+                selectedSet === set.id && styles.selectedSetText
+              ]}>
+                {set.name}
+              </Text>
+              
+              
+            </View>
           </TouchableOpacity>
         ))}
       </View>
@@ -92,12 +102,15 @@ export default function ProgressScreen() {
             layout.isMobile && styles.mobilePlayButton
           ]} 
           onPress={handlePlaySet}
+          accessibilityLabel={`Aloita Setti ${selectedSet + 1}`}
+          accessibilityRole="button"
+          accessibilityHint="Napauta aloittaaksesi valitun setin harjoitukset"
         >
           <Text style={[
             styles.playButtonText,
-            { fontSize: isDesktop() ? 18 : responsiveFontSize(layout.isMobile ? 18 : 20) }
+            { fontSize: isDesktop() ? 22 : responsiveFontSize(layout.isMobile ? 22 : 26) }
           ]}>
-            Aloita Setti {selectedSet + 1}
+            ▶️ Aloita harjoitus
           </Text>
         </TouchableOpacity>
       )}
@@ -106,7 +119,7 @@ export default function ProgressScreen() {
         <View style={styles.instructionContainer}>
           <Text style={[
             styles.instructionText,
-            { fontSize: isDesktop() ? 16 : responsiveFontSize(layout.isMobile ? 16 : 18) }
+            { fontSize: isDesktop() ? 18 : responsiveFontSize(layout.isMobile ? 18 : 22) }
           ]}>
             👆 Valitse setti ylhäältä
           </Text>
@@ -120,11 +133,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.background,
   },
   mobileContainer: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.background,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.lg,
   },
@@ -132,11 +145,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 10,
     textAlign: 'center',
-    color: '#333',
+    color: Colors.textDark,
   },
   subtitle: {
     textAlign: 'center',
-    color: '#666',
+    color: Colors.textLight,
     marginBottom: 30,
   },
   setsContainer: {
@@ -149,73 +162,105 @@ const styles = StyleSheet.create({
     paddingBottom: spacing.xxl,
   },
   setCard: {
-    backgroundColor: '#f8f9fa',
-    borderRadius: 16,
-    padding: 24,
-    marginVertical: 12,
-    borderWidth: 2,
-    borderColor: '#e9ecef',
+    backgroundColor: Colors.buttonPrimary,
+    borderRadius: 20,
+    padding: 28,
+    marginVertical: 14,
+    borderWidth: 3,
+    borderColor: Colors.borderLight,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  mobileSetCard: {
-    backgroundColor: '#f8f9fa',
-    borderRadius: 16,
-    padding: spacing.lg,
-    marginVertical: spacing.md,
-    borderWidth: 2,
-    borderColor: '#e9ecef',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
     elevation: 3,
-    shadowColor: '#000',
+    shadowColor: Colors.shadow,
     shadowOffset: {
       width: 0,
       height: 3,
     },
     shadowOpacity: 0.15,
     shadowRadius: 6,
+    minHeight: 100,
+  },
+  mobileSetCard: {
+    backgroundColor: Colors.buttonPrimary,
+    borderRadius: 20,
+    padding: spacing.xl,
+    marginVertical: spacing.md,
+    borderWidth: 3,
+    borderColor: Colors.borderLight,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    elevation: 4,
+    shadowColor: Colors.shadow,
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    minHeight: 110,
   },
   selectedSet: {
-    backgroundColor: '#e3f2fd',
-    borderColor: '#2196f3',
-    transform: [{ scale: 1.02 }],
-    elevation: 4,
-    shadowOpacity: 0.2,
+    backgroundColor: Colors.buttonSecondary,
+    borderColor: Colors.primary,
+    borderWidth: 4,
+    transform: [{ scale: 1.03 }],
+    elevation: 6,
+    shadowOpacity: 0.3,
+  },
+  setNumberContainer: {
+    backgroundColor: Colors.white,
+    borderRadius: 16,
+    width: 70,
+    height: 70,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 20,
+    borderWidth: 2,
+    borderColor: Colors.border,
   },
   setNumber: {
     fontWeight: 'bold',
-    color: '#333',
-    marginRight: 20,
-    minWidth: 60,
-    textAlign: 'center',
+    color: Colors.primary,
+  },
+  setNameContainer: {
+    flex: 1,
   },
   setName: {
     fontWeight: '600',
-    color: '#555',
+    color: Colors.textDark,
+    marginBottom: 8,
+  },
+  progressIndicator: {
+    flexDirection: 'row',
+    gap: 6,
+    marginTop: 4,
+  },
+  progressDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: Colors.backgroundGray,
+    borderWidth: 1,
+    borderColor: Colors.border,
+  },
+  progressDotComplete: {
+    backgroundColor: Colors.success,
+    borderColor: Colors.successDark,
   },
   selectedSetText: {
-    color: '#2196f3',
+    color: Colors.primary,
   },
   playButton: {
-    backgroundColor: '#4caf50',
+    backgroundColor: Colors.success,
     paddingVertical: 16,
     paddingHorizontal: 24,
     borderRadius: 12,
     alignItems: 'center',
     marginTop: 20,
     elevation: 3,
-    shadowColor: '#000',
+    shadowColor: Colors.shadow,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -231,7 +276,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
   },
   playButtonText: {
-    color: '#fff',
+    color: Colors.textDark,
     fontWeight: 'bold',
   },
   instructionContainer: {
@@ -240,7 +285,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   instructionText: {
-    color: '#888',
+    color: Colors.textLight,
     textAlign: 'center',
   },
 });

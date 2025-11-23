@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Animated, StyleSheet } from 'react-native';
+import { Colors } from '@/constants/colors';
 
 interface ConnectionLineProps {
   startPosition: { x: number; y: number } | null;
@@ -12,7 +13,7 @@ interface ConnectionLineProps {
 export function ConnectionLine({
   startPosition,
   endPosition,
-  color = '#e79231ff',
+  color = Colors.line,
   strokeWidth = 4,
   animated = true,
 }: ConnectionLineProps) {
@@ -196,7 +197,7 @@ const styles = StyleSheet.create({
   line: {
     position: 'absolute',
     borderRadius: 2,
-    shadowColor: '#4F46E5',
+    shadowColor: Colors.lineGlow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.4,
     shadowRadius: 6,
@@ -212,7 +213,7 @@ const styles = StyleSheet.create({
     width: 12,
     height: 12,
     borderRadius: 6,
-    shadowColor: '#4F46E5',
+    shadowColor: Colors.lineGlow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.5,
     shadowRadius: 4,
@@ -223,7 +224,7 @@ const styles = StyleSheet.create({
     width: 16,
     height: 16,
     borderRadius: 2,
-    shadowColor: '#4F46E5',
+    shadowColor: Colors.lineGlow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.5,
     shadowRadius: 4,
