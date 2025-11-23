@@ -1,11 +1,11 @@
 [
-  { "verb": "verb_1", "groupId": "0", "pairs": [["subject_A","object_A"], ["subject_B","object_B"], ["subject_C","object_C"]] },
-  { "verb": "verb_2", "groupId": "0", "pairs": [["subject_A","object_A"], ["subject_B","object_B"], ["subject_C","object_C"]] },
-  { "verb": "verb_3", "groupId": "0", "pairs": [["subject_A","object_A"], ["subject_B","object_B"], ["subject_C","object_C"]] },
-  { "verb": "verb_4", "groupId": "1", "pairs": [["subject_A","object_A"], ["subject_B","object_B"], ["subject_C","object_C"]] },
-  { "verb": "verb_5", "groupId": "1", "pairs": [["subject_A","object_A"], ["subject_B","object_B"], ["subject_C","object_C"]] },
-  { "verb": "verb_6", "groupId": "1", "pairs": [["subject_A","object_A"], ["subject_B","object_B"], ["subject_C","object_C"]] },
-  { "verb": "verb_7", "groupId": "2", "pairs": [["subject_A","object_A"], ["subject_B","object_B"], ["subject_C","object_C"], ["subject_D","object_D"]] },
-  { "verb": "verb_8", "groupId": "2", "pairs": [["subject_A","object_A"], ["subject_B","object_B"], ["subject_C","object_C"], ["subject_D","object_D"]] },
-  { "verb": "verb_9", "groupId": "2", "pairs": [["subject_A","object_A"], ["subject_B","object_B"], ["subject_C","object_C"], ["subject_D","object_D"]] }
+  { "verb": "verb_1", "groupId": 0, "groupName": "Group A", "pairs": [["subject_A","object_A"], ["subject_B","object_B"], ["subject_C","object_C"]] },
+  { "verb": "verb_2", "groupId": 0, "groupName": "Group A", "pairs": [["subject_A","object_A"], ["subject_B","object_B"], ["subject_C","object_C"]] },
+  { "verb": "verb_3", "groupId": 0, "groupName": "Group A",  "pairs": [["subject_A","object_A"], ["subject_B","object_B"], ["subject_C","object_C"]] },
+  { "verb": "verb_4", "groupId": 1, "groupName": "Group B", "pairs": [["subject_A","object_A"], ["subject_B","object_B"], ["subject_C","object_C"]] },
+  { "verb": "verb_5", "groupId": 1, "groupName": "Group B", "pairs": [["subject_A","object_A"], ["subject_B","object_B"], ["subject_C","object_C"]] },
+  { "verb": "verb_6", "groupId": 1, "groupName": "Group B", "pairs": [["subject_A","object_A"], ["subject_B","object_B"], ["subject_C","object_C"]] },
+  { "verb": "verb_7", "groupId": 2, "groupName": "Group C", "pairs": [["subject_A","object_A"], ["subject_B","object_B"], ["subject_C","object_C"], ["subject_D","object_D"]] },
+  { "verb": "verb_8", "groupId": 2, "groupName": "Group C", "pairs": [["subject_A","object_A"], ["subject_B","object_B"], ["subject_C","object_C"], ["subject_D","object_D"]] },
+  { "verb": "verb_9", "groupId": 2, "groupName": "Group C", "pairs": [["subject_A","object_A"], ["subject_B","object_B"], ["subject_C","object_C"], ["subject_D","object_D"]] }
 ]

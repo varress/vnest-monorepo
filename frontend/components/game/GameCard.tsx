@@ -39,14 +39,14 @@ export function GameCard({
           cardRef.current?.measureLayout(
             parentRef.current,
             (x: number, y: number, width: number, height: number) => {
-              console.log(`📍 Card ${cardId} positioned at:`, { 
-                x: Math.round(x), 
-                y: Math.round(y), 
-                w: Math.round(width), 
-                h: Math.round(height),
-                centerX: Math.round(x + width/2),
-                centerY: Math.round(y + height/2)
-              });
+              // console.log(`📍 Card ${cardId} positioned at:`, { 
+              //   x: Math.round(x), 
+              //   y: Math.round(y), 
+              //   w: Math.round(width), 
+              //   h: Math.round(height),
+              //   centerX: Math.round(x + width/2),
+              //   centerY: Math.round(y + height/2)
+              // });
               onLayout(cardId, { x, y, width, height });
             },
             (error: any) => console.error('❌ measureLayout error:', error)

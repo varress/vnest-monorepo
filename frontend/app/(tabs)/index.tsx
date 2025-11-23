@@ -4,8 +4,8 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Colors } from '@/constants/colors';
+import { Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function HomeScreen() {
   const { wordData, isLoading, error } = useDatabaseWordData();
@@ -19,7 +19,7 @@ export default function HomeScreen() {
       ) : error ? (
         <Text>Error: {error}</Text>
       ) : wordData?.currentVerb ? (
-        <Text>Current verb: {wordData.currentVerb.value} (Subjects: {wordData.subjects.length}, Objects: {wordData.objects.length})</Text>
+        <Text></Text>
       ) : (
         <Text>No data available</Text>
       )}
@@ -36,6 +36,12 @@ export default function HomeScreen() {
       <TouchableOpacity style={styles.button} onPress={() => router.push('/settings')}>
         <Text style={styles.buttonText}><Ionicons size={48} name="settings-sharp" color="black" /> Asetukset</Text>
       </TouchableOpacity>
+
+      {Platform.OS !== 'web' && (
+        <TouchableOpacity style={styles.button} onPress={() => router.push('/history')}>
+          <Text style={styles.buttonText}><Ionicons size={48} name="trending-up-outline" color="black" /></Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }

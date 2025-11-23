@@ -9,7 +9,7 @@ export class HistoryController extends BaseController<CorrectAnswer> implements 
     async setCorrectAnswer(trioId: number): Promise<void> {
         const all = await this.getAll();
         const id =  all.length > 0
-            ? Math.max(...all.map(ca => ca.id))
+            ? Math.max(...all.map(ca => ca.id)) + 1
             : 0;
 
         const answer: CorrectAnswer = {
@@ -26,6 +26,7 @@ export class HistoryController extends BaseController<CorrectAnswer> implements 
         const trioIds =       new Set(matchingTrios.map(t => t.id));
 
         const  allCorrectAnswers = await database.query<CorrectAnswer>(this.schemaName);
+        console.log(allCorrectAnswers.filter(ca => trioIds.has(ca.trioId)));
         return allCorrectAnswers.filter(ca => trioIds.has(ca.trioId));
     }
 }
