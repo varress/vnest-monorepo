@@ -6,6 +6,7 @@ import { ScrollView, StyleSheet, Text, View, LayoutRectangle } from 'react-nativ
 import { GameCard } from './GameCard';
 import { SVGConnectionLine } from './SVGConnectionLine';
 import { useRef, useEffect } from 'react';
+import { Colors } from '@/constants/colors';
 
 interface GameViewProps {
   subjects: Agent[];
@@ -198,7 +199,7 @@ export function GameView({
           key={`${connection.startCardId}-${connection.endCardId}-${index}`}
           fromPosition={connection.startPosition}
           toPosition={connection.endPosition}
-          color="#4CAF50"
+          color={Colors.line}
         />
       ))}
     </View>
@@ -215,7 +216,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold', 
     marginBottom: 30, 
     textAlign: 'center',
-    color: '#333',
+    color: Colors.text,
   },
   row: { 
     flexDirection: 'row', 
@@ -227,7 +228,7 @@ const styles = StyleSheet.create({
     fontWeight: '600', 
     marginBottom: 20, 
     textAlign: 'center',
-    color: '#555',
+    color: Colors.textLight,
   },
   cardColumn: { 
     flex: 1, 
@@ -249,8 +250,8 @@ const styles = StyleSheet.create({
     marginBottom: spacing.lg,
     paddingHorizontal: spacing.md,
     fontWeight: '500',
-    color: '#666',
-    backgroundColor: '#f8f9fa',
+    color: Colors.textLight,
+    backgroundColor: Colors.backgroundGray,
     paddingVertical: spacing.md,
     borderRadius: 12,
   },
@@ -271,20 +272,20 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   instructionBox: {
-    backgroundColor: '#e3f2fd',
+    backgroundColor: Colors.primaryLight,
     padding: spacing.md,
     borderRadius: 12,
     marginBottom: spacing.lg,
     borderLeftWidth: 4,
-    borderLeftColor: '#2196f3',
+    borderLeftColor: Colors.primaryDark,
   },
   instructionText: {
-    color: '#1565c0',
+    color: Colors.primaryDark,
     textAlign: 'center',
     lineHeight: 22,
   },
   boldText: {
     fontWeight: 'bold',
-    color: '#0d47a1',
+    color: Colors.primaryDark,
   },
 });

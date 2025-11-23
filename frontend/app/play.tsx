@@ -26,6 +26,7 @@ import {
   GameView,
   LoadingView
 } from '@/components/game';
+import { Colors } from '@/constants/colors';
 import { Agent, Patient, Verb } from '@/database/schemas';
 import { useDatabaseWordData } from '@/hooks/useDatabaseWordData';
 import { useResponsiveLayout } from '@/hooks/useResponsiveLayout';
@@ -234,7 +235,7 @@ const styles = StyleSheet.create({
   container: { 
     flex: 1, 
     padding: spacing.lg, 
-    backgroundColor: '#fff' 
+    backgroundColor: Colors.background 
   },
   mobileContainer: {
     paddingHorizontal: spacing.md,
