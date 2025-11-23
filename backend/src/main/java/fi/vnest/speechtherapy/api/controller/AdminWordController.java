@@ -4,6 +4,12 @@ import fi.vnest.speechtherapy.api.dto.*;
 import fi.vnest.speechtherapy.api.model.Word;
 import fi.vnest.speechtherapy.api.model.WordGroup;
 import fi.vnest.speechtherapy.api.service.WordService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +21,7 @@ import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/admin/words")
+@Tag(name = "Admin - Words", description = "Admin API for managing words and word groups (requires ADMIN role)")
 public class AdminWordController {
 
     private final WordService wordService;
@@ -25,11 +32,22 @@ public class AdminWordController {
     }
 
 
-    /**
-     * POST /api/words - Create a new word.
-     */
+    @Operation(
+            summary = "Create new word",
+            description = "Creates a new word (requires ADMIN role)"
+    )
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+            responseCode = "201",
+            description = "Word created successfully",
+            content = @Content(schema = @Schema(implementation = ApiResponse.class))
+    )
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+            responseCode = "400",
+            description = "Invalid request body"
+    )
     @PostMapping()
     public ResponseEntity<ApiResponse<WordResponse>> createWord(
+            @Parameter(description = "Word creation request")
             @Valid @RequestBody WordRequest request) {
 
         Word newWord = wordService.createWord(request);
@@ -38,9 +56,15 @@ public class AdminWordController {
         return new ResponseEntity<>(new ApiResponse<>(true, responseData), HttpStatus.CREATED);
     }
 
-    /**
-     * GET /admin/words/groups - Get all available groups
-     */
+    @Operation(
+            summary = "Get all word groups",
+            description = "Retrieves all available word groups/themes (requires ADMIN role)"
+    )
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+            responseCode = "200",
+            description = "Successfully retrieved groups",
+            content = @Content(schema = @Schema(implementation = ApiResponse.class))
+    )
     @GetMapping("/groups")
     public ResponseEntity<ApiResponse<List<GroupResponse>>> getAllGroups() {
         List<GroupResponse> groups = wordService.getAllGroups()
@@ -51,12 +75,24 @@ public class AdminWordController {
         return ResponseEntity.ok(new ApiResponse<>(true, groups));
     }
 
-    /**
-     * PUT /api/words/:id - Update an existing word.
-     */
+    @Operation(
+            summary = "Update word",
+            description = "Updates an existing word (requires ADMIN role)"
+    )
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+            responseCode = "200",
+            description = "Word updated successfully",
+            content = @Content(schema = @Schema(implementation = ApiResponse.class))
+    )
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+            responseCode = "404",
+            description = "Word not found"
+    )
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<WordResponse>> updateWord(
+            @Parameter(description = "Word ID", example = "1")
             @PathVariable Long id,
+            @Parameter(description = "Word update request")
             @Valid @RequestBody WordRequest request) {
         try {
             Word updatedWord = wordService.updateWord(id, request);
@@ -68,11 +104,22 @@ public class AdminWordController {
         }
     }
 
-    /**
-     * DELETE /api/words/:id - Delete a word.
-     */
+    @Operation(
+            summary = "Delete word",
+            description = "Deletes a word (requires ADMIN role)"
+    )
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+            responseCode = "204",
+            description = "Word deleted successfully"
+    )
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+            responseCode = "404",
+            description = "Word not found"
+    )
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> deleteWord(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> deleteWord(
+            @Parameter(description = "Word ID", example = "1")
+            @PathVariable Long id) {
         try {
             wordService.deleteWord(id);
             // Return 204 No Content for successful deletion
@@ -83,11 +130,18 @@ public class AdminWordController {
         }
     }
 
-    /**
-     * POST /admin/words/groups - Create a new group/theme
-     */
+    @Operation(
+            summary = "Create word group",
+            description = "Creates a new word group/theme (requires ADMIN role)"
+    )
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+            responseCode = "201",
+            description = "Group created successfully",
+            content = @Content(schema = @Schema(implementation = ApiResponse.class))
+    )
     @PostMapping("/groups")
     public ResponseEntity<ApiResponse<GroupResponse>> createGroup(
+            @Parameter(description = "Group creation request")
             @RequestBody GroupRequest request) {
 
         WordGroup newGroup = wordService.createGroup(request);

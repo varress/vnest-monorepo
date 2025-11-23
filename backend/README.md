@@ -178,12 +178,33 @@ V3__add_groups_table.sql
 
 ## API Documentation
 
-### Public Endpoints (No Authentication Required)
+The API is fully documented using **OpenAPI 3.0** (Swagger). The documentation is automatically generated from code annotations and stays up-to-date with the implementation.
 
+### Interactive API Documentation (Swagger UI)
 
-### Admin Endpoints (Requires ADMIN Role)
+Access the interactive API documentation at:
+```
+http://localhost:8080/swagger-ui.html
+```
 
-Admin endpoints are accessed via the web UI at `http://localhost:8080/` after login.
+**Features:**
+- Browse all available endpoints
+- View request/response schemas
+- Test endpoints directly from the browser
+- See example requests and responses
+- Download OpenAPI specification
+
+### OpenAPI Specification
+
+The OpenAPI specification is available in JSON format:
+```
+http://localhost:8080/v3/api-docs
+```
+
+**Frontend Integration:**
+- Use the OpenAPI spec to generate TypeScript types
+- Generate API client libraries automatically
+- Ensure frontend stays in sync with backend API changes
 
 ## Security
 
@@ -201,7 +222,8 @@ Security is configured in `config/SecurityConfig.java`:
 @EnableWebSecurity
 public class SecurityConfig {
     // Form login for admin UI
-    // Public access to /api/**
+    // Public access to /api/** (GET requests)
+    // Public access to /v3/api-docs/**, /swagger-ui/** (OpenAPI documentation)
     // ADMIN role required for admin endpoints
 }
 ```
@@ -246,6 +268,36 @@ The admin UI provides:
 - Served from root path (`/`) after authentication
 
 ## Development Workflow
+
+### Adding New API Endpoints
+
+When creating new REST API endpoints, add OpenAPI annotations to automatically update the documentation:
+
+```java
+@RestController
+@RequestMapping("/api/example")
+@Tag(name = "Example", description = "Example API endpoints")
+public class ExampleController {
+
+    @Operation(
+        summary = "Get example data",
+        description = "Detailed description of what this endpoint does"
+    )
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+        responseCode = "200",
+        description = "Success response",
+        content = @Content(schema = @Schema(implementation = YourResponseDto.class))
+    )
+    @GetMapping
+    public ResponseEntity<YourResponseDto> getExample(
+        @Parameter(description = "Parameter description", example = "exampleValue")
+        @RequestParam String param) {
+        // Implementation
+    }
+}
+```
+
+See `WordController.java` for a complete example.
 
 ### Code Quality
 
