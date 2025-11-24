@@ -102,6 +102,10 @@ export const SemanticColors = {
   highContrastButtonSuccess: '#4caf50', 
   highContrastButtonDisabled: '#e14c4cff', 
   highContrastButtonTextDisabled: '#8515e1ff', 
+
+  // History screen bars
+  historyBarBackground: '#f0d48d',
+  historyBarCorrect: '#cedcab',
 } as const;
 
 // ============================================
