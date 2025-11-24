@@ -4,7 +4,7 @@ import { Colors } from '@/constants/colors';
 export function LoadingView() {
   return (
     <View style={styles.container}>
-      <ActivityIndicator size="large" color="#007AFF" />
+      <ActivityIndicator testID="loading-indicator" size="large" color={Colors.primary} />
       <Text style={styles.loadingText}>Loading word data...</Text>
     </View>
   );

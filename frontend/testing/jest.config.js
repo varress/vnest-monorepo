@@ -11,6 +11,11 @@ module.exports = {
   moduleNameMapper: {'^@/(.*)$': '<rootDir>/$1'},
 
   transformIgnorePatterns: [
-    "node_modules/(?!(expo|react-native|@react-native|expo-modules-core|@expo|expo-router)/)"
-  ]
+    "node_modules/(?!(expo|react-native|@react-native|expo-modules-core|@expo|expo-router|expo-symbols|@react-navigation|react-native-reanimated|expo-asset|react-native-worklets|expo-constants|expo-linking)/)"
+  ],
+
+  reporters: [
+    "default",
+    ["jest-html-reporter", { "pageTitle": "Test Report" }]
+  ],
 };
