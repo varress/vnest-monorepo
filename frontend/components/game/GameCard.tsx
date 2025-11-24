@@ -90,6 +90,7 @@ export function GameCard({
       onLayout={handleLayout}
     >
       <Animated.View
+        testID="game-card"
         style={[
           styles.baseCard,
           {

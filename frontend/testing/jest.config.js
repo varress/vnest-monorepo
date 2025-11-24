@@ -4,7 +4,7 @@ module.exports = {
   preset: 'jest-expo',
   testEnvironment: 'jsdom',
 
-  transform: {'^.+\\.tsx?$': 'ts-jest'}, // Allow use of TS files
+  //transform: {'^.+\\.tsx?$': 'ts-jest'}, // Allow use of TS files
   testMatch: ['**/__tests__/**/*.test.ts?(x)'],
  
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
