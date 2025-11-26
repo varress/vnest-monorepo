@@ -1,6 +1,6 @@
 // Generated using ClaudeCode. Code has been rechecked and altered.
 
-import { databaseMock }   from "../__mocks__/databaseMock";
+import { databaseMock }   from "@/testing/__mocks__/databaseMock";
 import { BaseController } from "@/controllers/realm_controllers/BaseController";
 
 interface TestItem {
