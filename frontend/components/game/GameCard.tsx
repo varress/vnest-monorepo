@@ -33,8 +33,8 @@ export function GameCard({
 
   const handleLayout = (event: any) => {
     if (cardId && onLayout && parentRef?.current) {
-      // Small delay to ensure parent layout is complete
-      setTimeout(() => {
+      // Use requestAnimationFrame for immediate but safe measurement
+      requestAnimationFrame(() => {
         if (cardRef.current && parentRef.current) {
           cardRef.current?.measureLayout(
             parentRef.current,
@@ -52,7 +52,7 @@ export function GameCard({
             (error: any) => console.error('❌ measureLayout error:', error)
           );
         }
-      }, 100); // Increased delay for more reliable measurements
+      });
     }
   };
   

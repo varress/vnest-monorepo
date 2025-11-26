@@ -23,7 +23,7 @@ export default function HomeScreen() {
       ) : (
         <Text>No data available</Text>
       )}
-      <Text style={styles.title}>Puhupala</Text>
+      <Text style={styles.title}>VNeST TerapiaApp</Text>
 
       <TouchableOpacity style={styles.button} onPress={() => router.push('/play')}>
         <Text style={styles.buttonText}><FontAwesome name="play" size={48} color="black" /> Aloita peli</Text>
