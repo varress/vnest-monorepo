@@ -1,0 +1,430 @@
+
+[{
+    "verb": "SAADA",
+    "groupId": 0,
+    "groupName": "Taso 1",
+    "pairs": [
+        ["koira", "luu"],
+        ["synttärisankari", "lahja"]
+    ]
+  },
+{
+    "verb": "LUKEA",
+    "groupId": 0,
+    "groupName": "Taso 1",
+    "pairs": [
+        ["mies", "sanomalehti"],
+        ["lapsi", "satu"]
+    ]
+  },
+{
+    "verb": "OTTAA",
+    "groupId": 0,
+    "groupName": "Taso 1",
+    "pairs": [
+        ["valokuvaaja", "kuva"],
+        ["yrittäjä", "riski"]
+    ]
+  },
+  {
+    "verb": "PIIRTÄÄ",
+    "groupId": 0,
+    "groupName": "Taso 1",
+    "pairs": [
+        ["taiteilija", "muotokuva"],
+        ["arkkitehti", "pohjapiirros"]
+    ]
+  },
+  {
+    "verb": "VAIKUTTAA",
+    "groupId": 0,
+    "groupName": "Taso 1",
+    "pairs": [
+        ["lääke", "kipu"],
+        ["poliitikko", "laki"]
+    ]
+  },
+    {
+    "verb": "AUTTAA",
+    "groupId": 0,
+    "groupName": "Taso 1",
+    "pairs": [
+        ["hoitaja", "potilas"],
+        ["opettaja", "oppilas"]
+    ]
+  },
+  {
+    "verb": "MUODOSTAA",
+    "groupId": 0,
+    "groupName": "Taso 1",
+    "pairs": [
+        ["oppilaat", "ryhmä"],
+        ["sana", "lause"]
+    ]
+  },
+  {
+    "verb": "JÄÄDÄ",
+    "groupId": 0,
+    "groupName": "Taso 1",
+    "pairs": [
+        ["oppilas", "jälki-istunto"],
+        ["bussi", "pysäkki"]
+    ]
+  },
+  {
+    "verb": "ON",
+    "groupId": 0,
+    "groupName": "Taso 1",
+    "pairs": [
+        ["kivi", "kova"],
+        ["pumpuli", "pehmeä"]
+    ]
+  },
+  
+    {
+    "verb": "UNOHTAA",
+    "groupId": 0,
+    "groupName": "Taso 1",
+    "pairs": [
+        ["johtaja", "kokous"],
+        ["jalkapalloilija", "juomapullo"]
+    ]
+  },
+    {
+    "verb": "LÖYTÄÄ",
+    "groupId": 0,
+    "groupName": "Taso 1",
+    "pairs": [
+        ["lapsi", "lapaset"],
+        ["opiskelija", "asunto"]
+    ]
+  },
+    {
+    "verb": "PELÄTÄ",
+    "groupId": 0,
+    "groupName": "Taso 1",
+    "pairs": [
+        ["lapsi", "pimeä"],
+        ["hiiri", "kissa"]
+    ]
+  },
+    {
+    "verb": "PUKEA",
+    "groupId": 0,
+    "groupName": "Taso 1",
+    "pairs": [
+        ["lapsi", "kurahaalari"],
+        ["sulhanen", "puku"]
+    ]
+  },
+    {
+    "verb": "KUUNNELLA",
+    "groupId": 0,
+    "groupName": "Taso 1",
+    "pairs": [
+        ["opiskelija", "luento"],
+        ["isoäiti", "radio"]
+    ]
+  },
+    {
+    "verb": "MENNÄ",
+    "groupId": 0,
+    "groupName": "Taso 1",
+    "pairs": [
+        ["lintu", "pesä"],
+        ["mato", "multa"]
+    ]
+  },
+  {
+    "verb": "AJAA",
+    "groupId": 1, 
+    "groupName": "Taso 2",
+    "pairs": [
+        ["lapsi", "pyörä"],
+        ["maanviljelijä", "traktori"],
+        ["kuljettaja", "Kilpa-auto"]
+
+    ]
+  },{
+    "verb": "RAKENTAA",
+    "groupId": 1, 
+    "groupName": "Taso 2",
+    "pairs": [
+        ["puuseppä", "pöytä"],
+        ["tyttö", "hiekkalinna"],
+        ["insinööri", "silta"]
+            ]
+  },{
+    "verb": "SYÖDÄ",
+    "groupId": 1, 
+    "groupName": "Taso 2",
+    "pairs": [
+        ["koira", "luu"],
+        ["orava", "käpy"],
+        ["nainen", "hampurilainen"]
+    ]
+  },{
+    "verb": "JUODA",
+    "groupId": 1, 
+    "groupName": "Taso 2",
+    "pairs": [
+        ["mies", "kahvi"],
+        ["kissa", "vesi"],
+        ["lapsi", "pillimehu"]
+    ]
+  },{
+    "verb": "SOITTAA",
+    "groupId": 1, 
+    "groupName": "Taso 2",
+    "pairs": [
+        ["muusikko", "kitara"],
+        ["nuori", "puhelin"],
+        ["postimies", "ovikello"]
+
+    ]
+  },{
+    "verb": "MENNÄ",
+    "groupId": 1, 
+    "groupName": "Taso 2",
+    "pairs": [
+        ["isä", "työ"],
+        ["pikkusisko", "päiväkoti"],
+        ["koira", "koppi"]
+
+    ]
+  },{
+    "verb": "KORJATA",
+    "groupId": 1, 
+    "groupName": "Taso 2",
+    "pairs": [
+        ["mekaanikko", "auto"],
+        ["rakentaja", "katto"],
+        ["suutari", "kengät"]
+    ]
+  },{
+    "verb": "PELATA",
+    "groupId": 1, 
+    "groupName": "Taso 2",
+    "pairs": [
+        ["urheilija", "jalkapallo"],
+        ["lapset", "shakki"],
+        ["isovanhemmat", "piiloleikki"]
+    ]
+  },{
+    "verb": "TEHDÄ",
+    "groupId": 1, 
+    "groupName": "Taso 2",
+    "pairs": [
+        ["isoäiti", "ristikko"],
+        ["pikkuveli", "palapeli"],
+        ["kokki", "ruoka"]
+    ]
+  },{
+    "verb": "KIRJOITTAA",
+    "groupId": 1, 
+    "groupName": "Taso 2",
+    "pairs": [
+        ["toimittaja", "lehtiartikkeli"],
+        ["oppilas", "essee"],
+        ["kirjailija", "kirja"]
+    ]
+  },{
+    "verb": "AVATA",
+    "groupId": 1, 
+    "groupName": "Taso 2",
+    "pairs": [
+        ["Isä", "televisio"],
+        ["hovimestari", "ovi"],
+        ["avain", "lukko"]
+    ]
+  },{
+    "verb": "MYYDÄ",
+    "groupId": 1, 
+    "groupName": "Taso 2",
+    "pairs": [
+        ["torimyyjä", "mansikka"],
+        ["ständimyydä", "sähkö"],
+        ["asuntomyyjä", "talo"]
+    ]
+  },{
+    "verb": "SULKEA",
+    "groupId": 1, 
+    "groupName": "Taso 2",
+    "pairs": [
+        ["vartija", "kauppa"],
+        ["poika", "repun"],
+        ["johtaja", "kokous"]
+    ]
+  },{
+    "verb": "LEIKATA",
+    "groupId": 1, 
+    "groupName": "Taso 2",
+    "pairs": [
+        ["kampaaja", "hiukset"],
+        ["käsityöopettaja", "kangas"],
+        ["kokki", "lihaa"]
+    ]
+  },{
+    "verb": "HEITTÄÄ",
+    "groupId": 1, 
+    "groupName": "Taso 2",
+    "pairs": [
+        ["setä", "tikka"],
+        ["lapsi", "pallo"],
+        ["urheilija", "keihäs"]
+    ]
+  },
+{
+    "verb": "ANTAA",
+    "groupId": 2, 
+    "groupName": "Taso 3",
+    "pairs": [
+        ["opettaja", "tehtävä"],
+        ["lääkäri", "resepti"],
+        ["ystävä", "halaus"],
+        ["joulupukki", "joululahja"]
+   ]
+  },{
+    "verb": "KANTAA",
+    "groupId": 2, 
+    "groupName": "Taso 3",
+    "pairs": [
+        ["tarjoilija", "tarjotin"],
+        ["lapsi", "reppu"],
+        ["postinjakaja", "kirje"],
+        ["koira", "keppi"]
+   ]
+  },{
+    "verb": "ETSIÄ",
+    "groupId": 2, 
+    "groupName": "Taso 3",
+    "pairs": [
+        ["lapsi", "lelu"],
+        ["tutkija", "tieto"],
+        ["poliisi", "roisto"],
+        ["orava", "käpy"]
+   ]
+  },{
+    "verb": "ON",
+    "groupId": 2, 
+    "groupName": "Taso 3",
+    "pairs": [
+        ["lapsi", "iloinen"],
+        ["kissa", "eläin"],
+        ["ruusu", "punainen"],
+        ["yö", "pimeä"]
+   ]
+  },{
+    "verb": "HYPÄTÄ",
+    "groupId": 2, 
+    "groupName": "Taso 3",
+    "pairs": [
+        ["uimari", "uima-allas"],
+        ["lapset", "hyppynaru"],
+        ["sammakko", "lätäkkö"],
+        ["hevonen", "este"]
+   ]
+  },{
+    "verb": "SAADA",
+    "groupId": 2, 
+    "groupName": "Taso 3",
+    "pairs": [
+        ["oppilas", "arvosana"],
+        ["puoliso", "kukkia"],
+        ["urheilija", "palkinto"],
+        ["työntekijä", "palkka"]
+   ]
+  },{
+    "verb": "NOSTAA",
+    "groupId": 2, 
+    "groupName": "Taso 3",
+    "pairs": [
+        ["äiti", "vauva"],
+        ["urheilija", "paino"],
+        ["lapsi", "lelu"],
+        ["nosturi", "lava"]
+   ]
+  },{
+    "verb": "ODOTTAA",
+    "groupId": 2, 
+    "groupName": "Taso 3",
+    "pairs": [
+        ["nainen", "vauva"],
+        ["kaupunkilainen", "bussi"],
+        ["lapset", "kesäloma"],
+        ["potilas", "diagnoosi"]
+   ]
+  },{
+    "verb": "KÄYTTÄÄ",
+    "groupId": 2, 
+    "groupName": "Taso 3",
+    "pairs": [
+        ["ajaja", "turvavyö"],
+        ["pyöräilijä", "kypärä"],
+        ["remontoija", "kuulosuojain"],
+        ["veneilijä", "pelastusliivi"]
+   ]
+  },{
+    "verb": "PUKEA",
+    "groupId": 2, 
+    "groupName": "Taso 3",
+    "pairs": [
+        ["veneilijä", "mekko"],
+        ["kokki", "essu"],
+        ["rullalautailija", "polvisuojat"],
+        ["poliisi", "uniformu"]
+   ]
+  },{
+    "verb": "ASUA",
+    "groupId": 2, 
+    "groupName": "Taso 3",
+    "pairs": [
+        ["ihminen", "talo"],
+        ["tiikeri", "viidakko"],
+        ["valas", "meri"],
+        ["kameli", "aavikko"]
+   ]
+  },{
+    "verb": "TEHDÄ",
+    "groupId": 2, 
+    "groupName": "Taso 3",
+    "pairs": [
+        ["voimistelija", "voltti"],
+        ["kirjailija", "kirja"],
+        ["leipuri", "pulla"],
+        ["taiteilija", "taulu"]
+   ]
+  },{
+    "verb": "OSTAA",
+    "groupId": 2, 
+    "groupName": "Taso 3",
+    "pairs": [
+        ["lapsi", "lelu"],
+        ["nainen", "käsilaukku"],
+        ["maalari", "pensseli"],
+        ["ompelija", "kangas"]
+   ]
+  },{
+    "verb": "RAKASTAA",
+    "groupId": 2, 
+    "groupName": "Taso 3",
+    "pairs": [
+        ["kokki", "ruoka"],
+        ["urheilija", "liikkuminen"],
+        ["eläintenhoitaja", "eläin"],
+        ["retkeilijä", "luonto"]
+   ]
+  },{
+    "verb": "MENNÄ",
+    "groupId": 2, 
+    "groupName": "Taso 3",
+    "pairs": [
+        ["hiiri", "kolo"],
+        ["potilas", "lääkäri"],
+        ["makaronilaatikko", "uuni"],
+        ["kolikko", "säästöpossu"]
+   ]
+}
+]
+
+
