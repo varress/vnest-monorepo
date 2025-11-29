@@ -53,7 +53,7 @@ export const avpService = {
 
     isCorrectCombination: async (agent: Agent, verb: Verb, patient: Patient): Promise<boolean> => {
         if (agent === null || verb === null || patient === null) return false;
-        const answer = await avpTrioController.IsCorrentCombination(agent.id, verb.id, patient.id);
+        const answer = await avpTrioController.IsCorrectCombination(agent.id, verb.id, patient.id);
         if (answer && Platform.OS !== "web") { 
             const trioId = await avpTrioController.GetIdByAgentVerbPatient(agent.id, verb.id, patient.id);
             historyService.set(trioId);

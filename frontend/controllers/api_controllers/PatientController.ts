@@ -1,7 +1,8 @@
-import { Patient } from "@/database/schemas";
+import { ApiCombination, ApiResponse, mapAVP_ApiToTrio, Patient } from "@/database/schemas";
 import { ISubjectObjectController } from "../interfaces/ISubjectObjectController";
 import { avpTrioController_api } from "./AVPTrioController";
 import { BaseController } from "./BaseController";
+import { API_URL } from "@/config";
 
 export class PatientController extends BaseController<Patient> implements ISubjectObjectController<Patient> {
     constructor() {
@@ -9,12 +10,19 @@ export class PatientController extends BaseController<Patient> implements ISubje
     }
 
     async getByVerbId(verbId: number, count: number = 3): Promise<Patient[]> {
-        const allTrios =         await avpTrioController_api.getAll();
-        const matchingTrios =    allTrios.filter(trio => trio.verbId === verbId);
+        const res = await fetch(`${API_URL}/api/combinations?verb_id=${verbId}`, { method: 'GET'});
+        if (!res.ok) return [];
+
+        const apiResult: ApiResponse<ApiCombination> = await res.json();
+        const matchingTrios = mapAVP_ApiToTrio(apiResult);
+        
         const allPatientIds =    matchingTrios.map(trio => trio.patientId);
-        const randomPatientIds = this.getRandomElements(allPatientIds, count);
-        const allPatients =      await this.getAll();
-        return allPatients.filter(agent => randomPatientIds.includes(agent.id));
+        const uniquePatientIds = [...new Set(allPatientIds)];
+        const randomPatientIds = this.getRandomElements(uniquePatientIds, count);
+        
+        const patients = await Promise.all(randomPatientIds.map(id => this.getById(id)));
+        
+        return patients.filter((patient): patient is Patient => patient !== null);
     }
 }
 
