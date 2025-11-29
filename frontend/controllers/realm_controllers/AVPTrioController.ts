@@ -27,7 +27,7 @@ export class AVPTrioController extends BaseController<AgentVerbPatient_Trio> imp
         return this.getRandomElements(all, count)
     }
 
-    async IsCorrentCombination(
+    async IsCorrectCombination(
         agentId:   number,
         verbId:    number,
         patientId: number
