@@ -17,12 +17,11 @@ export default function ProgressScreen() {
   const { setCurrentSet } = useDatabaseWordData();
   const [selectedSet, setSelectedSet] = useState<number | null>(null);
 
-  // Finnish verb exercise sets - 4 themed categories with emojis for better recognition
+  // Finnish verb exercise sets - now 3 sets - hardcoded for simplicity
   const sets: Set[] = [
-    { id: 0, name: "🍽️ Ruoka ja juoma" }, 
-    { id: 1, name: "🚗 Liikenne ja liikunta" }, 
-    { id: 2, name: "📚 Opiskelu ja työ" }, 
-    { id: 3, name: "🎨 Vapaa-aika ja harrastukset" }, 
+    { id: 0, name: "Taso 1" }, 
+    { id: 1, name: "Taso 2" }, 
+    { id: 2, name: "Taso 3" }, 
   ];
 
   const handleSetSelect = async (setId: number) => {
@@ -40,6 +39,7 @@ export default function ProgressScreen() {
   const handlePlaySet = () => {
     if (selectedSet !== null) {
       console.log('Progress screen: Navigating to play with set', selectedSet);
+      // Just navigate - the set was already loaded by handleSetSelect
       router.push('/play');
     }
   };

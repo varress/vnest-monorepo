@@ -59,12 +59,23 @@ export default function PlayScreen() {
   const [subjects, setSubjects] = useState<Agent[]>([]);
   const [objects, setObjects] = useState<Patient[]>([]);
 
-  // Initialize data on component mount
+  // Refresh data when screen comes into focus to get the latest set from database
+  useEffect(() => {
+    console.log('PlayScreen mounted - refreshing data');
+    refreshData();
+  }, [refreshData]);
+
+  // Initialize data on component mount and sync currentSetId with the actual current set
   useEffect(() => {
     if (wordData && wordData.currentVerb) {
+      console.log('Updating local state with wordData - verb:', wordData.currentVerb.value, 'groupId:', wordData.currentVerb.groupId);
       setVerbs([wordData.currentVerb]);
       setSubjects(wordData.subjects);
       setObjects(wordData.objects);
+      // Sync currentSetId with the actual group ID from the loaded verb
+      if (wordData.currentVerb.groupId !== undefined) {
+        setCurrentSetId(wordData.currentVerb.groupId);
+      }
     }
   }, [wordData]);
 
