@@ -134,6 +134,17 @@ export const ConnectionColors = {
   lineGlow: 'rgba(178, 22, 26, 0.3)',
 } as const;
 
+// Distinct colors for multiple connection lines
+export const ConnectionLineColors = [
+  '#4ECDC4', // Teal
+  '#FF6B6B', // Red
+  '#FFD93D', // Yellow
+  '#A78BFA', // Purple
+  '#F59E0B', // Orange
+  '#10B981', // Green
+  '#EC4899', // Pink
+] as const;
+
 // ============================================
 // 6. THEMED COLORS (For different sets/modes)
 // ============================================
@@ -189,6 +200,7 @@ export const Colors = {
   ...ShadowColors,
   ...ConnectionColors,
   ...ThemedColors,
+  connectionLineColors: ConnectionLineColors,
 } as const;
 
 // ============================================

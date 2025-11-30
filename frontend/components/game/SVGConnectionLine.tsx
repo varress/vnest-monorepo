@@ -79,7 +79,7 @@ export const SVGConnectionLine: React.FC<SVGConnectionLineProps> = ({
           y1={relativeFromY}
           x2={relativeToX}
           y2={relativeToY}
-          stroke={`url(#lineGradient-${fromX}-${fromY})`}
+          stroke={color}
           strokeWidth={strokeWidth}
           strokeLinecap="round"
         />

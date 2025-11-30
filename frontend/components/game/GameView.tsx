@@ -339,14 +339,21 @@ export function GameView({
       </View>
 
       {/* Render connection lines for correct pairs only */}
-      {connections.map((connection, index) => (
-        <SVGConnectionLine
-          key={`${connection.startCardId}-${connection.endCardId}-${index}`}
-          fromPosition={connection.startPosition}
-          toPosition={connection.endPosition}
-          color={Colors.success}
-        />
-      ))}
+      {connections.map((connection, index) => {
+        // Assign distinct color to each pair
+        const pairIndex = Math.floor(index / 2); // Each pair has 2 connections (subject->verb, verb->object)
+        const colorIndex = pairIndex % Colors.connectionLineColors.length;
+        const lineColor = Colors.connectionLineColors[colorIndex];
+        
+        return (
+          <SVGConnectionLine
+            key={`${connection.startCardId}-${connection.endCardId}-${index}`}
+            fromPosition={connection.startPosition}
+            toPosition={connection.endPosition}
+            color={lineColor}
+          />
+        );
+      })}
       
       {/* Centered Overlay Toast */}
       {feedback && (
