@@ -85,25 +85,6 @@ export default function PlayScreen() {
     setFeedback(null);
   }, [verbs[0]?.id]);
 
-  const handleContinue = async () => {
-    try {
-      // Check if all verbs in the set are completed
-      const totalVerbsInSet = wordData?.verbs.length || 0;
-      const allVerbsCompleted = (completedVerbsCount + 1) >= totalVerbsInSet;
-      
-      if (allVerbsCompleted) {
-        setShowCongrats(true);
-        return;
-      }
-      
-      await nextVerb();
-      setCorrectPairs([]);
-      setFeedback(null);
-    } catch (error) {
-      console.error('Error moving to next verb:', error);
-    }
-  };
-
   const handlePreviousVerb = async () => {
     try {
       // Simply call nextVerb to go to previous (it cycles through verbs)
@@ -139,10 +120,22 @@ export default function PlayScreen() {
       
       if (allPairsConnected) {
         // Increment completed verbs count
-        setCompletedVerbsCount(prev => prev + 1);
-        // Move to next verb after short delay
+        const newCompletedCount = completedVerbsCount + 1;
+        setCompletedVerbsCount(newCompletedCount);
+        
+        // Check if all verbs in the set are completed
+        const totalVerbsInSet = wordData?.verbs.length || 0;
+        const allVerbsCompleted = newCompletedCount >= totalVerbsInSet;
+        
+        // Move to next verb or show congrats after short delay
         setTimeout(() => {
-          handleContinue();
+          if (allVerbsCompleted) {
+            setShowCongrats(true);
+          } else {
+            nextVerb();
+            setCorrectPairs([]);
+            setFeedback(null);
+          }
         }, 1500);
       } else {
         // Clear feedback after delay
