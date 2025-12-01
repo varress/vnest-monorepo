@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, ScrollView } from 'react-native';
 import { useResponsiveLayout } from '@/hooks/useResponsiveLayout';
 import { responsiveFontSize, isDesktop } from '@/utils/responsive';
-import { Colors } from '@/constants/colors';
+import { Colors, DarkModeColors, getThemedColors } from '@/constants/colors';
+import { useTheme } from '@/contexts/ThemeContext';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const spacing = {
   sm: 8,
@@ -11,10 +13,15 @@ const spacing = {
   xl: 24,
 };
 
+type ThemeMode = 'light' | 'dark';
+
 export default function SettingsScreen() {
   const [fontSize, setFontSize] = useState(20);
-  const [highContrast, setHighContrast] = useState(false);
+  const { themeMode, isDarkMode, highContrast, setThemeMode, toggleHighContrast } = useTheme();
   const layout = useResponsiveLayout();
+  
+  // Get themed colors based on current mode
+  const colors = getThemedColors(isDarkMode, highContrast);
   
   const MIN_FONT_SIZE = 16;
   const MAX_FONT_SIZE = 32;
@@ -41,44 +48,45 @@ export default function SettingsScreen() {
   };
 
   const toggleContrast = () => {
-    setHighContrast(!highContrast);
+    toggleHighContrast();
   };
 
   return (
     <ScrollView 
       style={[
         styles.container,
+        { backgroundColor: colors.background },
         layout.isMobile && styles.mobileContainer,
-        highContrast && styles.highContrastContainer
       ]}
     >
       <Text style={[
         styles.title,
-        highContrast && styles.highContrastText,
+        { color: colors.text },
         { fontSize: isDesktop() ? 32 : responsiveFontSize(layout.isMobile ? 32 : 40) }
       ]}>
         Asetukset
       </Text>
 
       {/* Font Size Section - Preset Buttons */}
-      <View style={styles.section}>
+      {/*
+      <View style={[styles.section, { backgroundColor: colors.backgroundGray, borderColor: colors.border }]}>
         <Text style={[
           styles.sectionTitle,
-          highContrast && styles.highContrastText,
+          { color: colors.text },
           { fontSize: isDesktop() ? 20 : responsiveFontSize(layout.isMobile ? 20 : 24) }
         ]}>
           Tekstin koko
         </Text>
         
-        {/* Quick preset buttons */}
         <View style={styles.presetContainer}>
           {FONT_PRESETS.map((preset) => (
             <TouchableOpacity
               key={preset.value}
               style={[
                 styles.presetButton,
+                { backgroundColor: isDarkMode ? colors.backgroundGray : "#ffffff", borderColor: colors.border },
                 fontSize === preset.value && styles.presetButtonActive,
-                highContrast && styles.highContrastButton
+                fontSize === preset.value && { backgroundColor: colors.primaryLight, borderColor: colors.primary }
               ]}
               onPress={() => selectPreset(preset.value)}
               activeOpacity={0.7}
@@ -88,15 +96,15 @@ export default function SettingsScreen() {
             >
               <Text style={[
                 styles.presetIcon,
-                { fontSize: preset.value },
-                fontSize === preset.value && styles.presetIconActive
+                { fontSize: preset.value, color: colors.textLight },
+                fontSize === preset.value && { color: colors.primary }
               ]}>
                 {preset.icon}
               </Text>
               <Text style={[
                 styles.presetLabel,
-                fontSize === preset.value && styles.presetLabelActive,
-                highContrast && styles.highContrastText
+                { color: colors.textLight },
+                fontSize === preset.value && { color: colors.primary, fontWeight: 'bold' }
               ]}>
                 {preset.label}
               </Text>
@@ -104,13 +112,13 @@ export default function SettingsScreen() {
           ))}
         </View>
 
-        {/* Fine-tune controls */}
         <View style={styles.controlRow}>
           <TouchableOpacity
             style={[
               styles.fontButton,
+              { backgroundColor: colors.primary },
               fontSize <= MIN_FONT_SIZE && styles.fontButtonDisabled,
-              highContrast && styles.highContrastButton
+              fontSize <= MIN_FONT_SIZE && { backgroundColor: colors.buttonDisabled }
             ]}
             onPress={decreaseFontSize}
             disabled={fontSize <= MIN_FONT_SIZE}
@@ -120,24 +128,24 @@ export default function SettingsScreen() {
           >
             <Text style={[
               styles.fontButtonText,
-              fontSize <= MIN_FONT_SIZE && styles.fontButtonTextDisabled
+              { color: colors.buttonText },
+              fontSize <= MIN_FONT_SIZE && { color: colors.buttonTextDisabled }
             ]}>−</Text>
           </TouchableOpacity>
 
           <View style={[
             styles.fontPreview,
-            highContrast && styles.highContrastPreview
+            { backgroundColor: isDarkMode ? colors.backgroundGray : "#ffffff", borderColor: colors.border }
           ]}>
             <Text style={[
               styles.previewText,
-              { fontSize },
-              highContrast && styles.highContrastText
+              { fontSize, color: colors.textDark }
             ]}>
               Esimerkki
             </Text>
             <Text style={[
               styles.fontSizeLabel,
-              highContrast && styles.highContrastText
+              { color: colors.textLight }
             ]}>
               {fontSize}px
             </Text>
@@ -146,8 +154,9 @@ export default function SettingsScreen() {
           <TouchableOpacity
             style={[
               styles.fontButton,
+              { backgroundColor: colors.primary },
               fontSize >= MAX_FONT_SIZE && styles.fontButtonDisabled,
-              highContrast && styles.highContrastButton
+              fontSize >= MAX_FONT_SIZE && { backgroundColor: colors.buttonDisabled }
             ]}
             onPress={increaseFontSize}
             disabled={fontSize >= MAX_FONT_SIZE}
@@ -157,17 +166,97 @@ export default function SettingsScreen() {
           >
             <Text style={[
               styles.fontButtonText,
-              fontSize >= MAX_FONT_SIZE && styles.fontButtonTextDisabled
+              { color: colors.buttonText },
+              fontSize >= MAX_FONT_SIZE && { color: colors.buttonTextDisabled }
             ]}>+</Text>
           </TouchableOpacity>
         </View>
+      </View> 
+      */}
+
+      {/* Dark Mode Section */}
+      <View style={[styles.section, { backgroundColor: colors.backgroundGray, borderColor: colors.border }]}>
+        <Text style={[
+          styles.sectionTitle,
+          { color: colors.text },
+          { fontSize: isDesktop() ? 20 : responsiveFontSize(layout.isMobile ? 20 : 24) }
+        ]}>
+          Tumma tila
+        </Text>
+        
+        {/* Theme mode options */}
+        <View style={styles.themeOptionsContainer}>
+          <TouchableOpacity
+            style={[
+              styles.themeOption,
+              { backgroundColor: isDarkMode ? colors.backgroundGray : "#ffffff", borderColor: colors.border },
+              themeMode === 'light' && styles.themeOptionActive,
+              themeMode === 'light' && { borderColor: colors.primary }
+            ]}
+            onPress={() => setThemeMode('light')}
+            activeOpacity={0.7}
+            accessibilityLabel="Vaalea tila"
+            accessibilityRole="button"
+            accessibilityState={{ selected: themeMode === 'light' }}
+          >
+            <Ionicons 
+              name="sunny" 
+              size={32} 
+              color={themeMode === 'light' ? colors.primary : colors.textLight} 
+            />
+            <Text style={[
+              styles.themeOptionLabel,
+              { color: colors.text },
+              themeMode === 'light' && { color: colors.primary, fontWeight: 'bold' }
+            ]}>
+              Vaalea
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[
+              styles.themeOption,
+              { backgroundColor: isDarkMode ? colors.backgroundGray : "#ffffff", borderColor: colors.border },
+              themeMode === 'dark' && styles.themeOptionActive,
+              themeMode === 'dark' && { borderColor: colors.primary }
+            ]}
+            onPress={() => setThemeMode('dark')}
+            activeOpacity={0.7}
+            accessibilityLabel="Tumma tila"
+            accessibilityRole="button"
+            accessibilityState={{ selected: themeMode === 'dark' }}
+          >
+            <Ionicons 
+              name="moon" 
+              size={32} 
+              color={themeMode === 'dark' ? colors.primary : colors.textLight} 
+            />
+            <Text style={[
+              styles.themeOptionLabel,
+              { color: colors.text },
+              themeMode === 'dark' && { color: colors.primary, fontWeight: 'bold' }
+            ]}>
+              Tumma
+            </Text>
+          </TouchableOpacity>
+
+        </View>
+        
+        {themeMode === 'system' && (
+          <Text style={[
+            styles.helperText,
+            { color: colors.textLight }
+          ]}>
+            Seuraa laitteen asetuksia
+          </Text>
+        )}
       </View>
 
       {/* High Contrast Section */}
-      <View style={styles.section}>
+      <View style={[styles.section, { backgroundColor: colors.backgroundGray, borderColor: colors.border }]}>
         <Text style={[
           styles.sectionTitle,
-          highContrast && styles.highContrastText,
+          { color: colors.text },
           { fontSize: isDesktop() ? 20 : responsiveFontSize(layout.isMobile ? 20 : 24) }
         ]}>
           Värikontrasti
@@ -176,8 +265,9 @@ export default function SettingsScreen() {
         <TouchableOpacity
           style={[
             styles.toggleButton,
+            { backgroundColor: isDarkMode ? colors.backgroundGray : "#ffffff", borderColor: colors.border },
             highContrast && styles.toggleButtonActive,
-            highContrast && styles.highContrastButton
+            highContrast && { backgroundColor: colors.primaryLight, borderColor: colors.primary }
           ]}
           onPress={toggleContrast}
           activeOpacity={0.7}
@@ -187,7 +277,8 @@ export default function SettingsScreen() {
         >
           <Text style={[
             styles.toggleText,
-            highContrast && styles.toggleTextActive,
+            { color: colors.text },
+            highContrast && { fontWeight: 'bold' },
             { fontSize: isDesktop() ? 18 : responsiveFontSize(layout.isMobile ? 18 : 22) }
           ]}>
             {highContrast ? '✓ Korkea kontrasti PÄÄLLÄ' : 'Korkea kontrasti POIS'}
@@ -421,6 +512,36 @@ const styles = StyleSheet.create({
   toggleTextActiveHighContrast: {
     color: Colors.highContrastButtonText,
     fontWeight: 'bold',
+  },
+  
+  // Dark mode section
+  themeOptionsContainer: {
+    flexDirection: 'row',
+    gap: spacing.md,
+    marginBottom: spacing.md,
+  },
+  themeOption: {
+    flex: 1,
+    padding: spacing.lg,
+    borderRadius: 12,
+    borderWidth: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 100,
+  },
+  themeOptionActive: {
+    borderWidth: 3,
+  },
+  themeOptionLabel: {
+    marginTop: spacing.sm,
+    fontSize: 14,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  helperText: {
+    fontSize: 14,
+    textAlign: 'center',
+    fontStyle: 'italic',
   },
 });
 

@@ -25,7 +25,8 @@ import {
   GameView,
   LoadingView
 } from '@/components/game';
-import { Colors } from '@/constants/colors';
+import { Colors, getThemedColors } from '@/constants/colors';
+import { useTheme } from '@/contexts/ThemeContext';
 import { Agent, Patient, Verb } from '@/database/schemas';
 import { useDatabaseWordData } from '@/hooks/useDatabaseWordData';
 import { useResponsiveLayout } from '@/hooks/useResponsiveLayout';
@@ -39,6 +40,8 @@ export default function PlayScreen() {
   const router = useRouter();
   const layout = useResponsiveLayout();
   const safeArea = getSafeAreaConfig();
+  const { isDarkMode, highContrast } = useTheme();
+  const colors = getThemedColors(isDarkMode, highContrast);
   
   // Database integration hook - manages language data and validation
   const { 
@@ -211,6 +214,7 @@ export default function PlayScreen() {
       <GameHeader />
       <View style={[
         styles.container,
+        { backgroundColor: colors.background },
         layout.isMobile && styles.mobileContainer,
         {
           paddingTop: safeArea.paddingTop,
@@ -246,8 +250,7 @@ export default function PlayScreen() {
 const styles = StyleSheet.create({
   container: { 
     flex: 1, 
-    padding: spacing.lg, 
-    backgroundColor: Colors.background 
+    padding: spacing.lg,
   },
   mobileContainer: {
     paddingHorizontal: spacing.md,

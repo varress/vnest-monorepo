@@ -4,7 +4,8 @@ import { isDesktop, responsiveFontSize, spacing } from '@/utils/responsive';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Colors } from '@/constants/colors';
+import { Colors, getThemedColors } from '@/constants/colors';
+import { useTheme } from '@/contexts/ThemeContext';
 
 interface Set {
   id: number;
@@ -15,6 +16,8 @@ export default function ProgressScreen() {
   const router = useRouter();
   const layout = useResponsiveLayout();
   const { setCurrentSet } = useDatabaseWordData();
+  const { isDarkMode, highContrast } = useTheme();
+  const colors = getThemedColors(isDarkMode, highContrast);
   const [selectedSet, setSelectedSet] = useState<number | null>(null);
 
   // Finnish verb exercise sets - now 3 sets - hardcoded for simplicity
@@ -48,11 +51,11 @@ export default function ProgressScreen() {
   const setsContainerStyle = layout.isMobile ? styles.mobileSetsContainer : styles.setsContainer;
 
   return (
-    <ScrollView style={containerStyle} showsVerticalScrollIndicator={false}>
-      <Text style={[styles.title, { fontSize: isDesktop() ? 32 : responsiveFontSize(layout.isMobile ? 32 : 40) }]}>
+    <ScrollView style={[containerStyle, { backgroundColor: colors.background }]} showsVerticalScrollIndicator={false}>
+      <Text style={[styles.title, { fontSize: isDesktop() ? 32 : responsiveFontSize(layout.isMobile ? 32 : 40), color: colors.text }]}>
         Valitse harjoitussetti
       </Text>
-      <Text style={[styles.subtitle, { fontSize: isDesktop() ? 18 : responsiveFontSize(layout.isMobile ? 18 : 22) }]}>
+      <Text style={[styles.subtitle, { fontSize: isDesktop() ? 18 : responsiveFontSize(layout.isMobile ? 18 : 22), color: colors.textLight }]}>
         💡 Napauta settiä aloittaaksesi
       </Text>
       
@@ -62,7 +65,9 @@ export default function ProgressScreen() {
             key={set.id}
             style={[
               layout.isMobile ? styles.mobileSetCard : styles.setCard,
-              selectedSet === set.id && styles.selectedSet
+              { backgroundColor: colors.primary, borderColor: colors.border },
+              selectedSet === set.id && styles.selectedSet,
+              selectedSet === set.id && { backgroundColor: colors.buttonSecondary, borderColor: colors.primaryDark }
             ]}
             onPress={() => handleSetSelect(set.id)}
             activeOpacity={0.7}
@@ -70,11 +75,11 @@ export default function ProgressScreen() {
             accessibilityRole="button"
             accessibilityState={{ selected: selectedSet === set.id }}
           >
-            <View style={styles.setNumberContainer}>
+            <View style={[styles.setNumberContainer, { backgroundColor: isDarkMode ? '#2c2c2c' : '#ffffff', borderColor: colors.border }]}>
               <Text style={[
                 styles.setNumber,
-                { fontSize: isDesktop() ? 36 : responsiveFontSize(layout.isMobile ? 36 : 52) },
-                selectedSet === set.id && styles.selectedSetText
+                { fontSize: isDesktop() ? 36 : responsiveFontSize(layout.isMobile ? 36 : 52), color: colors.primaryDark },
+                selectedSet === set.id && { color: colors.primary }
               ]}>
                 {set.id + 1}
               </Text>
@@ -83,8 +88,8 @@ export default function ProgressScreen() {
             <View style={styles.setNameContainer}>
               <Text style={[
                 styles.setName,
-                { fontSize: isDesktop() ? 20 : responsiveFontSize(layout.isMobile ? 20 : 26) },
-                selectedSet === set.id && styles.selectedSetText
+                { fontSize: isDesktop() ? 20 : responsiveFontSize(layout.isMobile ? 20 : 26), color: colors.text },
+                selectedSet === set.id && { color: colors.text }
               ]}>
                 {set.name}
               </Text>
@@ -99,6 +104,7 @@ export default function ProgressScreen() {
         <TouchableOpacity 
           style={[
             styles.playButton,
+            { backgroundColor: colors.success },
             layout.isMobile && styles.mobilePlayButton
           ]} 
           onPress={handlePlaySet}
@@ -108,7 +114,7 @@ export default function ProgressScreen() {
         >
           <Text style={[
             styles.playButtonText,
-            { fontSize: isDesktop() ? 22 : responsiveFontSize(layout.isMobile ? 22 : 26) }
+            { fontSize: isDesktop() ? 22 : responsiveFontSize(layout.isMobile ? 22 : 26), color: colors.buttonText }
           ]}>
             ▶️ Aloita harjoitus
           </Text>
@@ -119,7 +125,7 @@ export default function ProgressScreen() {
         <View style={styles.instructionContainer}>
           <Text style={[
             styles.instructionText,
-            { fontSize: isDesktop() ? 18 : responsiveFontSize(layout.isMobile ? 18 : 22) }
+            { fontSize: isDesktop() ? 18 : responsiveFontSize(layout.isMobile ? 18 : 22), color: colors.textLight }
           ]}>
             👆 Valitse setti ylhäältä
           </Text>
@@ -133,11 +139,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: Colors.background,
   },
   mobileContainer: {
     flex: 1,
-    backgroundColor: Colors.background,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.lg,
   },
@@ -145,11 +149,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 10,
     textAlign: 'center',
-    color: Colors.textDark,
   },
   subtitle: {
     textAlign: 'center',
-    color: Colors.textLight,
     marginBottom: 30,
   },
   setsContainer: {
@@ -162,17 +164,15 @@ const styles = StyleSheet.create({
     paddingBottom: spacing.xxl,
   },
   setCard: {
-    backgroundColor: Colors.buttonPrimary,
     borderRadius: 20,
     padding: 28,
     marginVertical: 14,
     borderWidth: 3,
-    borderColor: Colors.borderLight,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
     elevation: 3,
-    shadowColor: Colors.shadow,
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 3,
@@ -182,17 +182,15 @@ const styles = StyleSheet.create({
     minHeight: 100,
   },
   mobileSetCard: {
-    backgroundColor: Colors.buttonPrimary,
     borderRadius: 20,
     padding: spacing.xl,
     marginVertical: spacing.md,
     borderWidth: 3,
-    borderColor: Colors.borderLight,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
     elevation: 4,
-    shadowColor: Colors.shadow,
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 3,
@@ -202,15 +200,12 @@ const styles = StyleSheet.create({
     minHeight: 110,
   },
   selectedSet: {
-    backgroundColor: Colors.buttonSecondary,
-    borderColor: Colors.primary,
     borderWidth: 4,
     transform: [{ scale: 1.03 }],
     elevation: 6,
     shadowOpacity: 0.3,
   },
   setNumberContainer: {
-    backgroundColor: Colors.white,
     borderRadius: 16,
     width: 70,
     height: 70,
@@ -218,18 +213,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 20,
     borderWidth: 2,
-    borderColor: Colors.border,
   },
   setNumber: {
     fontWeight: 'bold',
-    color: Colors.primary,
   },
   setNameContainer: {
     flex: 1,
   },
   setName: {
     fontWeight: '600',
-    color: Colors.textDark,
     marginBottom: 8,
   },
   progressIndicator: {
@@ -241,26 +233,20 @@ const styles = StyleSheet.create({
     width: 12,
     height: 12,
     borderRadius: 6,
-    backgroundColor: Colors.backgroundGray,
     borderWidth: 1,
-    borderColor: Colors.border,
   },
   progressDotComplete: {
-    backgroundColor: Colors.success,
-    borderColor: Colors.successDark,
+    borderWidth: 1,
   },
-  selectedSetText: {
-    color: Colors.primary,
-  },
+  selectedSetText: {},
   playButton: {
-    backgroundColor: Colors.success,
     paddingVertical: 16,
     paddingHorizontal: 24,
     borderRadius: 12,
     alignItems: 'center',
     marginTop: 20,
     elevation: 3,
-    shadowColor: Colors.shadow,
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
@@ -276,7 +262,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
   },
   playButtonText: {
-    color: Colors.textDark,
     fontWeight: 'bold',
   },
   instructionContainer: {
@@ -285,7 +270,6 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   instructionText: {
-    color: Colors.textLight,
     textAlign: 'center',
   },
 });
