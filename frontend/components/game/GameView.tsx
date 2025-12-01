@@ -6,7 +6,8 @@ import { ScrollView, StyleSheet, Text, View, LayoutRectangle, TouchableOpacity }
 import { GameCard } from './GameCard';
 import { SVGConnectionLine } from './SVGConnectionLine';
 import { useRef, useEffect, useState } from 'react';
-import { Colors } from '@/constants/colors';
+import { Colors, getThemedColors } from '@/constants/colors';
+import { useTheme } from '@/contexts/ThemeContext';
 import { Ionicons } from '@expo/vector-icons';
 
 interface GameViewProps {
@@ -31,6 +32,8 @@ export function GameView({
   onNextVerb
 }: GameViewProps) {
   const layout = useResponsiveLayout();
+  const { isDarkMode, highContrast } = useTheme();
+  const colors = getThemedColors(isDarkMode, highContrast);
   const containerRef = useRef<View>(null);
   const [selectedSubject, setSelectedSubject] = useState<Agent | null>(null);
   const [selectedObject, setSelectedObject] = useState<Patient | null>(null);
@@ -158,30 +161,30 @@ export function GameView({
           {/* Title with Navigation Buttons */}
           <View style={styles.titleRow}>
             <TouchableOpacity 
-              style={styles.navButton}
+              style={[styles.navButton, { backgroundColor: colors.backgroundGray }]}
               onPress={onPreviousVerb}
               disabled={!onPreviousVerb}
             >
-              <Ionicons name="arrow-back" size={24} color={onPreviousVerb ? Colors.primary : Colors.textLight} />
+              <Ionicons name="arrow-back" size={24} color={onPreviousVerb ? colors.primary : colors.textLight} />
             </TouchableOpacity>
             
-            <Text style={[styles.title, { fontSize: isDesktop() ? 24 : responsiveFontSize(32) }]}>
+            <Text style={[styles.title, { fontSize: isDesktop() ? 24 : responsiveFontSize(32), color: colors.text }]}>
               {selectedSubject?.value || '[Kuka]'} {currentVerb?.value?.toLowerCase() || '[verb]'} {selectedObject?.value?.toLowerCase() || '[mitä]'}
             </Text>
             
             <TouchableOpacity 
-              style={styles.navButton}
+              style={[styles.navButton, { backgroundColor: colors.backgroundGray }]}
               onPress={onNextVerb}
               disabled={!onNextVerb}
             >
-              <Ionicons name="arrow-forward" size={24} color={onNextVerb ? Colors.primary : Colors.textLight} />
+              <Ionicons name="arrow-forward" size={24} color={onNextVerb ? colors.primary : colors.textLight} />
             </TouchableOpacity>
           </View>
 
           {/* Instruction */}
-          <View style={styles.instructionBox}>
-            <Text style={[styles.instructionText, { fontSize: responsiveFontSize(16) }]}>
-              💡 Yhdistä oikeat parit verbille <Text style={styles.boldText}>{currentVerb?.value}</Text>
+          <View style={[styles.instructionBox, { backgroundColor: isDarkMode ? '#2c2c2c' : colors.primaryLight, borderLeftColor: colors.primaryDark }]}>
+            <Text style={[styles.instructionText, { fontSize: responsiveFontSize(16), color: colors.primaryDark }]}>
+              💡 Yhdistä oikeat parit verbille <Text style={[styles.boldText, { color: colors.primaryDark }]}>{currentVerb?.value}</Text>
             </Text>
           </View>
 
@@ -195,7 +198,7 @@ export function GameView({
 
         {/* Subject Section */}
         <View style={styles.mobileSection}>
-          <Text style={[styles.sectionTitle, { fontSize: isDesktop() ? 18 : responsiveFontSize(20) }]}>
+          <Text style={[styles.sectionTitle, { fontSize: isDesktop() ? 18 : responsiveFontSize(20), color: colors.textLight }]}>
             Kuka?
           </Text>
           <View style={styles.mobileCardGrid}>
@@ -217,7 +220,7 @@ export function GameView({
 
         {/* Object Section */}
         <View style={styles.mobileSection}>
-          <Text style={[styles.sectionTitle, { fontSize: isDesktop() ? 18 : responsiveFontSize(20) }]}>
+          <Text style={[styles.sectionTitle, { fontSize: isDesktop() ? 18 : responsiveFontSize(20), color: colors.textLight }]}>
             Mitä?
           </Text>
           <View style={styles.mobileCardGrid}>
@@ -256,35 +259,35 @@ export function GameView({
       {/* Title with Navigation Buttons */}
       <View style={styles.titleRow}>
         <TouchableOpacity 
-          style={styles.navButton}
+          style={[styles.navButton, { backgroundColor: colors.backgroundGray }]}
           onPress={onPreviousVerb}
           disabled={!onPreviousVerb}
         >
-          <Ionicons name="arrow-back" size={28} color={onPreviousVerb ? Colors.primary : Colors.textLight} />
+          <Ionicons name="arrow-back" size={28} color={onPreviousVerb ? colors.primary : colors.textLight} />
         </TouchableOpacity>
         
-        <Text style={[styles.title, { fontSize: layout.isDesktop ? 24 : responsiveFontSize(40) }]}>
+        <Text style={[styles.title, { fontSize: layout.isDesktop ? 24 : responsiveFontSize(40), color: colors.text }]}>
           {selectedSubject?.value || '[Kuka]'} {currentVerb?.value?.toLowerCase() || '[verb]'} {selectedObject?.value?.toLowerCase() || '[mitä]'}
         </Text>
         
         <TouchableOpacity 
-          style={styles.navButton}
+          style={[styles.navButton, { backgroundColor: colors.backgroundGray }]}
           onPress={onNextVerb}
           disabled={!onNextVerb}
         >
-          <Ionicons name="arrow-forward" size={28} color={onNextVerb ? Colors.primary : Colors.textLight} />
+          <Ionicons name="arrow-forward" size={28} color={onNextVerb ? colors.primary : colors.textLight} />
         </TouchableOpacity>
       </View>
       
-      <View style={styles.instructionBox}>
-        <Text style={[styles.instructionText, { fontSize: layout.isDesktop ? 16 : responsiveFontSize(18) }]}>
-          💡 Yhdistä oikeat parit verbille <Text style={styles.boldText}>{currentVerb?.value}</Text>
+      <View style={[styles.instructionBox, { backgroundColor: isDarkMode ? '#2c2c2c' : colors.primaryLight, borderLeftColor: colors.primaryDark }]}>
+        <Text style={[styles.instructionText, { fontSize: layout.isDesktop ? 16 : responsiveFontSize(18), color: colors.primaryDark }]}>
+          💡 Yhdistä oikeat parit verbille <Text style={[styles.boldText, { color: colors.primaryDark }]}>{currentVerb?.value}</Text>
         </Text>
       </View>
       
       <View style={styles.row}>
         <View style={styles.cardColumn}>
-          <Text style={[styles.sectionTitle, { fontSize: layout.isDesktop ? 18 : responsiveFontSize(24) }]}>
+          <Text style={[styles.sectionTitle, { fontSize: layout.isDesktop ? 18 : responsiveFontSize(24), color: colors.textLight }]}>
             Kuka?
           </Text>
           {subjects.map((subject) => {
@@ -316,7 +319,7 @@ export function GameView({
         </View>
 
         <View style={styles.cardColumn}>
-          <Text style={[styles.sectionTitle, { fontSize: layout.isDesktop ? 18 : responsiveFontSize(24) }]}>
+          <Text style={[styles.sectionTitle, { fontSize: layout.isDesktop ? 18 : responsiveFontSize(24), color: colors.textLight }]}>
             Mitä?
           </Text>
           {objects.map((object) => {
@@ -357,8 +360,8 @@ export function GameView({
       {/* Centered Overlay Toast */}
       {feedback && (
         <View style={styles.overlayContainer}>
-          <View style={[styles.centeredToast, feedback === 'Oikein!' ? styles.toastCorrect : styles.toastIncorrect]}>
-            <Text style={styles.feedbackText}>{feedback}</Text>
+          <View style={[styles.centeredToast, { backgroundColor: feedback === 'Oikein!' ? colors.success : colors.error }]}>
+            <Text style={[styles.feedbackText, { color: colors.buttonText }]}>{feedback}</Text>
           </View>
         </View>
       )}
@@ -383,7 +386,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold', 
     flex: 1,
     textAlign: 'center',
-    color: Colors.text,
   },
   row: { 
     flexDirection: 'row', 
@@ -395,7 +397,6 @@ const styles = StyleSheet.create({
     fontWeight: '600', 
     marginBottom: 20, 
     textAlign: 'center',
-    color: Colors.textLight,
   },
   cardColumn: { 
     flex: 1, 
@@ -429,26 +430,21 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   instructionBox: {
-    backgroundColor: Colors.primaryLight,
     padding: spacing.sm,
     borderRadius: 12,
     marginBottom: spacing.lg,
     borderLeftWidth: 4,
-    borderLeftColor: Colors.primaryDark,
   },
   instructionText: {
-    color: Colors.primaryDark,
     textAlign: 'center',
     lineHeight: 22,
   },
   boldText: {
     fontWeight: 'bold',
-    color: Colors.primaryDark,
   },
   navButton: {
     padding: spacing.sm,
     borderRadius: 8,
-    backgroundColor: Colors.backgroundGray,
   },
   overlayContainer: {
     position: 'absolute',
@@ -472,14 +468,9 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 8,
   },
-  toastCorrect: {
-    backgroundColor: Colors.success,
-  },
-  toastIncorrect: {
-    backgroundColor: Colors.error,
-  },
+  toastCorrect: {},
+  toastIncorrect: {},
   feedbackText: {
-    color: Colors.buttonText,
     fontWeight: 'bold',
     fontSize: 36,
   },
