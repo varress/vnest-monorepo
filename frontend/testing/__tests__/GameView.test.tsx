@@ -6,7 +6,8 @@ describe('GameView', () => {
   const mockSubjects = [{ id: 1, value: 'Alice', type: "Agent" as const }];
   const mockObjects = [{ id: 2, value: 'Ball', type: "Patient" as const }];
   const mockVerb = { id: 3, value: 'Throws', type: "Verb" as const, groupId: 0, groupName: '' };
-  const mockOnSelect = jest.fn();
+  const mockOnConnect = jest.fn();
+  const mockCorrectPairs: Array<{ subjectId: number; objectId: number }> = [];
 
   it('renders without crashing', () => {
     const { getByText } = render(
@@ -14,83 +15,82 @@ describe('GameView', () => {
         subjects={mockSubjects}
         objects={mockObjects}
         currentVerb={mockVerb}
-        selectedSubject={null}
-        selectedObject={null}
-        onSelect={mockOnSelect}
+        correctPairs={mockCorrectPairs}
+        onConnect={mockOnConnect}
+        feedback={null}
       />
     );
-    expect(getByText('Yhdistä kortit')).toBeTruthy();
+    expect(getByText(/Yhdistä oikeat parit verbille/)).toBeTruthy();
   });
 
-  it('renders selected subject', () => {
+  it('renders subject cards', () => {
     const { getByText } = render(
       <GameView
         subjects={mockSubjects}
         objects={mockObjects}
         currentVerb={mockVerb}
-        selectedSubject={mockSubjects[0]}
-        selectedObject={null}
-        onSelect={mockOnSelect}
+        correctPairs={mockCorrectPairs}
+        onConnect={mockOnConnect}
+        feedback={null}
       />
     );
     expect(getByText('Alice')).toBeTruthy();
   });
 
-  it('renders selected object', () => {
+  it('renders object cards', () => {
     const { getByText } = render(
       <GameView
         subjects={mockSubjects}
         objects={mockObjects}
         currentVerb={mockVerb}
-        selectedSubject={null}
-        selectedObject={mockObjects[0]}
-        onSelect={mockOnSelect}
+        correctPairs={mockCorrectPairs}
+        onConnect={mockOnConnect}
+        feedback={null}
       />
     );
     expect(getByText('Ball')).toBeTruthy();
   });
 
   it('renders verb card', () => {
-    const { getByText } = render(
+    const { getAllByText } = render(
       <GameView
         subjects={mockSubjects}
         objects={mockObjects}
         currentVerb={mockVerb}
-        selectedSubject={null}
-        selectedObject={null}
-        onSelect={mockOnSelect}
+        correctPairs={mockCorrectPairs}
+        onConnect={mockOnConnect}
+        feedback={null}
       />
     );
-    expect(getByText('Throws')).toBeTruthy();
+    // Verb appears multiple times (in sentence and as card)
+    expect(getAllByText('Throws').length).toBeGreaterThan(0);
   });
 
-  it('calls onSelect when subject card is pressed', () => {
+  it('shows correct feedback', () => {
     const { getByText } = render(
       <GameView
         subjects={mockSubjects}
         objects={mockObjects}
         currentVerb={mockVerb}
-        selectedSubject={null}
-        selectedObject={null}
-        onSelect={mockOnSelect}
+        correctPairs={mockCorrectPairs}
+        onConnect={mockOnConnect}
+        feedback="Oikein!"
       />
     );
-    fireEvent.press(getByText('Alice'));
-    expect(mockOnSelect).toHaveBeenCalledWith(mockSubjects[0]);
+    expect(getByText('Oikein!')).toBeTruthy();
   });
 
-  it('calls onSelect when object card is pressed', () => {
+  it('shows incorrect feedback', () => {
     const { getByText } = render(
       <GameView
         subjects={mockSubjects}
         objects={mockObjects}
         currentVerb={mockVerb}
-        selectedSubject={null}
-        selectedObject={null}
-        onSelect={mockOnSelect}
+        correctPairs={mockCorrectPairs}
+        onConnect={mockOnConnect}
+        feedback="Väärin!"
       />
     );
-    fireEvent.press(getByText('Ball'));
-    expect(mockOnSelect).toHaveBeenCalledWith(mockObjects[0]);
+    expect(getByText('Väärin!')).toBeTruthy();
   });
 });
