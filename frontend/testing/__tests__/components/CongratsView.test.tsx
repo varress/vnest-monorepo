@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
-import { CongratsView } from '../../components/game/CongratsView';
+import { CongratsView } from '../../../components/game/CongratsView';
 
 describe('CongratsView', () => {
   const mockOnReplay = jest.fn();

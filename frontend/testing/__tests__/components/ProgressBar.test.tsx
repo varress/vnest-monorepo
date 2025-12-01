@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react-native';
-import { ProgressBar } from '../../components/game/ProgressBar';
+import { ProgressBar } from '../../../components/game/ProgressBar';
 
 describe('ProgressBar', () => {
   it('renders progress bar with value', () => {
