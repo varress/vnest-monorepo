@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
-import { ErrorView } from '@/components/game/ErrorView';
+import { ErrorView } from '../../../components/game/ErrorView';
 
 describe('ErrorView', () => {
   const mockOnRetry = jest.fn();

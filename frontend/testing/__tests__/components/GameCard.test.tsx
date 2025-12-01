@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
-import { GameCard } from '@/components/game/GameCard';
+import { GameCard } from '../../../components/game/GameCard';
 
 describe('GameCard', () => {
   it('renders correctly', () => {

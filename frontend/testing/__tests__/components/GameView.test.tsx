@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
-import { GameView } from '@/components/game/GameView';
+import { GameView } from '../../../components/game/GameView';
 
 describe('GameView', () => {
   const mockSubjects = [{ id: 1, value: 'Alice', type: "Agent" as const }];
