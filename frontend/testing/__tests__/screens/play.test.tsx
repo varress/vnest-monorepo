@@ -1,5 +1,6 @@
 import React from 'react';
-import { render, waitFor, fireEvent } from '@testing-library/react-native';
+import { waitFor, fireEvent } from '@testing-library/react-native';
+import { renderWithProviders as render } from '../../testUtils';
 import PlayScreen from '../../../app/play';
 import { useDatabaseWordData } from '../../../hooks/useDatabaseWordData';
 import { avpService } from '../../../services/avpService';
@@ -107,18 +108,18 @@ describe('PlayScreen - Integration Tests', () => {
   });
 
   describe('Initial Rendering', () => {
-    it('should render loading view when data is loading', () => {
+    it('should render loading view when data is loading', async () => {
       (useDatabaseWordData as jest.Mock).mockReturnValue({
         ...mockUseDatabaseWordData,
         isLoading: true,
         wordData: null,
       });
 
-      const { getByText } = render(<PlayScreen />);
+      const { getByText } = await render(<PlayScreen />);
       expect(getByText(/loading/i)).toBeTruthy();
     });
 
-    it('should render error view when there is an error', () => {
+    it('should render error view when there is an error', async () => {
       (useDatabaseWordData as jest.Mock).mockReturnValue({
         ...mockUseDatabaseWordData,
         isLoading: false,
@@ -126,12 +127,12 @@ describe('PlayScreen - Integration Tests', () => {
         wordData: null,
       });
 
-      const { getByText } = render(<PlayScreen />);
+      const { getByText } = await render(<PlayScreen />);
       expect(getByText(/error/i)).toBeTruthy();
     });
 
     it('should render game view with correct initial data', async () => {
-      const { getAllByText, getByText } = render(<PlayScreen />);
+      const { getAllByText, getByText } = await render(<PlayScreen />);
 
       await waitFor(() => {
         expect(getAllByText('syödä').length).toBeGreaterThan(0);
@@ -155,7 +156,7 @@ describe('PlayScreen - Integration Tests', () => {
     it('should handle correct answer and show feedback', async () => {
       (avpService.isCorrectCombination as jest.Mock).mockResolvedValue(true);
 
-      const { getAllByText, getByText } = render(<PlayScreen />);
+      const { getAllByText, getByText } = await render(<PlayScreen />);
 
       await waitFor(() => {
         expect(getAllByText('syödä').length).toBeGreaterThan(0);
@@ -177,7 +178,7 @@ describe('PlayScreen - Integration Tests', () => {
     it('should progress through multiple correct answers', async () => {
       (avpService.isCorrectCombination as jest.Mock).mockResolvedValue(true);
 
-      const { getAllByText, getByText } = render(<PlayScreen />);
+      const { getAllByText, getByText } = await render(<PlayScreen />);
 
       await waitFor(() => {
         expect(getAllByText('syödä').length).toBeGreaterThan(0);
@@ -201,7 +202,7 @@ describe('PlayScreen - Integration Tests', () => {
     it('should show error feedback for incorrect answer', async () => {
       (avpService.isCorrectCombination as jest.Mock).mockResolvedValue(false);
 
-      const { getAllByText, getByText } = render(<PlayScreen />);
+      const { getAllByText, getByText } = await render(<PlayScreen />);
 
       await waitFor(() => {
         expect(getAllByText('syödä').length).toBeGreaterThan(0);
@@ -218,7 +219,7 @@ describe('PlayScreen - Integration Tests', () => {
     it('should not progress on incorrect answer', async () => {
       (avpService.isCorrectCombination as jest.Mock).mockResolvedValue(false);
 
-      const { getAllByText, getByText } = render(<PlayScreen />);
+      const { getAllByText, getByText } = await render(<PlayScreen />);
 
       await waitFor(() => {
         expect(getAllByText('syödä').length).toBeGreaterThan(0);
@@ -238,7 +239,7 @@ describe('PlayScreen - Integration Tests', () => {
 
   describe('Navigation Controls', () => {
     it('should render navigation buttons', async () => {
-      const { getAllByText } = render(<PlayScreen />);
+      const { getAllByText } = await render(<PlayScreen />);
 
       await waitFor(() => {
         expect(getAllByText('syödä').length).toBeGreaterThan(0);
@@ -250,7 +251,7 @@ describe('PlayScreen - Integration Tests', () => {
   });
 
   describe('Edge Cases', () => {
-    it('should handle missing verb gracefully', () => {
+    it('should handle missing verb gracefully', async () => {
       (useDatabaseWordData as jest.Mock).mockReturnValue({
         ...mockUseDatabaseWordData,
         wordData: {
@@ -259,7 +260,7 @@ describe('PlayScreen - Integration Tests', () => {
         },
       });
 
-      const { getByText } = render(<PlayScreen />);
+      const { getByText } = await render(<PlayScreen />);
       expect(getByText(/yhdistä oikeat parit verbille/i)).toBeTruthy();
     });
 
@@ -272,7 +273,7 @@ describe('PlayScreen - Integration Tests', () => {
         },
       });
 
-      const { getAllByText } = render(<PlayScreen />);
+      const { getAllByText } = await render(<PlayScreen />);
       
       await waitFor(() => {
         expect(getAllByText('syödä').length).toBeGreaterThan(0);
@@ -288,7 +289,7 @@ describe('PlayScreen - Integration Tests', () => {
         },
       });
 
-      const { getAllByText } = render(<PlayScreen />);
+      const { getAllByText } = await render(<PlayScreen />);
       
       await waitFor(() => {
         expect(getAllByText('syödä').length).toBeGreaterThan(0);
@@ -305,7 +306,7 @@ describe('PlayScreen - Integration Tests', () => {
         wordData: null,
       });
 
-      const { getByText } = render(<PlayScreen />);
+      const { getByText } = await render(<PlayScreen />);
 
       await waitFor(() => {
         expect(getByText(/error/i)).toBeTruthy();
@@ -354,7 +355,7 @@ describe('PlayScreen - Integration Tests', () => {
         randomVerb: mockRandomVerb,
       });
 
-      const { rerender, getAllByText, queryByText } = render(<PlayScreen />);
+      const { rerender, getAllByText, queryByText } = await render(<PlayScreen />);
 
       await waitFor(() => {
         expect(getAllByText('juoda').length).toBeGreaterThan(0);
@@ -439,7 +440,7 @@ describe('PlayScreen - Integration Tests', () => {
         randomVerb: mockRandomVerb,
       });
 
-      const { rerender } = render(<PlayScreen />);
+      const { rerender } = await render(<PlayScreen />);
 
       await waitFor(() => {
         expect(mockRefreshData).toHaveBeenCalled();

@@ -3,6 +3,7 @@ module.exports = {
   rootDir: '../',
   preset: 'jest-expo',
   testEnvironment: 'jsdom',
+  setupFilesAfterEnv: ['<rootDir>/testing/jest.setup.js'],
 
   //transform: {'^.+\\.tsx?$': 'ts-jest'}, // Allow use of TS files
   testMatch: ['**/__tests__/**/*.test.ts?(x)'],
