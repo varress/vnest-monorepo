@@ -1,5 +1,6 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
+import { fireEvent } from '@testing-library/react-native';
+import { renderWithProviders as render } from '../../testUtils';
 import { GameView } from '../../../components/game/GameView';
 
 describe('GameView', () => {
@@ -9,8 +10,8 @@ describe('GameView', () => {
   const mockOnConnect = jest.fn();
   const mockCorrectPairs: Array<{ subjectId: number; objectId: number }> = [];
 
-  it('renders without crashing', () => {
-    const { getByText } = render(
+  it('renders without crashing', async () => {
+    const { getByText } = await render(
       <GameView
         subjects={mockSubjects}
         objects={mockObjects}
@@ -23,8 +24,8 @@ describe('GameView', () => {
     expect(getByText(/Yhdistä oikeat parit verbille/)).toBeTruthy();
   });
 
-  it('renders subject cards', () => {
-    const { getByText } = render(
+  it('renders subject cards', async () => {
+    const { getByText } = await render(
       <GameView
         subjects={mockSubjects}
         objects={mockObjects}
@@ -37,8 +38,8 @@ describe('GameView', () => {
     expect(getByText('Alice')).toBeTruthy();
   });
 
-  it('renders object cards', () => {
-    const { getByText } = render(
+  it('renders object cards', async () => {
+    const { getByText } = await render(
       <GameView
         subjects={mockSubjects}
         objects={mockObjects}
@@ -51,8 +52,8 @@ describe('GameView', () => {
     expect(getByText('Ball')).toBeTruthy();
   });
 
-  it('renders verb card', () => {
-    const { getAllByText } = render(
+  it('renders verb card', async () => {
+    const { getAllByText } = await render(
       <GameView
         subjects={mockSubjects}
         objects={mockObjects}
@@ -66,8 +67,8 @@ describe('GameView', () => {
     expect(getAllByText('Throws').length).toBeGreaterThan(0);
   });
 
-  it('shows correct feedback', () => {
-    const { getByText } = render(
+  it('shows correct feedback', async () => {
+    const { getByText } = await render(
       <GameView
         subjects={mockSubjects}
         objects={mockObjects}
@@ -80,8 +81,8 @@ describe('GameView', () => {
     expect(getByText('Oikein!')).toBeTruthy();
   });
 
-  it('shows incorrect feedback', () => {
-    const { getByText } = render(
+  it('shows incorrect feedback', async () => {
+    const { getByText } = await render(
       <GameView
         subjects={mockSubjects}
         objects={mockObjects}
