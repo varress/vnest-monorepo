@@ -155,8 +155,8 @@ export function GameView({
     return (
       <View style={{ flex: 1 }}>
         <ScrollView style={styles.mobileContainer} showsVerticalScrollIndicator={false}>
-          {/* Navigation Buttons */}
-          <View style={styles.navigationButtons}>
+          {/* Title with Navigation Buttons */}
+          <View style={styles.titleRow}>
             <TouchableOpacity 
               style={styles.navButton}
               onPress={onPreviousVerb}
@@ -164,6 +164,10 @@ export function GameView({
             >
               <Ionicons name="arrow-back" size={24} color={onPreviousVerb ? Colors.primary : Colors.textLight} />
             </TouchableOpacity>
+            
+            <Text style={[styles.title, { fontSize: isDesktop() ? 24 : responsiveFontSize(32) }]}>
+              {selectedSubject?.value || '[Kuka]'} {currentVerb?.value?.toLowerCase() || '[verb]'} {selectedObject?.value?.toLowerCase() || '[mitä]'}
+            </Text>
             
             <TouchableOpacity 
               style={styles.navButton}
@@ -173,11 +177,6 @@ export function GameView({
               <Ionicons name="arrow-forward" size={24} color={onNextVerb ? Colors.primary : Colors.textLight} />
             </TouchableOpacity>
           </View>
-
-          {/* Sentence Preview */}
-          <Text style={[styles.title, { fontSize: isDesktop() ? 24 : responsiveFontSize(32) }]}>
-            {selectedSubject?.value || '[Kuka]'} {currentVerb?.value?.toLowerCase() || '[verb]'} {selectedObject?.value?.toLowerCase() || '[mitä]'}
-          </Text>
 
           {/* Instruction */}
           <View style={styles.instructionBox}>
@@ -254,8 +253,8 @@ export function GameView({
   // Tablet/Desktop layout: show all cards, allow connecting pairs
   return (
     <View ref={containerRef} style={styles.desktopContainer}>
-      {/* Navigation Buttons */}
-      <View style={styles.navigationButtons}>
+      {/* Title with Navigation Buttons */}
+      <View style={styles.titleRow}>
         <TouchableOpacity 
           style={styles.navButton}
           onPress={onPreviousVerb}
@@ -263,6 +262,10 @@ export function GameView({
         >
           <Ionicons name="arrow-back" size={28} color={onPreviousVerb ? Colors.primary : Colors.textLight} />
         </TouchableOpacity>
+        
+        <Text style={[styles.title, { fontSize: layout.isDesktop ? 24 : responsiveFontSize(40) }]}>
+          {selectedSubject?.value || '[Kuka]'} {currentVerb?.value?.toLowerCase() || '[verb]'} {selectedObject?.value?.toLowerCase() || '[mitä]'}
+        </Text>
         
         <TouchableOpacity 
           style={styles.navButton}
@@ -272,10 +275,6 @@ export function GameView({
           <Ionicons name="arrow-forward" size={28} color={onNextVerb ? Colors.primary : Colors.textLight} />
         </TouchableOpacity>
       </View>
-
-      <Text style={[styles.title, { fontSize: layout.isDesktop ? 24 : responsiveFontSize(40) }]}>
-        {selectedSubject?.value || '[Kuka]'} {currentVerb?.value?.toLowerCase() || '[verb]'} {selectedObject?.value?.toLowerCase() || '[mitä]'}
-      </Text>
       
       <View style={styles.instructionBox}>
         <Text style={[styles.instructionText, { fontSize: layout.isDesktop ? 16 : responsiveFontSize(18) }]}>
@@ -373,9 +372,16 @@ const styles = StyleSheet.create({
     flex: 1,
     position: 'relative',
   },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: spacing.md,
+    marginBottom: 20,
+  },
   title: { 
     fontWeight: 'bold', 
-    marginBottom: 30, 
+    flex: 1,
     textAlign: 'center',
     color: Colors.text,
   },
@@ -424,7 +430,7 @@ const styles = StyleSheet.create({
   },
   instructionBox: {
     backgroundColor: Colors.primaryLight,
-    padding: spacing.md,
+    padding: spacing.sm,
     borderRadius: 12,
     marginBottom: spacing.lg,
     borderLeftWidth: 4,
@@ -438,17 +444,6 @@ const styles = StyleSheet.create({
   boldText: {
     fontWeight: 'bold',
     color: Colors.primaryDark,
-  },
-  navigationButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: 10,
   },
   navButton: {
     padding: spacing.sm,
@@ -466,9 +461,9 @@ const styles = StyleSheet.create({
     zIndex: 1000,
   },
   centeredToast: {
-    padding: 24,
-    borderRadius: 16,
-    minWidth: 150,
+    padding: 80,
+    borderRadius: 20,
+    minWidth: 350,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#000',
@@ -486,6 +481,6 @@ const styles = StyleSheet.create({
   feedbackText: {
     color: Colors.buttonText,
     fontWeight: 'bold',
-    fontSize: 24,
+    fontSize: 36,
   },
 });
