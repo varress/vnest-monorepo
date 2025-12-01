@@ -26,20 +26,20 @@ export default function HomeScreen() {
       <Text style={styles.title}>VNeST TerapiaApp</Text>
 
       <TouchableOpacity style={styles.button} onPress={() => router.push('/play')}>
-        <Text style={styles.buttonText}><FontAwesome name="play" size={48} color="black" /> Aloita peli</Text>
+        <Text style={styles.buttonText}><FontAwesome name="play" size={48} color="black" />   Aloita peli</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.button} onPress={() => router.push('/progress')}>
-        <Text style={styles.buttonText}><Entypo name="bar-graph" size={48} color="black" /> Edistyminen</Text>
+        <Text style={styles.buttonText}><Entypo name="bar-graph" size={48} color="black" />   Edistyminen</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.button} onPress={() => router.push('/settings')}>
-        <Text style={styles.buttonText}><Ionicons size={48} name="settings-sharp" color="black" /> Asetukset</Text>
+        <Text style={styles.buttonText}><Ionicons size={48} name="settings-sharp" color="black" />   Asetukset</Text>
       </TouchableOpacity>
 
       {Platform.OS !== 'web' && (
         <TouchableOpacity style={styles.button} onPress={() => router.push('/history')}>
-          <Text style={styles.buttonText}><Ionicons size={48} name="trending-up-outline" color="black" /></Text>
+          <Text style={styles.buttonText}><Ionicons size={48} name="trending-up-outline" color="black" />   Historia</Text>
         </TouchableOpacity>
       )}
     </View>
