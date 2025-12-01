@@ -3,7 +3,7 @@
     "react-native-svg": "^15.14.0"
   },
   "scripts": {
-    "test": "jest --config frontend/testing/jest.config.js"
+    "test": "npm test --prefix frontend"
   },
   "devDependencies": {
     "@types/jest": "^30.0.0",
