@@ -62,33 +62,16 @@ export function useCardConnections() {
     const startCard = cardPositions.get(startCardId);
     const endCard = cardPositions.get(endCardId);
 
-    console.log(`Creating connection from ${startCardId} to ${endCardId}`);
-    console.log('Start card:', startCard);
-    console.log('End card:', endCard);
-
     if (startCard && endCard) {
-      console.log('🎯 Creating connection - Card details:');
-      console.log('Start card:', { 
-        center: { x: startCard.centerX, y: startCard.centerY },
-        layout: startCard.layout 
-      });
-      console.log('End card:', { 
-        center: { x: endCard.centerX, y: endCard.centerY },
-        layout: endCard.layout 
-      });
 
       // Calculate connection points on card edges for better visual connection
       const deltaX = endCard.centerX - startCard.centerX;
       const deltaY = endCard.centerY - startCard.centerY;
       const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
       
-      console.log('🎯 Distance calculation:', { deltaX, deltaY, distance });
-      
       // Calculate unit vector from start to end
       const unitX = deltaX / distance;
       const unitY = deltaY / distance;
-      
-      // console.log('🎯 Unit vector:', { unitX, unitY });
       
       // Better rectangular edge calculation instead of circular approximation
       // Calculate which edge of the rectangle the line intersects
@@ -163,31 +146,12 @@ export function useCardConnections() {
         y: endEdgeY,
       };
 
-      console.log('🎯 Calculated edge positions:', { 
-        startPosition, 
-        endPosition,
-        note: 'These should be at card edges, not centers'
-      });
-
-      console.log('🎯 Comparison - Centers vs Edges:', {
-        startCenter: { x: startCard.centerX, y: startCard.centerY },
-        startEdge: startPosition,
-        endCenter: { x: endCard.centerX, y: endCard.centerY },
-        endEdge: endPosition,
-        offsetDistance: { 
-          start: Math.sqrt(Math.pow(startPosition.x - startCard.centerX, 2) + Math.pow(startPosition.y - startCard.centerY, 2)),
-          end: Math.sqrt(Math.pow(endPosition.x - endCard.centerX, 2) + Math.pow(endPosition.y - endCard.centerY, 2))
-        }
-      });
-
       const newConnection: Connection = {
         startCardId,
         endCardId,
         startPosition,
         endPosition,
       };
-
-      console.log('New connection with edge points:', newConnection);
 
       setConnections(prev => {
         // Remove any existing connections involving these specific cards

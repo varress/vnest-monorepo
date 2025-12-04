@@ -1,7 +1,8 @@
 import { getCardDimensions, getVerbCardDimensions } from '@/utils/responsive';
 import { useEffect, useRef } from 'react';
 import { LayoutRectangle, StyleSheet, Text, TouchableOpacity, View, Animated } from 'react-native';
-import { Colors } from '@/constants/colors';
+import { Colors, getThemedColors } from '@/constants/colors';
+import { useTheme } from '@/contexts/ThemeContext';
 
 interface GameCardProps {
   text: string;
@@ -24,6 +25,8 @@ export function GameCard({
   parentRef,
   onLayout 
 }: GameCardProps) {
+  const { isDarkMode, highContrast } = useTheme();
+  const colors = getThemedColors(isDarkMode, highContrast);
   const isVerb = variant === 'verb';
   const cardDimensions = isVerb ? getVerbCardDimensions() : getCardDimensions();
   const cardRef = useRef<any>(null);
@@ -33,8 +36,8 @@ export function GameCard({
 
   const handleLayout = (event: any) => {
     if (cardId && onLayout && parentRef?.current) {
-      // Small delay to ensure parent layout is complete
-      setTimeout(() => {
+      // Use requestAnimationFrame for immediate but safe measurement
+      requestAnimationFrame(() => {
         if (cardRef.current && parentRef.current) {
           cardRef.current?.measureLayout(
             parentRef.current,
@@ -52,7 +55,7 @@ export function GameCard({
             (error: any) => console.error('❌ measureLayout error:', error)
           );
         }
-      }, 100); // Increased delay for more reliable measurements
+      });
     }
   };
   
@@ -90,6 +93,7 @@ export function GameCard({
       onLayout={handleLayout}
     >
       <Animated.View
+        testID="game-card"
         style={[
           styles.baseCard,
           {
@@ -97,17 +101,19 @@ export function GameCard({
             height: cardDimensions.height,
             marginVertical: isVerb ? verbMarginVertical : 6,
             transform: [{ scale: scaleAnim }],
+            backgroundColor: isVerb ? colors.cardSelected : (isSelected ? colors.cardSelected : colors.cardBackground),
+            borderWidth: 2,
+            borderColor: isSelected ? colors.success : 'transparent',
           },
-          isVerb ? styles.verbCard : styles.card,
-          isSelected && styles.selectedCard,
+          isVerb && styles.verbCard,
           style
         ]}
       >
         <Text 
           style={[
             isVerb ? styles.verbText : styles.cardText,
-            isSelected && styles.selectedText,
-            { fontSize: cardDimensions.fontSize }
+            { fontSize: cardDimensions.fontSize, color: colors.text },
+            isSelected && { fontWeight: 'bold' }
           ]}
           numberOfLines={2}
           adjustsFontSizeToFit
@@ -124,7 +130,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 12,
-    shadowColor: Colors.shadow,
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
@@ -132,34 +138,19 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3, // Android shadow
-  },
-  card: {
-    backgroundColor: Colors.cardBackground,
     padding: 16,
-    borderWidth: 2,
-    borderColor: 'transparent',
   },
-  selectedCard: { 
-    backgroundColor: Colors.cardSelected,
-    borderColor: Colors.cardSelectedBorder,
-    shadowOpacity: 0.25,
-    elevation: 6,
-  },
+  card: {},
+  selectedCard: {},
   cardText: { 
     fontWeight: '600',
     textAlign: 'center',
-    color: Colors.text,
   },
-  selectedText: {
-    color: Colors.text,
-    fontWeight: 'bold',
-  },
+  selectedText: {},
   verbCard: {
-    backgroundColor: Colors.cardSelected,
     padding: 20,
   },
   verbText: { 
-    color: Colors.text,
     fontWeight: 'bold',
     textAlign: 'center',
     textShadowColor: 'rgba(0, 0, 0, 0.3)',

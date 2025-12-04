@@ -1,3 +1,5 @@
+// Not tested, because it is a placeholder file, that might very well be changed in the future.
+
 import { CorrectAnswer } from "@/database/schemas";
 import { IHistoryController } from "../interfaces/IHistoryController";
 

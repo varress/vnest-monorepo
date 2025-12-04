@@ -1,4 +1,4 @@
-import data from '@/assets/seeding_data/english.json';
+import data from '@/assets/seeding_data/finnish_v3.json';
 import { deleteFile } from 'realm';
 import { getRealm_IgnoreSeeding } from "./realm.native";
 

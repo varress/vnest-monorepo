@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Text, StyleSheet, Platform, View, Dimensions } from 'react-native';
 import { historyService, GroupPerformance } from '@/services/historyService';
+import { Colors } from '@/constants/colors';
 
 export default function HistoryScreen() {
     const [groupData, setGroupData] = useState<GroupPerformance[]>([]);
@@ -66,11 +67,11 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         overflow: "hidden",
         marginHorizontal: 8,
-        backgroundColor: "#f0d48d",
+        backgroundColor: Colors.historyBarBackground,
         position: "relative"
     },
     correct: {
-        backgroundColor: "#cedcab",
+        backgroundColor: Colors.historyBarCorrect,
         position: "absolute",
         height: "100%"
     },

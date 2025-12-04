@@ -72,8 +72,8 @@ class DatabaseService {
     const wordBundle = await avpService.getWordBundleByVerbId(this.currentVerbId)
     return {
       verbs: this.verbsInGroup,
-      subjects: await agentController.getByVerbId(this.currentVerbId),
-      objects: await patientController.getByVerbId(this.currentVerbId),
+      subjects: await agentController.getByVerbId(this.currentVerbId, 100),
+      objects: await patientController.getByVerbId(this.currentVerbId, 100),
       currentVerb: await this.getCurrentVerb(),
       pairings: wordBundle?.pairings || null
     }
@@ -93,6 +93,7 @@ class DatabaseService {
   async setCurrentGroup(groupId: number): Promise<void> {
     console.log(`📚 Setting current group to: ${groupId}`);
     this.currentGroupId = groupId;
+    this.currentVerbId = 0; // Reset to start from first verb
     this.verbsInGroup   = await verbController.getAllVerbsByGroupId(this.currentGroupId);
     console.log(`📖 Loaded ${this.verbsInGroup.length} verbs for group ${groupId}:`, this.verbsInGroup.map(v => v.value));
   }

@@ -21,12 +21,12 @@
 import {
   CongratsView,
   ErrorView,
-  FeedbackView,
   GameHeader,
   GameView,
   LoadingView
 } from '@/components/game';
-import { Colors } from '@/constants/colors';
+import { Colors, getThemedColors } from '@/constants/colors';
+import { useTheme } from '@/contexts/ThemeContext';
 import { Agent, Patient, Verb } from '@/database/schemas';
 import { useDatabaseWordData } from '@/hooks/useDatabaseWordData';
 import { useResponsiveLayout } from '@/hooks/useResponsiveLayout';
@@ -40,6 +40,8 @@ export default function PlayScreen() {
   const router = useRouter();
   const layout = useResponsiveLayout();
   const safeArea = getSafeAreaConfig();
+  const { isDarkMode, highContrast } = useTheme();
+  const colors = getThemedColors(isDarkMode, highContrast);
   
   // Database integration hook - manages language data and validation
   const { 
@@ -47,103 +49,128 @@ export default function PlayScreen() {
     isLoading, 
     error, 
     refreshData,
-    isCorrectCombination,
     nextVerb,
     setCurrentSet
   } = useDatabaseWordData();
-  const [currentVerbIndex, setCurrentVerbIndex] = useState(3);
-  const [selectedSubject, setSelectedSubject] = useState<Agent | null>(null);
-  const [selectedObject, setSelectedObject] = useState<Patient | null>(null);
   const [feedback, setFeedback] = useState<string | null>(null);
+  const [correctPairs, setCorrectPairs] = useState<Array<{ subjectId: number; objectId: number }>>([]);
   const [showCongrats, setShowCongrats] = useState(false);
   const [currentSetId, setCurrentSetId] = useState<number>(0);
-  const [correctAnswersCount, setCorrectAnswersCount] = useState<number>(0);
-  const REQUIRED_CORRECT_ANSWERS = 5;
+  const [completedVerbsCount, setCompletedVerbsCount] = useState<number>(0);
 
   const [verbs, setVerbs] = useState<Verb[]>([]);
   const [subjects, setSubjects] = useState<Agent[]>([]);
   const [objects, setObjects] = useState<Patient[]>([]);
 
-  // Initialize data on component mount
+  // Refresh data when screen comes into focus to get the latest set from database
   useEffect(() => {
-  if (wordData && wordData.currentVerb) {
-    setVerbs([wordData.currentVerb]);
-    setSubjects(wordData.subjects);
-    setObjects(wordData.objects);
-  }
-}, [wordData]);
+    console.log('PlayScreen mounted - refreshing data');
+    refreshData();
+  }, [refreshData]);
+
+  // Initialize data on component mount and sync currentSetId with the actual current set
   useEffect(() => {
-    if (wordData && selectedSubject && selectedObject && wordData.currentVerb) {
-      const timer = setTimeout(async () => {
-        const isCorrect = await avpService.isCorrectCombination(selectedSubject, verbs[0], selectedObject);
-        
-        // If correct, increment the counter before showing feedback
-        if (isCorrect) {
-          setCorrectAnswersCount(prev => prev + 1);
-        }
-        
-        setFeedback(isCorrect ? '✅ Hyvin tehty!' : '❌ Yritä uudelleen');
-      }, 800); // Time delay before showing feedback
-
-      return () => clearTimeout(timer); // Cleanup timer if component unmounts or dependencies change
-    }
-  }, [selectedSubject, selectedObject, wordData, isCorrectCombination]);
-
-  const handleContinue = async () => {
-    try {
-      // Check if user has reached the milestone (5 correct answers)
-      if (correctAnswersCount >= REQUIRED_CORRECT_ANSWERS) {
-        // Show congrats view - user can now move to next set
-        setShowCongrats(true);
-        return;
+    if (wordData && wordData.currentVerb) {
+      console.log('Updating local state with wordData - verb:', wordData.currentVerb.value, 'groupId:', wordData.currentVerb.groupId);
+      setVerbs([wordData.currentVerb]);
+      setSubjects(wordData.subjects);
+      setObjects(wordData.objects);
+      // Sync currentSetId with the actual group ID from the loaded verb
+      if (wordData.currentVerb.groupId !== undefined) {
+        setCurrentSetId(wordData.currentVerb.groupId);
       }
-      
-      // Move to next verb and refresh data
+    }
+  }, [wordData]);
+
+  // Reset correct pairs when verb changes
+  useEffect(() => {
+    setCorrectPairs([]);
+    setFeedback(null);
+  }, [verbs[0]?.id]);
+
+  const handlePreviousVerb = async () => {
+    try {
+      // Simply call nextVerb to go to previous (it cycles through verbs)
       await nextVerb();
-      // Reset selections for the new verb
-      setSelectedSubject(null);
-      setSelectedObject(null);
+      setCorrectPairs([]);
       setFeedback(null);
     } catch (error) {
-      console.error('Error moving to next verb:', error);
+      console.error('Error moving to previous verb:', error);
     }
   };
 
-  const handleSelect = (word: Agent | Patient) => {
-    if      (word.type === "Agent")  {setSelectedSubject(word);}
-    else if (word.type == "Patient") {setSelectedObject(word)}
-    else throw new TypeError (`Expects type Agent or Patient, but ${typeof word} was given.`) 
+  const handleSkipVerb = async () => {
+    try {
+      await nextVerb();
+      setCorrectPairs([]);
+      setFeedback(null);
+    } catch (error) {
+      console.error('Error skipping verb:', error);
+    }
   };
 
-  const handleReset = () => {
-    setSelectedSubject(null);
-    setSelectedObject(null);
-    setFeedback(null);
+  // Connect subject-object pair
+  const handleConnect = async (subject: Agent, object: Patient) => {
+    if (!verbs[0]) return;
+    const isCorrect = await avpService.isCorrectCombination(subject, verbs[0], object);
+    if (isCorrect) {
+      const newCorrectPairs = [...correctPairs, { subjectId: subject.id, objectId: object.id }];
+      setCorrectPairs(newCorrectPairs);
+      setFeedback('Oikein!');
+      
+      // Check if all pairs for this verb are connected
+      const allPairsConnected = subjects.length === newCorrectPairs.length;
+      
+      if (allPairsConnected) {
+        // Increment completed verbs count
+        const newCompletedCount = completedVerbsCount + 1;
+        setCompletedVerbsCount(newCompletedCount);
+        
+        // Check if all verbs in the set are completed
+        const totalVerbsInSet = wordData?.verbs.length || 0;
+        const allVerbsCompleted = newCompletedCount >= totalVerbsInSet;
+        
+        // Move to next verb or show congrats after short delay
+        setTimeout(() => {
+          if (allVerbsCompleted) {
+            setShowCongrats(true);
+          } else {
+            nextVerb();
+            setCorrectPairs([]);
+            setFeedback(null);
+          }
+        }, 1500);
+      } else {
+        // Clear feedback after delay
+        setTimeout(() => setFeedback(null), 1500);
+      }
+    } else {
+      setFeedback('Väärin!');
+      setTimeout(() => setFeedback(null), 1500);
+    }
   };
 
-  const handleReplay = () => {
-    setCurrentVerbIndex(0);
-    setSelectedSubject(null);
-    setSelectedObject(null);
+  const handleReplay = async () => {
+    setCorrectPairs([]);
     setFeedback(null);
     setShowCongrats(false);
-    setCorrectAnswersCount(0);
+    setCompletedVerbsCount(0);
+    // Reset to first verb in the set
+    await setCurrentSet(currentSetId);
   };
 
   const handleNextSet = async () => {
     try {
       const nextSetId = currentSetId + 1;
       
-      // Reset correct answers count for new set
-      setCorrectAnswersCount(0);
+      // Reset completed verbs count for new set
+      setCompletedVerbsCount(0);
       
       // We have 4 sets (0-3)
       if (nextSetId <= 3) {
         await setCurrentSet(nextSetId);
         setCurrentSetId(nextSetId);
-        setCurrentVerbIndex(0);
-        setSelectedSubject(null);
-        setSelectedObject(null);
+        setCorrectPairs([]);
         setFeedback(null);
         setShowCongrats(false);
         // Refresh data to load new set
@@ -187,6 +214,7 @@ export default function PlayScreen() {
       <GameHeader />
       <View style={[
         styles.container,
+        { backgroundColor: colors.background },
         layout.isMobile && styles.mobileContainer,
         {
           paddingTop: safeArea.paddingTop,
@@ -197,32 +225,21 @@ export default function PlayScreen() {
           <CongratsView
             currentSetId={currentSetId}
             verbCount={wordData?.verbs.length}
-            correctAnswersCount={correctAnswersCount}
-            requiredAnswers={REQUIRED_CORRECT_ANSWERS}
+            correctAnswersCount={completedVerbsCount}
+            requiredAnswers={wordData?.verbs.length || 0}
             onReplay={handleReplay}
             onNextSet={handleNextSet}
           />
-        ) : !feedback ? (
+        ) : (
           <GameView
             subjects={subjects}
             objects={objects}
             currentVerb={currentVerb}
-            selectedSubject={selectedSubject}
-            selectedObject={selectedObject}
-            onSelect={handleSelect}
-          />
-        ) : (
-          <FeedbackView
+            correctPairs={correctPairs}
+            onConnect={handleConnect}
             feedback={feedback}
-            currentVerbIndex={currentVerbIndex}
-            totalVerbs={verbs.length}
-            selectedSubject={selectedSubject}
-            selectedObject={selectedObject}
-            currentVerb={currentVerb}
-            correctAnswersCount={correctAnswersCount}
-            requiredAnswers={REQUIRED_CORRECT_ANSWERS}
-            onContinue={handleContinue}
-            onReset={handleReset}
+            onPreviousVerb={handlePreviousVerb}
+            onNextVerb={handleSkipVerb}
           />
         )}
       </View>
@@ -233,8 +250,7 @@ export default function PlayScreen() {
 const styles = StyleSheet.create({
   container: { 
     flex: 1, 
-    padding: spacing.lg, 
-    backgroundColor: Colors.background 
+    padding: spacing.lg,
   },
   mobileContainer: {
     paddingHorizontal: spacing.md,
