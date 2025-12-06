@@ -35,6 +35,10 @@ export default function HomeScreen() {
         <Text style={[styles.buttonText, { color: colors.buttonText }]}><Entypo name="bar-graph" size={48} color={colors.buttonText} />   Edistyminen</Text>
       </TouchableOpacity>
 
+      <TouchableOpacity style={[styles.button, { backgroundColor: colors.primary }]} onPress={() => router.push('/instructions')}>
+        <Text style={[styles.buttonText, { color: colors.buttonText }]}><Ionicons size={48} name="information-circle" color={colors.buttonText} />   Ohjeet</Text>
+      </TouchableOpacity>
+
       <TouchableOpacity style={[styles.button, { backgroundColor: colors.primary }]} onPress={() => router.push('/settings')}>
         <Text style={[styles.buttonText, { color: colors.buttonText }]}><Ionicons size={48} name="settings-sharp" color={colors.buttonText} />   Asetukset</Text>
       </TouchableOpacity>

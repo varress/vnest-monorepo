@@ -34,6 +34,13 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="instructions"
+        options={{
+          title: 'Ohjeet',
+          tabBarIcon: ({ color }) => <Ionicons size={28} name="information-circle" color={color} />,
+        }}
+      />
+      <Tabs.Screen
         name="settings"
         options={{
           title: 'Asetukset',

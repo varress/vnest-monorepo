@@ -5,6 +5,7 @@ import { responsiveFontSize, isDesktop } from '@/utils/responsive';
 import { Colors, DarkModeColors, getThemedColors } from '@/constants/colors';
 import { useTheme } from '@/contexts/ThemeContext';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { useRouter } from 'expo-router';
 
 const spacing = {
   sm: 8,
@@ -19,6 +20,7 @@ export default function SettingsScreen() {
   const [fontSize, setFontSize] = useState(20);
   const { themeMode, isDarkMode, highContrast, setThemeMode, toggleHighContrast } = useTheme();
   const layout = useResponsiveLayout();
+  const router = useRouter();
   
   // Get themed colors based on current mode
   const colors = getThemedColors(isDarkMode, highContrast);
@@ -59,6 +61,16 @@ export default function SettingsScreen() {
         layout.isMobile && styles.mobileContainer,
       ]}
     >
+      <View style={[styles.header, { backgroundColor: colors.backgroundGray }]}>
+        <TouchableOpacity 
+          style={styles.backButton} 
+          onPress={() => router.back()}
+        >
+          <Ionicons name="arrow-back" size={24} color={colors.text} />
+        </TouchableOpacity>
+        <Text style={[styles.headerTitle, { color: colors.text }]}>Asetukset</Text>
+      </View>
+
       <Text style={[
         styles.title,
         { color: colors.text },
@@ -298,6 +310,25 @@ const styles = StyleSheet.create({
   mobileContainer: {
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.xl,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    paddingTop: 50,
+    elevation: 2,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  backButton: {
+    padding: 8,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginLeft: 16,
   },
   highContrastContainer: {
     backgroundColor: Colors.highContrastBackground,
