@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Colors, getThemedColors } from '@/constants/colors';
 import { useTheme } from '@/contexts/ThemeContext';
+import { Ionicons } from '@expo/vector-icons';
 
 interface Set {
   id: number;
@@ -52,11 +53,18 @@ export default function ProgressScreen() {
 
   return (
     <ScrollView style={[containerStyle, { backgroundColor: colors.background }]} showsVerticalScrollIndicator={false}>
+      <View style={[styles.header, { backgroundColor: colors.backgroundGray }]}>
+        <TouchableOpacity 
+          style={styles.backButton} 
+          onPress={() => router.back()}
+        >
+          <Ionicons name="arrow-back" size={24} color={colors.text} />
+        </TouchableOpacity>
+        <Text style={[styles.headerTitle, { color: colors.text }]}>Edistyminen</Text>
+      </View>
+      
       <Text style={[styles.title, { fontSize: isDesktop() ? 32 : responsiveFontSize(layout.isMobile ? 32 : 40), color: colors.text }]}>
         Valitse harjoitussetti
-      </Text>
-      <Text style={[styles.subtitle, { fontSize: isDesktop() ? 18 : responsiveFontSize(layout.isMobile ? 18 : 22), color: colors.textLight }]}>
-        💡 Napauta settiä aloittaaksesi
       </Text>
       
       <View style={setsContainerStyle}>
@@ -144,6 +152,25 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.lg,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    paddingTop: 50,
+    elevation: 2,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  backButton: {
+    padding: 8,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginLeft: 16,
   },
   title: {
     fontWeight: 'bold',
