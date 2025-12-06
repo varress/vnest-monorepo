@@ -4,7 +4,8 @@ import SettingsScreen from '../../../app/(tabs)/settings';
 
 describe('SettingsScreen', () => {
   it('renders settings title', async () => {
-    const { getByText } = await render(<SettingsScreen />);
-    expect(getByText(/Asetukset/i)).toBeTruthy();
+    const { getAllByText } = await render(<SettingsScreen />);
+    const asetuksetElements = getAllByText(/Asetukset/i);
+    expect(asetuksetElements.length).toBeGreaterThan(0);
   });
 });
