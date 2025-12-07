@@ -1,11 +1,13 @@
 import { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, ScrollView } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, ScrollView, Platform } from 'react-native';
 import { useResponsiveLayout } from '@/hooks/useResponsiveLayout';
 import { responsiveFontSize, isDesktop } from '@/utils/responsive';
 import { Colors, DarkModeColors, getThemedColors } from '@/constants/colors';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useDataSource, DataSourceType } from '@/contexts/DataSourceContext';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
+import { databaseService } from '@/services/exerciseManagementService';
 
 const spacing = {
   sm: 8,
@@ -18,7 +20,10 @@ type ThemeMode = 'light' | 'dark';
 
 export default function SettingsScreen() {
   const [fontSize, setFontSize] = useState(20);
+  const [testData, setTestData] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const { themeMode, isDarkMode, highContrast, setThemeMode, toggleHighContrast } = useTheme();
+  const { dataSource, setDataSource } = useDataSource();
   const layout = useResponsiveLayout();
   const router = useRouter();
   
@@ -47,6 +52,35 @@ export default function SettingsScreen() {
   
   const selectPreset = (value: number) => {
     setFontSize(value);
+  };
+
+  const handleDataSourceChange = async (source: DataSourceType) => {
+    await setDataSource(source);
+  };
+
+  const testDataFetch = async () => {
+    setIsLoading(true);
+    try {
+      // Test fetching data using current data source
+      const wordData = await databaseService.getWordDataForCurrentVerb();
+      setTestData({
+        dataSource: dataSource,
+        verbCount: wordData.verbs?.length || 0,
+        subjectCount: wordData.subjects?.length || 0,
+        objectCount: wordData.objects?.length || 0,
+        currentVerb: wordData.currentVerb?.value || 'No verb set',
+        sampleVerbs: wordData.verbs?.slice(0, 3).map(v => v.value) || [],
+        sampleSubjects: wordData.subjects?.slice(0, 3).map(s => s.value) || [],
+        fetchTime: new Date().toLocaleTimeString()
+      });
+    } catch (error) {
+      setTestData({
+        error: error instanceof Error ? error.message : 'Unknown error',
+        dataSource: dataSource,
+        fetchTime: new Date().toLocaleTimeString()
+      });
+    }
+    setIsLoading(false);
   };
 
   const toggleContrast = () => {
@@ -297,6 +331,143 @@ export default function SettingsScreen() {
           </Text>
         </TouchableOpacity>
       </View>
+
+      {/* Data Source Section - Only show on web */}
+      {Platform.OS === 'web' && (
+        <View style={[styles.section, { backgroundColor: colors.backgroundGray, borderColor: colors.border }]}>
+          <Text style={[
+            styles.sectionTitle,
+            { color: colors.text },
+            { fontSize: isDesktop() ? 20 : responsiveFontSize(layout.isMobile ? 20 : 24) }
+          ]}>
+            Tietolähde
+          </Text>
+          
+          <Text style={[
+            styles.helperText,
+            { color: colors.textLight, marginBottom: spacing.md }
+          ]}>
+            Valitse käytetäänkö paikallista tietokantaa vai backend API:a
+          </Text>
+
+          <View style={styles.dataSourceContainer}>
+            <TouchableOpacity
+              style={[
+                styles.dataSourceButton,
+                { backgroundColor: isDarkMode ? colors.backgroundGray : "#ffffff", borderColor: colors.border },
+                dataSource === 'local' && styles.dataSourceButtonActive,
+                dataSource === 'local' && { backgroundColor: colors.primaryLight, borderColor: colors.primary }
+              ]}
+              onPress={() => handleDataSourceChange('local')}
+              activeOpacity={0.7}
+            >
+              <Ionicons 
+                name="phone-portrait-outline" 
+                size={24} 
+                color={dataSource === 'local' ? colors.primary : colors.text} 
+              />
+              <Text style={[
+                styles.dataSourceText,
+                { color: dataSource === 'local' ? colors.primary : colors.text },
+                dataSource === 'local' && { fontWeight: 'bold' }
+              ]}>
+                Paikallinen tietokanta
+              </Text>
+              {dataSource === 'local' && (
+                <Ionicons name="checkmark" size={20} color={colors.primary} />
+              )}
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[
+                styles.dataSourceButton,
+                { backgroundColor: isDarkMode ? colors.backgroundGray : "#ffffff", borderColor: colors.border },
+                dataSource === 'api' && styles.dataSourceButtonActive,
+                dataSource === 'api' && { backgroundColor: colors.primaryLight, borderColor: colors.primary }
+              ]}
+              onPress={() => handleDataSourceChange('api')}
+              activeOpacity={0.7}
+            >
+              <Ionicons 
+                name="cloud-outline" 
+                size={24} 
+                color={dataSource === 'api' ? colors.primary : colors.text} 
+              />
+              <Text style={[
+                styles.dataSourceText,
+                { color: dataSource === 'api' ? colors.primary : colors.text },
+                dataSource === 'api' && { fontWeight: 'bold' }
+              ]}>
+                Backend API
+              </Text>
+              {dataSource === 'api' && (
+                <Ionicons name="checkmark" size={20} color={colors.primary} />
+              )}
+            </TouchableOpacity>
+          </View>
+
+          {/* Test Data Fetching Section */}
+          <View style={styles.testDataSection}>
+            <TouchableOpacity
+              style={[
+                styles.testButton,
+                { backgroundColor: colors.primary },
+                isLoading && { opacity: 0.6 }
+              ]}
+              onPress={testDataFetch}
+              disabled={isLoading}
+            >
+              <Ionicons 
+                name={isLoading ? "sync" : "download-outline"} 
+                size={20} 
+                color="white" 
+              />
+              <Text style={styles.testButtonText}>
+                {isLoading ? 'Fetching...' : 'Test Data Fetch'}
+              </Text>
+            </TouchableOpacity>
+
+            {testData && (
+              <View style={[
+                styles.testDataDisplay,
+                { backgroundColor: isDarkMode ? colors.backgroundGray : "#f5f5f5", borderColor: colors.border }
+              ]}>
+                <Text style={[styles.testDataTitle, { color: colors.text }]}>
+                  Data Fetch Result:
+                </Text>
+                
+                {testData.error ? (
+                  <Text style={[styles.testDataError, { color: colors.error || '#ff4444' }]}>
+                    Error: {testData.error}
+                  </Text>
+                ) : (
+                  <View>
+                    <Text style={[styles.testDataItem, { color: colors.text }]}>
+                      Source: {testData.dataSource === 'api' ? 'Backend API' : 'Local Database'}
+                    </Text>
+                    <Text style={[styles.testDataItem, { color: colors.text }]}>
+                      Current Verb: {testData.currentVerb}
+                    </Text>
+                    <Text style={[styles.testDataItem, { color: colors.text }]}>
+                      Verbs: {testData.verbCount}, Subjects: {testData.subjectCount}, Objects: {testData.objectCount}
+                    </Text>
+                    <Text style={[styles.testDataItem, { color: colors.text }]}>
+                      Sample Verbs: {testData.sampleVerbs.join(', ')}
+                    </Text>
+                    <Text style={[styles.testDataItem, { color: colors.text }]}>
+                      Sample Subjects: {testData.sampleSubjects.join(', ')}
+                    </Text>
+                  </View>
+                )}
+                
+                <Text style={[styles.testDataTime, { color: colors.textLight }]}>
+                  Fetched at: {testData.fetchTime}
+                </Text>
+              </View>
+            )}
+          </View>
+        </View>
+      )}
     </ScrollView>
   );
 }
@@ -574,5 +745,71 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontStyle: 'italic',
   },
+
+  // Data Source Settings Styles
+  dataSourceContainer: {
+    gap: spacing.md,
+    marginBottom: spacing.lg,
+  },
+  dataSourceButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: spacing.lg,
+    borderRadius: 12,
+    borderWidth: 2,
+    gap: spacing.md,
+  },
+  dataSourceButtonActive: {
+    borderWidth: 3,
+  },
+  dataSourceText: {
+    flex: 1,
+    fontSize: 16,
+    fontWeight: '500',
+  },
+
+  // Test Data Styles
+  testDataSection: {
+    marginTop: spacing.lg,
+  },
+  testButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: spacing.lg,
+    borderRadius: 8,
+    gap: spacing.sm,
+    marginBottom: spacing.md,
+  },
+  testButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  testDataDisplay: {
+    padding: spacing.lg,
+    borderRadius: 8,
+    borderWidth: 1,
+  },
+  testDataTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: spacing.sm,
+  },
+  testDataItem: {
+    fontSize: 14,
+    marginBottom: 4,
+  },
+  testDataError: {
+    fontSize: 14,
+    fontStyle: 'italic',
+  },
+  testDataTime: {
+    fontSize: 12,
+    fontStyle: 'italic',
+    marginTop: spacing.sm,
+    textAlign: 'right',
+  },
+
 });
 
