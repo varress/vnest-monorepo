@@ -119,12 +119,18 @@ export function GameView({
 
   // Handle card selection
   const handleCardSelect = (card: Agent | Patient) => {
+    console.log(`🎯 Card selected: ${card.value} (ID: ${card.id}, Type: ${card.type})`);
+    console.log('📊 Current correctPairs:', correctPairs);
+    
     // Check if card is already in a correct pair
     const isInCorrectPair = correctPairs.some(
       pair => pair.subjectId === card.id || pair.objectId === card.id
     );
     
+    console.log(`✅ Is ${card.value} in correct pair?`, isInCorrectPair);
+    
     if (isInCorrectPair) {
+      console.log(`🚫 Cannot select ${card.value} - already in correct pair`);
       return; // Don't allow selecting already connected cards
     }
 
@@ -258,13 +264,6 @@ export function GameView({
     <View ref={containerRef} style={styles.desktopContainer}>
       {/* Title with Navigation Buttons */}
       <View style={styles.titleRow}>
-        <TouchableOpacity 
-          style={[styles.navButton, { backgroundColor: colors.backgroundGray }]}
-          onPress={onPreviousVerb}
-          disabled={!onPreviousVerb}
-        >
-          <Ionicons name="arrow-back" size={28} color={onPreviousVerb ? colors.primary : colors.textLight} />
-        </TouchableOpacity>
         
         <Text style={[styles.title, { fontSize: layout.isDesktop ? 24 : responsiveFontSize(40), color: colors.text }]}>
           {selectedSubject?.value || '[Kuka]'} {currentVerb?.value?.toLowerCase() || '[verb]'} {selectedObject?.value?.toLowerCase() || '[mitä]'}
@@ -276,6 +275,7 @@ export function GameView({
           disabled={!onNextVerb}
         >
           <Ionicons name="arrow-forward" size={28} color={onNextVerb ? colors.primary : colors.textLight} />
+          <Text style={{ color: onNextVerb ? colors.primary : colors.textLight, marginTop: 4 }}>Seuraava</Text>
         </TouchableOpacity>
       </View>
       

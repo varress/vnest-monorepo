@@ -9,7 +9,7 @@ export interface UseDatabaseWordDataReturn {
   error: string | null;
   refreshData: () => Promise<void>;
   isCorrectCombination: (subject: Agent, verb: Verb, object: Patient) => Promise<boolean>;
-  nextVerb: () => Promise<void>;
+  nextVerb: () => Promise<boolean>;
   randomVerb: () => Promise<void>;
   setCurrentSet: (setId: number) => Promise<void>;
 }
@@ -59,18 +59,25 @@ export function useDatabaseWordData(): UseDatabaseWordDataReturn {
   }, []);
 
   // Move to next verb
-  const nextVerb = useCallback(async () => {
+  const nextVerb = useCallback(async (): Promise<boolean> => {
     try {
       setIsLoading(true);
-      await databaseService.getNextVerb();
-      await refreshData();
+      const nextVerbResult = await databaseService.getNextVerb();
+      if (nextVerbResult) {
+        await refreshData();
+        return true;
+      } else {
+        // No more verbs in current set
+        return false;
+      }
     } catch (err) {
       console.error('Error getting next verb:', err);
       setError(err instanceof Error ? err.message : 'Failed to get next verb');
+      return false;
     } finally {
       setIsLoading(false);
     }
-  }, [refreshData]);
+  }, [refreshData, setIsLoading, setError]);
 
   // Get random verb
   const randomVerb = useCallback(async () => {

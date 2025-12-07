@@ -86,16 +86,18 @@ class DatabaseService {
 
   async getCurrentVerb(): Promise<Verb | null> {
     await this.ensureInitialized();
-    if (this.currentVerbId === null) return null;
+    if (this.currentVerbId === -1) return null;
     return await verbController.getById(this.currentVerbId);
   }
 
   async setCurrentGroup(groupId: number): Promise<void> {
     console.log(`📚 Setting current group to: ${groupId}`);
     this.currentGroupId = groupId;
-    this.currentVerbId = 0; // Reset to start from first verb
-    this.verbsInGroup   = await verbController.getAllVerbsByGroupId(this.currentGroupId);
+    this.verbsInGroup = await verbController.getAllVerbsByGroupId(this.currentGroupId);
+    // Set currentVerbId to the first verb in this group, not 0
+    this.currentVerbId = this.verbsInGroup.length > 0 ? this.verbsInGroup[0].id : -1;
     console.log(`📖 Loaded ${this.verbsInGroup.length} verbs for group ${groupId}:`, this.verbsInGroup.map(v => v.value));
+    console.log(`🎯 Set current verb to ID: ${this.currentVerbId}`);
   }
 
   async getNextVerb(): Promise<Verb | null> {
