@@ -7,7 +7,6 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { useDataSource, DataSourceType } from '@/contexts/DataSourceContext';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
-import { databaseService } from '@/services/exerciseManagementService';
 
 const spacing = {
   sm: 8,
@@ -20,8 +19,6 @@ type ThemeMode = 'light' | 'dark';
 
 export default function SettingsScreen() {
   const [fontSize, setFontSize] = useState(20);
-  const [testData, setTestData] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState(false);
   const { themeMode, isDarkMode, highContrast, setThemeMode, toggleHighContrast } = useTheme();
   const { dataSource, setDataSource } = useDataSource();
   const layout = useResponsiveLayout();
@@ -56,31 +53,6 @@ export default function SettingsScreen() {
 
   const handleDataSourceChange = async (source: DataSourceType) => {
     await setDataSource(source);
-  };
-
-  const testDataFetch = async () => {
-    setIsLoading(true);
-    try {
-      // Test fetching data using current data source
-      const wordData = await databaseService.getWordDataForCurrentVerb();
-      setTestData({
-        dataSource: dataSource,
-        verbCount: wordData.verbs?.length || 0,
-        subjectCount: wordData.subjects?.length || 0,
-        objectCount: wordData.objects?.length || 0,
-        currentVerb: wordData.currentVerb?.value || 'No verb set',
-        sampleVerbs: wordData.verbs?.slice(0, 3).map(v => v.value) || [],
-        sampleSubjects: wordData.subjects?.slice(0, 3).map(s => s.value) || [],
-        fetchTime: new Date().toLocaleTimeString()
-      });
-    } catch (error) {
-      setTestData({
-        error: error instanceof Error ? error.message : 'Unknown error',
-        dataSource: dataSource,
-        fetchTime: new Date().toLocaleTimeString()
-      });
-    }
-    setIsLoading(false);
   };
 
   const toggleContrast = () => {
@@ -406,66 +378,7 @@ export default function SettingsScreen() {
             </TouchableOpacity>
           </View>
 
-          {/* Test Data Fetching Section */}
-          <View style={styles.testDataSection}>
-            <TouchableOpacity
-              style={[
-                styles.testButton,
-                { backgroundColor: colors.primary },
-                isLoading && { opacity: 0.6 }
-              ]}
-              onPress={testDataFetch}
-              disabled={isLoading}
-            >
-              <Ionicons 
-                name={isLoading ? "sync" : "download-outline"} 
-                size={20} 
-                color="white" 
-              />
-              <Text style={styles.testButtonText}>
-                {isLoading ? 'Fetching...' : 'Test Data Fetch'}
-              </Text>
-            </TouchableOpacity>
 
-            {testData && (
-              <View style={[
-                styles.testDataDisplay,
-                { backgroundColor: isDarkMode ? colors.backgroundGray : "#f5f5f5", borderColor: colors.border }
-              ]}>
-                <Text style={[styles.testDataTitle, { color: colors.text }]}>
-                  Data Fetch Result:
-                </Text>
-                
-                {testData.error ? (
-                  <Text style={[styles.testDataError, { color: colors.error || '#ff4444' }]}>
-                    Error: {testData.error}
-                  </Text>
-                ) : (
-                  <View>
-                    <Text style={[styles.testDataItem, { color: colors.text }]}>
-                      Source: {testData.dataSource === 'api' ? 'Backend API' : 'Local Database'}
-                    </Text>
-                    <Text style={[styles.testDataItem, { color: colors.text }]}>
-                      Current Verb: {testData.currentVerb}
-                    </Text>
-                    <Text style={[styles.testDataItem, { color: colors.text }]}>
-                      Verbs: {testData.verbCount}, Subjects: {testData.subjectCount}, Objects: {testData.objectCount}
-                    </Text>
-                    <Text style={[styles.testDataItem, { color: colors.text }]}>
-                      Sample Verbs: {testData.sampleVerbs.join(', ')}
-                    </Text>
-                    <Text style={[styles.testDataItem, { color: colors.text }]}>
-                      Sample Subjects: {testData.sampleSubjects.join(', ')}
-                    </Text>
-                  </View>
-                )}
-                
-                <Text style={[styles.testDataTime, { color: colors.textLight }]}>
-                  Fetched at: {testData.fetchTime}
-                </Text>
-              </View>
-            )}
-          </View>
         </View>
       )}
     </ScrollView>
@@ -766,49 +679,6 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     fontWeight: '500',
-  },
-
-  // Test Data Styles
-  testDataSection: {
-    marginTop: spacing.lg,
-  },
-  testButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: spacing.lg,
-    borderRadius: 8,
-    gap: spacing.sm,
-    marginBottom: spacing.md,
-  },
-  testButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  testDataDisplay: {
-    padding: spacing.lg,
-    borderRadius: 8,
-    borderWidth: 1,
-  },
-  testDataTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: spacing.sm,
-  },
-  testDataItem: {
-    fontSize: 14,
-    marginBottom: 4,
-  },
-  testDataError: {
-    fontSize: 14,
-    fontStyle: 'italic',
-  },
-  testDataTime: {
-    fontSize: 12,
-    fontStyle: 'italic',
-    marginTop: spacing.sm,
-    textAlign: 'right',
   },
 
 });
