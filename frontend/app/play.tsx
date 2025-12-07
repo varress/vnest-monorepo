@@ -88,22 +88,18 @@ export default function PlayScreen() {
     setFeedback(null);
   }, [verbs[0]?.id]);
 
-  const handlePreviousVerb = async () => {
-    try {
-      // Simply call nextVerb to go to previous (it cycles through verbs)
-      await nextVerb();
-      setCorrectPairs([]);
-      setFeedback(null);
-    } catch (error) {
-      console.error('Error moving to previous verb:', error);
-    }
-  };
+
 
   const handleSkipVerb = async () => {
     try {
-      await nextVerb();
-      setCorrectPairs([]);
-      setFeedback(null);
+      const hasNextVerb = await nextVerb();
+      if (hasNextVerb) {
+        setCorrectPairs([]);
+        setFeedback(null);
+      } else {
+        // No more verbs in set, show congrats
+        setShowCongrats(true);
+      }
     } catch (error) {
       console.error('Error skipping verb:', error);
     }
@@ -119,25 +115,31 @@ export default function PlayScreen() {
       setFeedback('Oikein!');
       
       // Check if all pairs for this verb are connected
-      const allPairsConnected = subjects.length === newCorrectPairs.length;
+      const expectedPairs = wordData?.pairings?.length || 0;
+      const allPairsConnected = expectedPairs === newCorrectPairs.length;
       
       if (allPairsConnected) {
         // Increment completed verbs count
         const newCompletedCount = completedVerbsCount + 1;
         setCompletedVerbsCount(newCompletedCount);
         
-        // Check if all verbs in the set are completed
-        const totalVerbsInSet = wordData?.verbs.length || 0;
-        const allVerbsCompleted = newCompletedCount >= totalVerbsInSet;
-        
         // Move to next verb or show congrats after short delay
-        setTimeout(() => {
-          if (allVerbsCompleted) {
+        setTimeout(async () => {
+          try {
+            // Try to move to next verb
+            const hasNextVerb = await nextVerb();
+            if (hasNextVerb) {
+              // Successfully moved to next verb
+              setCorrectPairs([]);
+              setFeedback(null);
+            } else {
+              // No more verbs in set, show congrats
+              setShowCongrats(true);
+            }
+          } catch (error) {
+            console.error('Error moving to next verb:', error);
+            // If error occurs, show congrats as fallback
             setShowCongrats(true);
-          } else {
-            nextVerb();
-            setCorrectPairs([]);
-            setFeedback(null);
           }
         }, 1500);
       } else {
@@ -163,17 +165,20 @@ export default function PlayScreen() {
     try {
       const nextSetId = currentSetId + 1;
       
-      // Reset completed verbs count for new set
-      setCompletedVerbsCount(0);
-      
       // We have 4 sets (0-3)
       if (nextSetId <= 3) {
-        await setCurrentSet(nextSetId);
-        setCurrentSetId(nextSetId);
+        // Clear current state immediately to prevent showing old verb
+        setVerbs([]);
+        setSubjects([]);
+        setObjects([]);
         setCorrectPairs([]);
         setFeedback(null);
         setShowCongrats(false);
-        // Refresh data to load new set
+        setCompletedVerbsCount(0);
+        
+        // Update set and refresh data
+        await setCurrentSet(nextSetId);
+        setCurrentSetId(nextSetId);
         await refreshData();
       } else {
         // No more sets, go back to progress screen
@@ -238,7 +243,6 @@ export default function PlayScreen() {
             correctPairs={correctPairs}
             onConnect={handleConnect}
             feedback={feedback}
-            onPreviousVerb={handlePreviousVerb}
             onNextVerb={handleSkipVerb}
           />
         )}

@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, ScrollView } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, ScrollView, Platform } from 'react-native';
 import { useResponsiveLayout } from '@/hooks/useResponsiveLayout';
 import { responsiveFontSize, isDesktop } from '@/utils/responsive';
 import { Colors, DarkModeColors, getThemedColors } from '@/constants/colors';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useDataSource, DataSourceType } from '@/contexts/DataSourceContext';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 
@@ -19,6 +20,7 @@ type ThemeMode = 'light' | 'dark';
 export default function SettingsScreen() {
   const [fontSize, setFontSize] = useState(20);
   const { themeMode, isDarkMode, highContrast, setThemeMode, toggleHighContrast } = useTheme();
+  const { dataSource, setDataSource } = useDataSource();
   const layout = useResponsiveLayout();
   const router = useRouter();
   
@@ -47,6 +49,10 @@ export default function SettingsScreen() {
   
   const selectPreset = (value: number) => {
     setFontSize(value);
+  };
+
+  const handleDataSourceChange = async (source: DataSourceType) => {
+    await setDataSource(source);
   };
 
   const toggleContrast = () => {
@@ -297,6 +303,84 @@ export default function SettingsScreen() {
           </Text>
         </TouchableOpacity>
       </View>
+
+      {/* Data Source Section - Only show on web */}
+      {Platform.OS === 'web' && (
+        <View style={[styles.section, { backgroundColor: colors.backgroundGray, borderColor: colors.border }]}>
+          <Text style={[
+            styles.sectionTitle,
+            { color: colors.text },
+            { fontSize: isDesktop() ? 20 : responsiveFontSize(layout.isMobile ? 20 : 24) }
+          ]}>
+            Tietolähde
+          </Text>
+          
+          <Text style={[
+            styles.helperText,
+            { color: colors.textLight, marginBottom: spacing.md }
+          ]}>
+            Valitse käytetäänkö paikallista tietokantaa vai backend API:a
+          </Text>
+
+          <View style={styles.dataSourceContainer}>
+            <TouchableOpacity
+              style={[
+                styles.dataSourceButton,
+                { backgroundColor: isDarkMode ? colors.backgroundGray : "#ffffff", borderColor: colors.border },
+                dataSource === 'local' && styles.dataSourceButtonActive,
+                dataSource === 'local' && { backgroundColor: colors.primaryLight, borderColor: colors.primary }
+              ]}
+              onPress={() => handleDataSourceChange('local')}
+              activeOpacity={0.7}
+            >
+              <Ionicons 
+                name="phone-portrait-outline" 
+                size={24} 
+                color={dataSource === 'local' ? colors.primary : colors.text} 
+              />
+              <Text style={[
+                styles.dataSourceText,
+                { color: dataSource === 'local' ? colors.primary : colors.text },
+                dataSource === 'local' && { fontWeight: 'bold' }
+              ]}>
+                Paikallinen tietokanta
+              </Text>
+              {dataSource === 'local' && (
+                <Ionicons name="checkmark" size={20} color={colors.primary} />
+              )}
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[
+                styles.dataSourceButton,
+                { backgroundColor: isDarkMode ? colors.backgroundGray : "#ffffff", borderColor: colors.border },
+                dataSource === 'api' && styles.dataSourceButtonActive,
+                dataSource === 'api' && { backgroundColor: colors.primaryLight, borderColor: colors.primary }
+              ]}
+              onPress={() => handleDataSourceChange('api')}
+              activeOpacity={0.7}
+            >
+              <Ionicons 
+                name="cloud-outline" 
+                size={24} 
+                color={dataSource === 'api' ? colors.primary : colors.text} 
+              />
+              <Text style={[
+                styles.dataSourceText,
+                { color: dataSource === 'api' ? colors.primary : colors.text },
+                dataSource === 'api' && { fontWeight: 'bold' }
+              ]}>
+                Backend API
+              </Text>
+              {dataSource === 'api' && (
+                <Ionicons name="checkmark" size={20} color={colors.primary} />
+              )}
+            </TouchableOpacity>
+          </View>
+
+
+        </View>
+      )}
     </ScrollView>
   );
 }
@@ -574,5 +658,28 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontStyle: 'italic',
   },
+
+  // Data Source Settings Styles
+  dataSourceContainer: {
+    gap: spacing.md,
+    marginBottom: spacing.lg,
+  },
+  dataSourceButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: spacing.lg,
+    borderRadius: 12,
+    borderWidth: 2,
+    gap: spacing.md,
+  },
+  dataSourceButtonActive: {
+    borderWidth: 3,
+  },
+  dataSourceText: {
+    flex: 1,
+    fontSize: 16,
+    fontWeight: '500',
+  },
+
 });
 

@@ -22,13 +22,6 @@ export function CongratsView({
   const { isDarkMode, highContrast } = useTheme();
   const colors = getThemedColors(isDarkMode, highContrast);
   
-  const setNames = [
-    "Ruoka ja juoma",
-    "Liikenne ja liikunta", 
-    "Opiskelu ja työ",
-    "Vapaa-aika ja harrastukset"
-  ];
-  
   return (
     <>
       <View style={styles.congratsContainer}>
@@ -42,7 +35,7 @@ export function CongratsView({
         </Text>
         {currentSetId < 3 && (
           <Text style={[styles.nextSetInfo, { color: colors.success }]}>
-            Seuraavaksi: Setti {currentSetId + 2} - {setNames[currentSetId + 1]}
+            Seuraavaksi: Setti {currentSetId + 2}
           </Text>
         )}
       </View>

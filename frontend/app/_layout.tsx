@@ -8,6 +8,7 @@ import 'react-native-reanimated';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { database } from '@/database';
 import { ThemeProvider as AppThemeProvider, useTheme } from '@/contexts/ThemeContext';
+import { DataSourceProvider } from '@/contexts/DataSourceContext';
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -74,7 +75,9 @@ function RootLayoutContent() {
 export default function RootLayout() {
   return (
     <AppThemeProvider>
-      <RootLayoutContent />
+      <DataSourceProvider>
+        <RootLayoutContent />
+      </DataSourceProvider>
     </AppThemeProvider>
   );
 }
