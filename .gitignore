@@ -1,6 +1,4 @@
 node_modules
-frontend/package-lock.json
-package-lock.json
 frontend/test-report.html
 test-report.html
 frontend/coverage
