@@ -30,6 +30,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-vnest_password}
       SERVER_SERVLET_SESSION_TIMEOUT: ${SERVER_SERVLET_SESSION_TIMEOUT:-30m}
       APP_USERS: ${APP_USERS}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:8081,http://localhost:19002}
     ports:
       - "8080:8080"
     depends_on:
