@@ -33,15 +33,22 @@ export class AVPTrioController implements IAVPTrioController {
     }
 
     async IsCorrectCombination(agentId: number, verbId: number, patientId: number): Promise<boolean> {
+        console.log("Starting is correct")
         const res = await fetch(`${API_URL}/api/suggestions/validate`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ agentId, verbId, patientId })
+            body: JSON.stringify({
+                subject_id: agentId,
+                verb_id: verbId,
+                object_id: patientId
+            })
         });
         if (!res.ok) return false;
-        
+
         const apiResult: ApiResponse<{ valid: boolean; sentence: string; message: string }> = await res.json();
-        return apiResult.data[0].valid;
+        const data = Array.isArray(apiResult.data) ? apiResult.data[0] : apiResult.data;
+        console.log("API response:", data)
+        return data.valid;
     }
 
     async GetIdByAgentVerbPatient(agentId: number, verbId: number, patientId: number): Promise<number> {
