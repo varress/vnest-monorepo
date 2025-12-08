@@ -13,6 +13,10 @@ POSTGRES_PASSWORD=password
 POSTGRES_DB=database
 
 SERVER_SERVLET_SESSION_TIMEOUT=30m
+
+// Depending on the frontend ip
+CORS_ALLOWED_ORIGINS=http://195.148.20.75:8081
+
 ```
 APP_USERS defines user accounts that can login to the admin UI.
 
