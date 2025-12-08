@@ -58,7 +58,7 @@ public class AdminWordController {
 
     @Operation(
             summary = "Get all word groups",
-            description = "Retrieves all available word groups/themes (requires ADMIN role)"
+            description = "Retrieves all available word groups (requires ADMIN role)"
     )
     @io.swagger.v3.oas.annotations.responses.ApiResponse(
             responseCode = "200",
@@ -132,7 +132,7 @@ public class AdminWordController {
 
     @Operation(
             summary = "Create word group",
-            description = "Creates a new word group/theme (requires ADMIN role)"
+            description = "Creates a new word group (requires ADMIN role)"
     )
     @io.swagger.v3.oas.annotations.responses.ApiResponse(
             responseCode = "201",
@@ -151,7 +151,7 @@ public class AdminWordController {
     }
 
     /**
-     * PUT /admin/groups/:id - Update an existing group/theme
+     * PUT /admin/groups/:id - Update an existing group
      */
     @PutMapping("/groups/{id}")
     public ResponseEntity<ApiResponse<GroupResponse>> updateGroup(

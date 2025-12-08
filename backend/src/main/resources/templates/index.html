@@ -25,7 +25,7 @@
     <div class="tabs">
         <button class="tab active" onclick="switchTab('words')">Words</button>
         <button class="tab" onclick="switchTab('combinations')">Combinations</button>
-        <button class="tab" onclick="switchTab('themes')">Themes</button>
+        <button class="tab" onclick="switchTab('groups')">Groups</button>
     </div>
 
     <!-- Words Tab -->
@@ -124,29 +124,29 @@
         </div>
     </div>
 
-    <!-- Themes Tab -->
-    <div id="themes-tab" class="tab-content">
+    <!-- Groups Tab -->
+    <div id="groups-tab" class="tab-content">
         <div class="card">
-            <h2>Create New Theme (Group)</h2>
-            <form id="theme-form">
+            <h2>Create New Group</h2>
+            <form id="group-form">
                 <div class="form-group">
-                    <label for="theme-name">Theme Name</label>
-                    <input type="text" id="theme-name" required placeholder="e.g., Animals, Food, Sports">
+                    <label for="group-name">Group Name</label>
+                    <input type="text" id="group-name" required placeholder="">
                 </div>
                 <div class="form-group">
-                    <label for="theme-description">Description (optional)</label>
-                    <textarea id="theme-description" rows="3" placeholder="Brief description of this theme"></textarea>
+                    <label for="group-description">Description (optional)</label>
+                    <textarea id="group-description" rows="3" placeholder="Brief description of this group"></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary">Create Theme</button>
+                <button type="submit" class="btn btn-primary">Create Group</button>
             </form>
         </div>
 
         <div class="card">
-            <h2>All Themes</h2>
+            <h2>All Groups</h2>
             <div class="filter-bar">
-                <button class="btn btn-secondary" onclick="loadThemes()">Refresh</button>
+                <button class="btn btn-secondary" onclick="loadGroups()">Refresh</button>
             </div>
-            <div id="themes-list"></div>
+            <div id="groups-list"></div>
         </div>
     </div>
 
@@ -181,23 +181,23 @@
     </div>
 </div>
 
-<!-- Edit Theme Modal -->
-<div id="edit-theme-modal" class="modal" style="display: none;">
+<!-- Edit Group Modal -->
+<div id="edit-group-modal" class="modal" style="display: none;">
     <div class="modal-content">
-        <span class="close" onclick="closeEditThemeModal()">&times;</span>
-        <h2>Edit Theme</h2>
-        <form id="edit-theme-form">
-            <input type="hidden" id="edit-theme-id">
+        <span class="close" onclick="closeEditGroupModal()">&times;</span>
+        <h2>Edit Group</h2>
+        <form id="edit-group-form">
+            <input type="hidden" id="edit-group-id">
             <div class="form-group">
-                <label for="edit-theme-name">Theme Name</label>
-                <input type="text" id="edit-theme-name" required>
+                <label for="edit-group-name">Group Name</label>
+                <input type="text" id="edit-group-name" required>
             </div>
             <div class="form-group">
-                <label for="edit-theme-description">Description</label>
-                <textarea id="edit-theme-description" rows="3"></textarea>
+                <label for="edit-group-description">Description</label>
+                <textarea id="edit-group-description" rows="3"></textarea>
             </div>
             <div style="display: flex; gap: 8px; justify-content: flex-end;">
-                <button type="button" class="btn btn-secondary" onclick="closeEditThemeModal()">Cancel</button>
+                <button type="button" class="btn btn-secondary" onclick="closeEditGroupModal()">Cancel</button>
                 <button type="submit" class="btn btn-primary">Save Changes</button>
             </div>
         </form>
