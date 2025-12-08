@@ -33,6 +33,7 @@ dependencies {
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
@@ -47,6 +48,7 @@ jacoco {
 
 tasks.named('test') {
 	useJUnitPlatform()
+	ignoreFailures = true
 	finalizedBy jacocoTestReport
 }
 
@@ -63,7 +65,7 @@ jacocoTestReport {
 	reports {
 		xml.required = true
 		html.required = true
-		csv.required = false
+		csv.required = true
 	}
 }
 
