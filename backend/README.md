@@ -48,6 +48,13 @@ SERVER_SERVLET_SESSION_TIMEOUT=30m
 # User Accounts (semicolon-separated)
 # Format: email:password:displayName:ROLE;email:password:displayName:ROLE
 APP_USERS=admin@example.com:VerySecurePassword123!:Admin:ADMIN;user@example.com:AnotherSecurePass456!:User:USER
+
+# CORS Configuration (comma-separated origins)
+CORS_ALLOWED_ORIGINS=http://localhost:8081,http://localhost:19002
+
+# CSV Data Import (optional - defaults shown)
+# APP_DATA_CSV_ENABLED=true
+# APP_DATA_CSV_PATH=data/initial_combinations.csv
 ```
 
 **Important Notes:**
@@ -55,6 +62,9 @@ APP_USERS=admin@example.com:VerySecurePassword123!:Admin:ADMIN;user@example.com:
 - Passwords must be strong (will be BCrypt encoded with strength 12)
 - Multiple users can be separated by semicolons
 - The `ROLE` field should be `ADMIN` for admin UI access
+- `CORS_ALLOWED_ORIGINS` controls which frontend origins can access the API
+- `APP_DATA_CSV_ENABLED` controls automatic CSV import on startup (default: true)
+- `APP_DATA_CSV_PATH` specifies the CSV file location (default: data/initial_combinations.csv)
 
 ## Building and Running
 
@@ -146,8 +156,46 @@ build/reports/jacoco/test/html/index.html
 
 ### Main Tables
 - `word`: Stores Finnish words (subjects, verbs, objects)
+- `word_group`: Word groups/categories for organizing verbs
 - `allowed_combination`: Valid grammar combinations (SUBJECT-Verb-OBJECT)
 - `users`: Admin user accounts
+
+### CSV Data Import
+
+On first startup (when the database is empty), the application automatically imports Finnish word combinations from a CSV file.
+
+**Default CSV File:** `src/main/resources/data/initial_combinations.csv`
+
+**CSV Format:**
+```csv
+SUBJECT,VERB,OBJECT
+koira,SAADA,luu
+mies,LUKEA,sanomalehti
+lapsi,PELÄTÄ,pimeä
+```
+
+**How It Works:**
+1. `DataInitializer.java` runs after application startup
+2. Checks if `allowed_combination` table is empty
+3. Reads CSV file from classpath
+4. Creates unique words (avoiding duplicates)
+5. Creates all word combinations
+6. Logs import summary
+
+**Configuration:**
+```env
+# Disable CSV import
+APP_DATA_CSV_ENABLED=false
+
+# Use custom CSV file
+APP_DATA_CSV_PATH=data/custom_words.csv
+```
+
+**Custom CSV Files:**
+- Place CSV files in `src/main/resources/data/`
+- Use comma-separated format with header row
+- Three columns: SUBJECT, VERB, OBJECT
+- Words are automatically deduplicated by text and type
 
 ### Migrations
 
@@ -347,3 +395,16 @@ lsof -i :8080                  # macOS/Linux
 **Flyway Migration Failures:**
 - Check migration file syntax
 - Verify migration version sequence
+
+**CSV Import Not Working:**
+- Check that `APP_DATA_CSV_ENABLED` is not set to `false`
+- Verify CSV file exists at the specified path
+- Check application logs for import errors
+- Ensure database is empty (CSV only imports if `allowed_combination` table has no data)
+- To re-import: drop tables or use `docker compose down -v` and restart
+
+**CORS Errors from Frontend:**
+- Verify `CORS_ALLOWED_ORIGINS` includes your frontend URL
+- Check that the origin matches exactly (including protocol and port)
+- Example: `http://195.148.20.75:8081` (not `https` or different port)
+- Restart backend after changing CORS configuration

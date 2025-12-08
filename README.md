@@ -17,13 +17,34 @@ SERVER_SERVLET_SESSION_TIMEOUT=30m
 // Depending on the frontend ip
 CORS_ALLOWED_ORIGINS=http://195.148.20.75:8081
 
+// Optional: CSV data import (enabled by default)
+// APP_DATA_CSV_ENABLED=true
+// APP_DATA_CSV_PATH=data/initial_combinations.csv
+
 ```
-APP_USERS defines user accounts that can login to the admin UI.
+
+**Environment Variables:**
+- `APP_USERS`: Defines user accounts that can login to the admin UI
+- `CORS_ALLOWED_ORIGINS`: Comma-separated list of allowed frontend origins for API requests
+- `APP_DATA_CSV_ENABLED`: Enable/disable CSV import on startup (default: true)
+- `APP_DATA_CSV_PATH`: Path to CSV file with initial word combinations (default: data/initial_combinations.csv)
 
 Run:
 ```
 docker compose up --build -d
 ```
+
+**What Happens on First Startup:**
+1. PostgreSQL database is created
+2. Flyway migrations create the schema
+3. Admin users from `APP_USERS` are created
+4. **CSV data is automatically imported** (if database is empty):
+   - Finnish words (subjects, verbs, objects) from `backend/src/main/resources/data/initial_combinations.csv`
+   - Valid word combinations (30 example combinations included)
+5. Backend API starts at `http://localhost:8080`
+6. Frontend starts at `http://localhost:8081`
+
+To **disable CSV import**, set `APP_DATA_CSV_ENABLED=false` in your `.env` file.
 
 ## How to test
 npm Test is defined in root package.json. Non-jest tests can be added there.
