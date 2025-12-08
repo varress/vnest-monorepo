@@ -27,7 +27,7 @@ let patientController: ISubjectObjectController<Patient> | undefined;
 let verbController:    IVerbController | undefined;
 
 // Initialize with default (realm) controllers
-let currentDataSource: 'local' | 'api' = 'local';
+let currentDataSource: 'local' | 'api' = 'api';
 let controllersInitialized = false;
 
 function loadControllers(dataSource: 'local' | 'api') {

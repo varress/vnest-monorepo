@@ -14,7 +14,7 @@ let verbController:    IVerbController | undefined;
 let avpTrioController: IAVPTrioController | undefined;
 
 // Initialize with default (realm) controllers
-let currentDataSource: 'local' | 'api' = 'local';
+let currentDataSource: 'local' | 'api' = 'api';
 let controllersInitialized = false;
 
 function loadAVPControllers(dataSource: 'local' | 'api') {
