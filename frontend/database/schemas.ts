@@ -107,7 +107,8 @@ export type ApiWord = {
     id: number;
     text: string;
     type: string;
-    group_id?: number;
+    groupId?: number;
+    groupName?: string;
     created_at: string;
 }
 
@@ -137,8 +138,8 @@ export function mapAPIWord_UIWord (apiData: ApiResponse<ApiWord>):  Word[] {
                 return {
                     id: item.id,
                     value: item.text,
-                    groupId: item.group_id ?? 0,
-                    groupName: "",
+                    groupId: item.groupId ?? 0,
+                    groupName: item.groupName ?? "",
                     type: "Verb"
                 };
             case "SUBJECT":

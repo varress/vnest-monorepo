@@ -105,8 +105,8 @@ export interface DatabaseWordData {
 }
 
 class DatabaseService {
-  private currentVerbId: number = -1; // Start with verbId 0
-  private currentGroupId: number = 0;  // Current learning group, e.g. 4 groups, thematically differentiated
+  private currentVerbId: number = -1; // Start with verbId -1 (no verb selected)
+  private currentGroupId: number = 2;  // Default to group 2 (backend's first group)
   private verbsInGroup: Verb[] = [];
 
   private initialized: Promise<void> | null = null;

@@ -9,8 +9,9 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { Ionicons } from '@expo/vector-icons';
 
 interface Set {
-  id: number;
+  id: number;  // Backend database ID
   name: string;
+  displayNumber: number;  // Display number (1, 2, 3)
 }
 
 export default function ProgressScreen() {
@@ -22,10 +23,12 @@ export default function ProgressScreen() {
   const [selectedSet, setSelectedSet] = useState<number | null>(null);
 
   // Finnish verb exercise sets - now 3 sets - hardcoded for simplicity
+  // Note: Group IDs match the backend WordGroup database IDs
+  // Backend has groupId: 2 (name "1"), groupId: 3 (name "2"), groupId: 4 (name "3")
   const sets: Set[] = [
-    { id: 0, name: "Taso 1" }, 
-    { id: 1, name: "Taso 2" }, 
-    { id: 2, name: "Taso 3" }, 
+    { id: 2, name: "Taso 1", displayNumber: 1 },
+    { id: 3, name: "Taso 2", displayNumber: 2 },
+    { id: 4, name: "Taso 3", displayNumber: 3 },
   ];
 
   const handleSetSelect = async (setId: number) => {
@@ -79,7 +82,7 @@ export default function ProgressScreen() {
             ]}
             onPress={() => handleSetSelect(set.id)}
             activeOpacity={0.7}
-            accessibilityLabel={`Setti ${set.id + 1}: ${set.name}`}
+            accessibilityLabel={`Setti ${set.displayNumber}: ${set.name}`}
             accessibilityRole="button"
             accessibilityState={{ selected: selectedSet === set.id }}
           >
@@ -89,7 +92,7 @@ export default function ProgressScreen() {
                 { fontSize: isDesktop() ? 36 : responsiveFontSize(layout.isMobile ? 36 : 52), color: colors.primaryDark },
                 selectedSet === set.id && { color: colors.primary }
               ]}>
-                {set.id + 1}
+                {set.displayNumber}
               </Text>
             </View>
             
@@ -116,7 +119,7 @@ export default function ProgressScreen() {
             layout.isMobile && styles.mobilePlayButton
           ]} 
           onPress={handlePlaySet}
-          accessibilityLabel={`Aloita Setti ${selectedSet + 1}`}
+          accessibilityLabel={`Aloita Setti ${sets.find(s => s.id === selectedSet)?.displayNumber || selectedSet}`}
           accessibilityRole="button"
           accessibilityHint="Napauta aloittaaksesi valitun setin harjoitukset"
         >
