@@ -54,7 +54,7 @@ CORS_ALLOWED_ORIGINS=http://localhost:8081,http://localhost:19002
 
 # CSV Data Import (optional - defaults shown)
 # APP_DATA_CSV_ENABLED=true
-# APP_DATA_CSV_PATH=data/initial_combinations.csv
+# APP_DATA_CSV_PATH=data/vnest_full.csv
 ```
 
 **Important Notes:**
@@ -64,7 +64,7 @@ CORS_ALLOWED_ORIGINS=http://localhost:8081,http://localhost:19002
 - The `ROLE` field should be `ADMIN` for admin UI access
 - `CORS_ALLOWED_ORIGINS` controls which frontend origins can access the API
 - `APP_DATA_CSV_ENABLED` controls automatic CSV import on startup (default: true)
-- `APP_DATA_CSV_PATH` specifies the CSV file location (default: data/initial_combinations.csv)
+- `APP_DATA_CSV_PATH` specifies the CSV file location (default: data/vnest_full.csv)
 
 ## Building and Running
 
@@ -164,23 +164,33 @@ build/reports/jacoco/test/html/index.html
 
 On first startup (when the database is empty), the application automatically imports Finnish word combinations from a CSV file.
 
-**Default CSV File:** `src/main/resources/data/initial_combinations.csv`
+**Default CSV File:** `src/main/resources/data/vnest_full.csv`
 
 **CSV Format:**
 ```csv
-SUBJECT,VERB,OBJECT
-koira,SAADA,luu
-mies,LUKEA,sanomalehti
-lapsi,PELÄTÄ,pimeä
+SECTION;SUBJECT;VERB;OBJECT
+1;koira;SAADA;luu
+1;mies;LUKEA;sanomalehti
+2;lapsi;PELÄTÄ;pimeä
 ```
+
+**Format Details:**
+- **Delimiter:** Semicolon (`;`)
+- **Columns:**
+  - `SECTION`: Group/section number for organizing verbs (e.g., "1", "2")
+  - `SUBJECT`: Finnish subject word
+  - `VERB`: Finnish verb (will be assigned to the specified group)
+  - `OBJECT`: Finnish object word
 
 **How It Works:**
 1. `DataInitializer.java` runs after application startup
 2. Checks if `allowed_combination` table is empty
 3. Reads CSV file from classpath
-4. Creates unique words (avoiding duplicates)
-5. Creates all word combinations
-6. Logs import summary
+4. Creates word groups based on section numbers
+5. Creates unique words (avoiding duplicates)
+6. Assigns groups to verb words
+7. Creates all word combinations
+8. Logs import summary
 
 **Configuration:**
 ```env
@@ -193,9 +203,11 @@ APP_DATA_CSV_PATH=data/custom_words.csv
 
 **Custom CSV Files:**
 - Place CSV files in `src/main/resources/data/`
-- Use comma-separated format with header row
-- Three columns: SUBJECT, VERB, OBJECT
+- Use semicolon-separated format with header row
+- Four columns: SECTION, SUBJECT, VERB, OBJECT
+- Section numbers determine word groups (verbs only)
 - Words are automatically deduplicated by text and type
+- Groups are automatically created from section values
 
 ### Migrations
 
