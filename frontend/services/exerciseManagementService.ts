@@ -117,7 +117,7 @@ class DatabaseService {
 
   async ensureInitialized(): Promise<void> {
     if (!this.initialized) {
-      this.initialized = this.initialize(0).catch(err => {
+      this.initialized = this.initialize(2).catch(err => {
         console.error("DatabaseService auto-init failed:", err);
         throw err;
       });
