@@ -27,6 +27,12 @@ public interface WordRepository extends JpaRepository<Word, Long> {
      */
     Optional<Word> findByTextAndType(String text, WordType type);
 
+    /**
+     * Finds a word by its text, type, and group ID.
+     * Used for verbs that can exist in multiple groups with different IDs.
+     */
+    Optional<Word> findByTextAndTypeAndGroupId(String text, WordType type, Long groupId);
+
     long countByGroup(WordGroup group);
 
 }

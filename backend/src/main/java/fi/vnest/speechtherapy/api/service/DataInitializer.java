@@ -145,38 +145,38 @@ public class DataInitializer implements ApplicationRunner {
     }
 
     private Word getOrCreateWord(String text, WordType type, WordGroup group) {
+        // Include group ID in cache key for verbs to allow same verb text in different groups
         String cacheKey = type + ":" + text;
+        if (type == WordType.VERB && group != null) {
+            cacheKey = cacheKey + ":" + group.getId();
+        }
 
         // Check cache first
         if (wordCache.containsKey(cacheKey)) {
-            Word cachedWord = wordCache.get(cacheKey);
-            // Update group if needed for VERB type
-            if (type == WordType.VERB && group != null && !group.equals(cachedWord.getGroup())) {
-                cachedWord.setGroup(group);
-                cachedWord = wordRepository.save(cachedWord);
-                wordCache.put(cacheKey, cachedWord);
-            }
-            return cachedWord;
+            return wordCache.get(cacheKey);
         }
 
-        // Check if word exists in database
-        Word word = wordRepository.findByTextAndType(text, type)
-                .orElseGet(() -> {
-                    // Create new word
-                    Word newWord = new Word(text, type);
-                    if (type == WordType.VERB && group != null) {
+        // Check if word exists in database (for verbs, check by text, type, AND group)
+        Word word;
+        if (type == WordType.VERB && group != null) {
+            word = wordRepository.findByTextAndTypeAndGroupId(text, type, group.getId())
+                    .orElseGet(() -> {
+                        // Create new word instance for this group
+                        Word newWord = new Word(text, type);
                         newWord.setGroup(group);
-                    }
-                    Word saved = wordRepository.save(newWord);
-                    logger.debug("Created new {} word: {} (group: {})", type, text,
-                            group != null ? group.getName() : "none");
-                    return saved;
-                });
-
-        // Update group if needed and word existed in database
-        if (type == WordType.VERB && group != null && !group.equals(word.getGroup())) {
-            word.setGroup(group);
-            word = wordRepository.save(word);
+                        Word saved = wordRepository.save(newWord);
+                        logger.debug("Created new {} word: {} (group: {})", type, text, group.getName());
+                        return saved;
+                    });
+        } else {
+            word = wordRepository.findByTextAndType(text, type)
+                    .orElseGet(() -> {
+                        // Create new word
+                        Word newWord = new Word(text, type);
+                        Word saved = wordRepository.save(newWord);
+                        logger.debug("Created new {} word: {} (group: none)", type, text);
+                        return saved;
+                    });
         }
 
         // Cache the word
