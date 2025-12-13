@@ -190,6 +190,99 @@ class WordServiceTest {
     }
 
     @Test
+    void createWord_WithVerbTypeAndGroupId_AttachesGroup() {
+        WordRequest request = new WordRequest();
+        request.setText("runs");
+        request.setType(WordType.VERB);
+        request.setGroupId(1L);
+
+        WordGroup testGroup = new WordGroup("test", "test group");
+        testGroup.setId(1L);
+
+        Word savedWord = new Word();
+        savedWord.setId(7L);
+        savedWord.setText("runs");
+        savedWord.setType(WordType.VERB);
+        savedWord.setGroup(testGroup);
+
+        when(groupRepository.findById(1L)).thenReturn(Optional.of(testGroup));
+        when(wordRepository.save(any(Word.class))).thenReturn(savedWord);
+
+        Word result = wordService.createWord(request);
+
+        assertNotNull(result);
+        assertEquals(WordType.VERB, result.getType());
+        assertEquals("runs", result.getText());
+        assertEquals(testGroup, result.getGroup());
+        verify(groupRepository).findById(1L);
+        verify(wordRepository).save(any(Word.class));
+    }
+
+    @Test
+    void createWord_WithVerbTypeAndInvalidGroupId_ThrowsIllegalArgumentException() {
+        WordRequest request = new WordRequest();
+        request.setText("runs");
+        request.setType(WordType.VERB);
+        request.setGroupId(999L);
+
+        when(groupRepository.findById(999L)).thenReturn(Optional.empty());
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> wordService.createWord(request));
+
+        assertTrue(exception.getMessage().contains("Group not found"));
+        verify(groupRepository).findById(999L);
+        verify(wordRepository, never()).save(any());
+    }
+
+    @Test
+    void createWord_WithNonVerbTypeAndGroupId_DoesNotAttachGroup() {
+        WordRequest request = new WordRequest();
+        request.setText("cat");
+        request.setType(WordType.SUBJECT);
+        request.setGroupId(1L);
+
+        Word savedWord = new Word();
+        savedWord.setId(8L);
+        savedWord.setText("cat");
+        savedWord.setType(WordType.SUBJECT);
+
+        when(wordRepository.save(any(Word.class))).thenReturn(savedWord);
+
+        Word result = wordService.createWord(request);
+
+        assertNotNull(result);
+        assertEquals(WordType.SUBJECT, result.getType());
+        assertNull(result.getGroup());
+        verify(groupRepository, never()).findById(any());
+        verify(wordRepository).save(any(Word.class));
+    }
+
+    @Test
+    void createWord_WithVerbTypeAndNoGroupId_CreatesVerbWithoutGroup() {
+        WordRequest request = new WordRequest();
+        request.setText("jumps");
+        request.setType(WordType.VERB);
+        request.setGroupId(null);
+
+        Word savedWord = new Word();
+        savedWord.setId(9L);
+        savedWord.setText("jumps");
+        savedWord.setType(WordType.VERB);
+
+        when(wordRepository.save(any(Word.class))).thenReturn(savedWord);
+
+        Word result = wordService.createWord(request);
+
+        assertNotNull(result);
+        assertEquals(WordType.VERB, result.getType());
+        assertEquals("jumps", result.getText());
+        assertNull(result.getGroup());
+        verify(groupRepository, never()).findById(any());
+        verify(wordRepository).save(any(Word.class));
+    }
+
+    @Test
     void updateWord_WithValidIdAndRequest_UpdatesAndReturnsWord() {
         Long wordId = 1L;
         WordRequest request = new WordRequest();
@@ -298,6 +391,59 @@ class WordServiceTest {
         assertTrue(exception.getMessage().contains("Word not found with ID: " + wordId));
         verify(wordRepository).existsById(wordId);
         verify(wordRepository, never()).deleteById(any());
+    }
+
+    @Test
+    void findById_WithExistingId_ReturnsWord() {
+        Long wordId = 1L;
+        when(wordRepository.findById(wordId)).thenReturn(Optional.of(subjectWord));
+
+        Word result = wordService.findById(wordId);
+
+        assertNotNull(result);
+        assertEquals(wordId, result.getId());
+        assertEquals("cat", result.getText());
+        assertEquals(WordType.SUBJECT, result.getType());
+        verify(wordRepository).findById(wordId);
+    }
+
+    @Test
+    void findById_WithNonExistentId_ThrowsNoSuchElementException() {
+        Long wordId = 999L;
+        when(wordRepository.findById(wordId)).thenReturn(Optional.empty());
+
+        NoSuchElementException exception = assertThrows(NoSuchElementException.class,
+                () -> wordService.findById(wordId));
+
+        assertTrue(exception.getMessage().contains("Word not found with ID: " + wordId));
+        verify(wordRepository).findById(wordId);
+    }
+
+    @Test
+    void findById_WithVerbWord_ReturnsWordWithGroup() {
+        Long wordId = 2L;
+        when(wordRepository.findById(wordId)).thenReturn(Optional.of(verbWord));
+
+        Word result = wordService.findById(wordId);
+
+        assertNotNull(result);
+        assertEquals(wordId, result.getId());
+        assertEquals("eats", result.getText());
+        assertEquals(WordType.VERB, result.getType());
+        assertEquals(group, result.getGroup());
+        verify(wordRepository).findById(wordId);
+    }
+
+    @Test
+    void findById_VerifiesCorrectRepositoryMethodCalled() {
+        Long wordId = 1L;
+        when(wordRepository.findById(wordId)).thenReturn(Optional.of(subjectWord));
+
+        wordService.findById(wordId);
+
+        verify(wordRepository, times(1)).findById(wordId);
+        verify(wordRepository, never()).findAll();
+        verify(wordRepository, never()).findByType(any());
     }
 
     @Test
