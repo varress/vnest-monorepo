@@ -14,7 +14,7 @@ interface Set {
   displayNumber: number;  // Display number (1, 2, 3)
 }
 
-export default function ProgressScreen() {
+export default function LevelSelectScreen() {
   const router = useRouter();
   const layout = useResponsiveLayout();
   const { setCurrentSet } = useDatabaseWordData();
@@ -33,11 +33,11 @@ export default function ProgressScreen() {
 
   const handleSetSelect = async (setId: number) => {
     try {
-      console.log('Progress screen: Selecting set', setId);
+      console.log('Level select screen: Selecting set', setId);
       // Set the selected set as current in the database service
       await setCurrentSet(setId);
       setSelectedSet(setId);
-      console.log('Progress screen: Successfully selected set', setId);
+      console.log('Level select screen: Successfully selected set', setId);
     } catch (error) {
       console.error('Error selecting set:', error);
     }
@@ -45,7 +45,7 @@ export default function ProgressScreen() {
 
   const handlePlaySet = () => {
     if (selectedSet !== null) {
-      console.log('Progress screen: Navigating to play with set', selectedSet);
+      console.log('Level select screen: Navigating to play with set', selectedSet);
       // Just navigate - the set was already loaded by handleSetSelect
       router.push('/play');
     }

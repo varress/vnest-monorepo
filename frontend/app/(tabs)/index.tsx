@@ -1,5 +1,4 @@
 import { useDatabaseWordData } from '@/hooks/useDatabaseWordData';
-import Entypo from '@expo/vector-icons/Entypo';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
@@ -27,12 +26,12 @@ export default function HomeScreen() {
       )}
       <Text style={[styles.title, { color: colors.text }]}>VNeST TerapiaApp</Text>
 
-      <TouchableOpacity style={[styles.button, { backgroundColor: colors.primary }]} onPress={() => router.push('/play')}>
+      <TouchableOpacity style={[styles.button, { backgroundColor: colors.primary }]} onPress={() => router.push('/levelselect')}>
         <Text style={[styles.buttonText, { color: colors.buttonText }]}><FontAwesome name="play" size={48} color={colors.buttonText} />   Aloita peli</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={[styles.button, { backgroundColor: colors.primary }]} onPress={() => router.push('/progress')}>
-        <Text style={[styles.buttonText, { color: colors.buttonText }]}><Entypo name="bar-graph" size={48} color={colors.buttonText} />   Edistyminen</Text>
+      <TouchableOpacity style={[styles.button, { backgroundColor: colors.primary }]} onPress={() => router.push('/history')}>
+        <Text style={[styles.buttonText, { color: colors.buttonText }]}><Ionicons size={48} name="trending-up-outline" color={colors.buttonText} />   Historia</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={[styles.button, { backgroundColor: colors.primary }]} onPress={() => router.push('/instructions')}>
@@ -41,10 +40,6 @@ export default function HomeScreen() {
 
       <TouchableOpacity style={[styles.button, { backgroundColor: colors.primary }]} onPress={() => router.push('/settings')}>
         <Text style={[styles.buttonText, { color: colors.buttonText }]}><Ionicons size={48} name="settings-sharp" color={colors.buttonText} />   Asetukset</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={[styles.button, { backgroundColor: colors.primary }]} onPress={() => router.push('/history')}>
-        <Text style={[styles.buttonText, { color: colors.buttonText }]}><Ionicons size={48} name="trending-up-outline" color={colors.buttonText} />   Historia</Text>
       </TouchableOpacity>
     </View>
   );
