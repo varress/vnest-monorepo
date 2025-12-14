@@ -181,8 +181,8 @@ export default function PlayScreen() {
         setCurrentSetId(nextSetId);
         await refreshData();
       } else {
-        // No more sets, go back to progress screen
-        router.push('/progress');
+        // No more sets, go back to level select screen
+        router.push('/levelselect');
       }
     } catch (error) {
       console.error('Error going to next set:', error);
