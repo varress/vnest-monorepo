@@ -50,7 +50,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="history"
         options={{
-        title: 'Historia',
+        title: 'Edistyminen',
           tabBarIcon: ({ color }) => <Ionicons size={28} name="trending-up-outline" color={color} />
         }}
       />

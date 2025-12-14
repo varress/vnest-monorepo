@@ -31,7 +31,7 @@ export default function HomeScreen() {
       </TouchableOpacity>
 
       <TouchableOpacity style={[styles.button, { backgroundColor: colors.primary }]} onPress={() => router.push('/history')}>
-        <Text style={[styles.buttonText, { color: colors.buttonText }]}><Ionicons size={48} name="trending-up-outline" color={colors.buttonText} />   Historia</Text>
+        <Text style={[styles.buttonText, { color: colors.buttonText }]}><Ionicons size={48} name="trending-up-outline" color={colors.buttonText} />   Edistyminen</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={[styles.button, { backgroundColor: colors.primary }]} onPress={() => router.push('/instructions')}>

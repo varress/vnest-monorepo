@@ -94,7 +94,7 @@ export default function InstructionsScreen() {
           </Text>
           
           <Text style={[styles.paragraph, { color: colors.text }]}>
-            • <Text style={styles.bold}>Historia</Text>-välilehdessä voit tarkastella aiempia pelejä
+            • <Text style={styles.bold}>Edistyminen</Text>-välilehdessä voit tarkastella aiempia pelejä
           </Text>
         </View>
 
