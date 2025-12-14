@@ -32,10 +32,10 @@ export type AgentVerbPatient_Trio = {
 };
 
 export type CorrectAnswer = {
-    id:        number;
-    trioId:    number;
-    createdAt: Date;
-    type:      "Correct Answer"
+    id:      number;
+    trioId:  number;
+    groupId: number;
+    type:    "Correct Answer"
 }
 
 // Realm Schemas
@@ -88,10 +88,10 @@ export const CorrectAnswer_Schema: ObjectSchema = {
     name:          'CorrectAnswer',
     primaryKey:    'id',
     properties: {
-        id:        'int',
-        trioId:    'int',
-        createdAt: 'date',
-        type:      { type: 'string', default: 'CorrectAnswer' }
+        id:      'int',
+        trioId:  'int',
+        groupId: 'int',
+        type:    { type: 'string', default: 'CorrectAnswer' }
     }
 }
 

@@ -36,8 +36,8 @@ class HistoryService {
         return historyController.getAllCorrectAnswersByGroupId(id);
     }
 
-    async set(trioId: number): Promise<void> {
-        return historyController.setCorrectAnswer(trioId);
+    async set(trioId: number, groupId: number): Promise<void> {
+        return historyController.setCorrectAnswer(trioId, groupId);
     }
 
     async getGroupPerformance(): Promise<GroupPerformance[]> {
