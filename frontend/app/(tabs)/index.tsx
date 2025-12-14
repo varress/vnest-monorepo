@@ -43,11 +43,9 @@ export default function HomeScreen() {
         <Text style={[styles.buttonText, { color: colors.buttonText }]}><Ionicons size={48} name="settings-sharp" color={colors.buttonText} />   Asetukset</Text>
       </TouchableOpacity>
 
-      {Platform.OS !== 'web' && (
-        <TouchableOpacity style={[styles.button, { backgroundColor: colors.primary }]} onPress={() => router.push('/history')}>
-          <Text style={[styles.buttonText, { color: colors.buttonText }]}><Ionicons size={48} name="trending-up-outline" color={colors.buttonText} />   Historia</Text>
-        </TouchableOpacity>
-      )}
+      <TouchableOpacity style={[styles.button, { backgroundColor: colors.primary }]} onPress={() => router.push('/history')}>
+        <Text style={[styles.buttonText, { color: colors.buttonText }]}><Ionicons size={48} name="trending-up-outline" color={colors.buttonText} />   Historia</Text>
+      </TouchableOpacity>
     </View>
   );
 }
