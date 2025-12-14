@@ -82,8 +82,10 @@ public class WordService {
         word.setText(request.getText());
         word.setType(request.getType());
 
-        WordGroup group = groupRepository.getReferenceById(request.getGroupId());
-        word.setGroup(group);
+        if (word.getType() == WordType.VERB && request.getGroupId() != null) {
+            WordGroup group = groupRepository.getReferenceById(request.getGroupId());
+            word.setGroup(group);
+        }
 
         return wordRepository.save(word);
     }
