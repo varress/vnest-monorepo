@@ -80,7 +80,7 @@ export default function PlayScreen() {
         setCurrentSetId(wordData.currentVerb.groupId);
       }
     }
-  }, [wordData]);
+  }, [wordData?.currentVerb?.id]); // Only update when verb ID changes, not on every wordData change -> Prevent Card reshuffling and wrong connections.
 
   // Reset correct pairs when verb changes
   useEffect(() => {
