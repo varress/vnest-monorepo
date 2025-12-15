@@ -64,7 +64,7 @@ export default function InstructionsScreen() {
           <View style={styles.bulletPoint}>
             <Text style={[styles.bullet, { color: colors.primary }]}>•</Text>
             <Text style={[styles.bulletText, { color: colors.text }]}>
-              <Text style={styles.bold}>Toimija</Text> (vasemmalla) - esim. "Minä", "Sinä"
+              <Text style={styles.bold}>Subjekti</Text> (vasemmalla) - esim. "Minä", "Sinä"
             </Text>
           </View>
           
@@ -76,7 +76,7 @@ export default function InstructionsScreen() {
           </View>
           
           <Text style={[styles.paragraph, { color: colors.text }]}>
-            3. Yhdistä kortit vetämällä viiva toimijasta kohteeseen
+            3. Yhdistä kortit vetämällä viiva subjektista kohteeseen
           </Text>
           
           <Text style={[styles.paragraph, { color: colors.text }]}>
