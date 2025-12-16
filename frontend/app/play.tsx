@@ -25,7 +25,8 @@ import {
   GameView,
   LoadingView
 } from '@/components/game';
-import { Colors } from '@/constants/colors';
+import { Colors, getThemedColors } from '@/constants/colors';
+import { useTheme } from '@/contexts/ThemeContext';
 import { Agent, Patient, Verb } from '@/database/schemas';
 import { useDatabaseWordData } from '@/hooks/useDatabaseWordData';
 import { useResponsiveLayout } from '@/hooks/useResponsiveLayout';
@@ -39,6 +40,8 @@ export default function PlayScreen() {
   const router = useRouter();
   const layout = useResponsiveLayout();
   const safeArea = getSafeAreaConfig();
+  const { isDarkMode, highContrast } = useTheme();
+  const colors = getThemedColors(isDarkMode, highContrast);
   
   // Database integration hook - manages language data and validation
   const { 
@@ -59,14 +62,25 @@ export default function PlayScreen() {
   const [subjects, setSubjects] = useState<Agent[]>([]);
   const [objects, setObjects] = useState<Patient[]>([]);
 
-  // Initialize data on component mount
+  // Refresh data when screen comes into focus to get the latest set from database
+  useEffect(() => {
+    console.log('PlayScreen mounted - refreshing data');
+    refreshData();
+  }, [refreshData]);
+
+  // Initialize data on component mount and sync currentSetId with the actual current set
   useEffect(() => {
     if (wordData && wordData.currentVerb) {
+      console.log('Updating local state with wordData - verb:', wordData.currentVerb.value, 'groupId:', wordData.currentVerb.groupId);
       setVerbs([wordData.currentVerb]);
       setSubjects(wordData.subjects);
       setObjects(wordData.objects);
+      // Sync currentSetId with the actual group ID from the loaded verb
+      if (wordData.currentVerb.groupId !== undefined) {
+        setCurrentSetId(wordData.currentVerb.groupId);
+      }
     }
-  }, [wordData]);
+  }, [wordData?.currentVerb?.id]); // Only update when verb ID changes, not on every wordData change -> Prevent Card reshuffling and wrong connections.
 
   // Reset correct pairs when verb changes
   useEffect(() => {
@@ -74,41 +88,18 @@ export default function PlayScreen() {
     setFeedback(null);
   }, [verbs[0]?.id]);
 
-  const handleContinue = async () => {
-    try {
-      // Check if all verbs in the set are completed
-      const totalVerbsInSet = wordData?.verbs.length || 0;
-      const allVerbsCompleted = (completedVerbsCount + 1) >= totalVerbsInSet;
-      
-      if (allVerbsCompleted) {
-        setShowCongrats(true);
-        return;
-      }
-      
-      await nextVerb();
-      setCorrectPairs([]);
-      setFeedback(null);
-    } catch (error) {
-      console.error('Error moving to next verb:', error);
-    }
-  };
 
-  const handlePreviousVerb = async () => {
-    try {
-      // Simply call nextVerb to go to previous (it cycles through verbs)
-      await nextVerb();
-      setCorrectPairs([]);
-      setFeedback(null);
-    } catch (error) {
-      console.error('Error moving to previous verb:', error);
-    }
-  };
 
   const handleSkipVerb = async () => {
     try {
-      await nextVerb();
-      setCorrectPairs([]);
-      setFeedback(null);
+      const hasNextVerb = await nextVerb();
+      if (hasNextVerb) {
+        setCorrectPairs([]);
+        setFeedback(null);
+      } else {
+        // No more verbs in set, show congrats
+        setShowCongrats(true);
+      }
     } catch (error) {
       console.error('Error skipping verb:', error);
     }
@@ -124,14 +115,32 @@ export default function PlayScreen() {
       setFeedback('Oikein!');
       
       // Check if all pairs for this verb are connected
-      const allPairsConnected = subjects.length === newCorrectPairs.length;
+      const expectedPairs = wordData?.pairings?.length || 0;
+      const allPairsConnected = expectedPairs === newCorrectPairs.length;
       
       if (allPairsConnected) {
         // Increment completed verbs count
-        setCompletedVerbsCount(prev => prev + 1);
-        // Move to next verb after short delay
-        setTimeout(() => {
-          handleContinue();
+        const newCompletedCount = completedVerbsCount + 1;
+        setCompletedVerbsCount(newCompletedCount);
+        
+        // Move to next verb or show congrats after short delay
+        setTimeout(async () => {
+          try {
+            // Try to move to next verb
+            const hasNextVerb = await nextVerb();
+            if (hasNextVerb) {
+              // Successfully moved to next verb
+              setCorrectPairs([]);
+              setFeedback(null);
+            } else {
+              // No more verbs in set, show congrats
+              setShowCongrats(true);
+            }
+          } catch (error) {
+            console.error('Error moving to next verb:', error);
+            // If error occurs, show congrats as fallback
+            setShowCongrats(true);
+          }
         }, 1500);
       } else {
         // Clear feedback after delay
@@ -156,21 +165,24 @@ export default function PlayScreen() {
     try {
       const nextSetId = currentSetId + 1;
       
-      // Reset completed verbs count for new set
-      setCompletedVerbsCount(0);
-      
       // We have 4 sets (0-3)
       if (nextSetId <= 3) {
-        await setCurrentSet(nextSetId);
-        setCurrentSetId(nextSetId);
+        // Clear current state immediately to prevent showing old verb
+        setVerbs([]);
+        setSubjects([]);
+        setObjects([]);
         setCorrectPairs([]);
         setFeedback(null);
         setShowCongrats(false);
-        // Refresh data to load new set
+        setCompletedVerbsCount(0);
+        
+        // Update set and refresh data
+        await setCurrentSet(nextSetId);
+        setCurrentSetId(nextSetId);
         await refreshData();
       } else {
-        // No more sets, go back to progress screen
-        router.push('/progress');
+        // No more sets, go back to level select screen
+        router.push('/levelselect');
       }
     } catch (error) {
       console.error('Error going to next set:', error);
@@ -207,6 +219,7 @@ export default function PlayScreen() {
       <GameHeader />
       <View style={[
         styles.container,
+        { backgroundColor: colors.background },
         layout.isMobile && styles.mobileContainer,
         {
           paddingTop: safeArea.paddingTop,
@@ -230,7 +243,6 @@ export default function PlayScreen() {
             correctPairs={correctPairs}
             onConnect={handleConnect}
             feedback={feedback}
-            onPreviousVerb={handlePreviousVerb}
             onNextVerb={handleSkipVerb}
           />
         )}
@@ -242,8 +254,7 @@ export default function PlayScreen() {
 const styles = StyleSheet.create({
   container: { 
     flex: 1, 
-    padding: spacing.lg, 
-    backgroundColor: Colors.background 
+    padding: spacing.lg,
   },
   mobileContainer: {
     paddingHorizontal: spacing.md,

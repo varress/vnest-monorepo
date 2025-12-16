@@ -34,11 +34,11 @@ export function useCardConnections() {
     const centerX = layout.x + layout.width / 2;
     const centerY = layout.y + layout.height / 2;
 
-    // console.log(`Card ${cardId} registered:`, { 
-    //   cardId, 
-    //   layout, 
+    // console.log(`Card ${cardId} registered:`, {
+    //   cardId,
+    //   layout,
     //   center: { x: centerX, y: centerY },
-    //   cardType: cardId.toString().includes('verb') ? 'verb' : 
+    //   cardType: cardId.toString().includes('verb') ? 'verb' :
     //             cardId.toString().includes('subject') ? 'subject' : 'object'
     // });
 
@@ -62,95 +62,41 @@ export function useCardConnections() {
     const startCard = cardPositions.get(startCardId);
     const endCard = cardPositions.get(endCardId);
 
-    console.log(`Creating connection from ${startCardId} to ${endCardId}`);
-    console.log('Start card:', startCard);
-    console.log('End card:', endCard);
-
     if (startCard && endCard) {
-      console.log('🎯 Creating connection - Card details:');
-      console.log('Start card:', { 
-        center: { x: startCard.centerX, y: startCard.centerY },
-        layout: startCard.layout 
-      });
-      console.log('End card:', { 
-        center: { x: endCard.centerX, y: endCard.centerY },
-        layout: endCard.layout 
-      });
 
       // Calculate connection points on card edges for better visual connection
       const deltaX = endCard.centerX - startCard.centerX;
-      const deltaY = endCard.centerY - startCard.centerY;
-      const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-      
-      console.log('🎯 Distance calculation:', { deltaX, deltaY, distance });
-      
-      // Calculate unit vector from start to end
-      const unitX = deltaX / distance;
-      const unitY = deltaY / distance;
-      
-      // console.log('🎯 Unit vector:', { unitX, unitY });
-      
-      // Better rectangular edge calculation instead of circular approximation
+
       // Calculate which edge of the rectangle the line intersects
       const startHalfWidth = startCard.layout.width / 2;
-      const startHalfHeight = startCard.layout.height / 2;
       const endHalfWidth = endCard.layout.width / 2;
-      const endHalfHeight = endCard.layout.height / 2;
 
       // Calculate intersection with rectangle edges for start card
       let startEdgeX, startEdgeY;
-      
-      // For better UX, connect from the edge facing the target card
-      if (Math.abs(deltaX) > Math.abs(deltaY)) {
-        // Horizontal connection is dominant - connect from left/right edge
-        if (deltaX > 0) {
-          // Target is to the right - connect from right edge of start card
-          startEdgeX = startCard.centerX + startHalfWidth;
-          startEdgeY = startCard.centerY;
-        } else {
-          // Target is to the left - connect from left edge of start card
-          startEdgeX = startCard.centerX - startHalfWidth;
-          startEdgeY = startCard.centerY;
-        }
+
+      // Always use horizontal connection for this game layout
+      if (deltaX > 0) {
+        // Target is to the right - connect from right edge of start card
+        startEdgeX = startCard.centerX + startHalfWidth;
+        startEdgeY = startCard.centerY;
       } else {
-        // Vertical connection is dominant - connect from top/bottom edge
-        if (deltaY > 0) {
-          // Target is below - connect from bottom edge of start card
-          startEdgeX = startCard.centerX;
-          startEdgeY = startCard.centerY + startHalfHeight;
-        } else {
-          // Target is above - connect from top edge of start card
-          startEdgeX = startCard.centerX;
-          startEdgeY = startCard.centerY - startHalfHeight;
-        }
+        // Target is to the left - connect from left edge of start card
+        startEdgeX = startCard.centerX - startHalfWidth;
+        startEdgeY = startCard.centerY;
       }
 
-      // Calculate intersection with rectangle edges for end card  
+      // Calculate intersection with rectangle edges for end card
       let endEdgeX, endEdgeY;
-      
-      // For end card, connect to the edge facing the start card
-      if (Math.abs(deltaX) > Math.abs(deltaY)) {
-        // Horizontal connection is dominant
-        if (deltaX > 0) {
-          // Start is to the left - connect to left edge of end card
-          endEdgeX = endCard.centerX - endHalfWidth;
-          endEdgeY = endCard.centerY;
-        } else {
-          // Start is to the right - connect to right edge of end card
-          endEdgeX = endCard.centerX + endHalfWidth;
-          endEdgeY = endCard.centerY;
-        }
+
+      // Always use horizontal connection for this game layout
+      if (deltaX > 0) {
+        // Start is to the left - connect to left edge of end card
+        endEdgeX = endCard.centerX - endHalfWidth;
+        endEdgeY = endCard.centerY;
       } else {
-        // Vertical connection is dominant
-        if (deltaY > 0) {
-          // Start is above - connect to top edge of end card
-          endEdgeX = endCard.centerX;
-          endEdgeY = endCard.centerY - endHalfHeight;
-        } else {
-          // Start is below - connect to bottom edge of end card
-          endEdgeX = endCard.centerX;
-          endEdgeY = endCard.centerY + endHalfHeight;
-        }
+        // Start is to the right - connect to right edge of end card
+        endEdgeX = endCard.centerX + endHalfWidth;
+        endEdgeY = endCard.centerY;
       }
 
       const startPosition = {
@@ -163,31 +109,12 @@ export function useCardConnections() {
         y: endEdgeY,
       };
 
-      console.log('🎯 Calculated edge positions:', { 
-        startPosition, 
-        endPosition,
-        note: 'These should be at card edges, not centers'
-      });
-
-      console.log('🎯 Comparison - Centers vs Edges:', {
-        startCenter: { x: startCard.centerX, y: startCard.centerY },
-        startEdge: startPosition,
-        endCenter: { x: endCard.centerX, y: endCard.centerY },
-        endEdge: endPosition,
-        offsetDistance: { 
-          start: Math.sqrt(Math.pow(startPosition.x - startCard.centerX, 2) + Math.pow(startPosition.y - startCard.centerY, 2)),
-          end: Math.sqrt(Math.pow(endPosition.x - endCard.centerX, 2) + Math.pow(endPosition.y - endCard.centerY, 2))
-        }
-      });
-
       const newConnection: Connection = {
         startCardId,
         endCardId,
         startPosition,
         endPosition,
       };
-
-      console.log('New connection with edge points:', newConnection);
 
       setConnections(prev => {
         // Remove any existing connections involving these specific cards

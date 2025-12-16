@@ -72,7 +72,7 @@ describe('AVPTrioController', () => {
         });
     });
 
-    describe('IsCorrentCombination', () => {
+    describe('IsCorrectCombination', () => {
         it('should return true when combination exists', async () => {
             const mockTrios: AgentVerbPatient_Trio[] = [
                 { id: 1, verbId: 5, agentId: 10, patientId: 20, groupId: 1, type: "AgentVerbPatient_Trio" },
@@ -81,7 +81,7 @@ describe('AVPTrioController', () => {
             ];
             databaseMock.query.mockResolvedValue(mockTrios);
 
-            const result = await controller.IsCorrentCombination(10, 5, 20);
+            const result = await controller.IsCorrectCombination(10, 5, 20);
 
             expect(databaseMock.query).toHaveBeenCalledWith('AgentVerbPatient_Trio');
             expect(result).toBe(true);
@@ -94,7 +94,7 @@ describe('AVPTrioController', () => {
             ];
             databaseMock.query.mockResolvedValue(mockTrios);
 
-            const result = await controller.IsCorrentCombination(10, 5, 99);
+            const result = await controller.IsCorrectCombination(10, 5, 99);
 
             expect(result).toBe(false);
         });
@@ -105,7 +105,7 @@ describe('AVPTrioController', () => {
             ];
             databaseMock.query.mockResolvedValue(mockTrios);
 
-            const result = await controller.IsCorrentCombination(10, 999, 20);
+            const result = await controller.IsCorrectCombination(10, 999, 20);
 
             expect(result).toBe(false);
         });
@@ -116,7 +116,7 @@ describe('AVPTrioController', () => {
             ];
             databaseMock.query.mockResolvedValue(mockTrios);
 
-            const result = await controller.IsCorrentCombination(10, 5, 999);
+            const result = await controller.IsCorrectCombination(10, 5, 999);
 
             expect(result).toBe(false);
         });
@@ -127,7 +127,7 @@ describe('AVPTrioController', () => {
             ];
             databaseMock.query.mockResolvedValue(mockTrios);
 
-            const result = await controller.IsCorrentCombination(999, 5, 20);
+            const result = await controller.IsCorrectCombination(999, 5, 20);
 
             expect(result).toBe(false);
         });
@@ -139,7 +139,7 @@ describe('AVPTrioController', () => {
             ];
             databaseMock.query.mockResolvedValue(mockTrios);
 
-            const result = await controller.IsCorrentCombination(10, 5, 20);
+            const result = await controller.IsCorrectCombination(10, 5, 20);
 
             expect(result).toBe(true);
         });

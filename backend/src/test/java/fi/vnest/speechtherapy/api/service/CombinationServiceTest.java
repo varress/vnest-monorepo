@@ -402,4 +402,149 @@ class CombinationServiceTest {
         assertTrue(result.sentence().contains("[Unknown Subject]"));
         assertEquals("Väärin. Tuo lause ei ole sallittu.", result.message());
     }
+
+    // ========== getSuggestionsByVerb Tests ==========
+
+    @Test
+    void getSuggestionsByVerb_WithValidVerbId_ReturnsCorrectSuggestions() {
+        Long verbId = 2L;
+
+        Word subject2 = new Word();
+        subject2.setId(4L);
+        subject2.setText("dog");
+        subject2.setType(WordType.SUBJECT);
+
+        Word object2 = new Word();
+        object2.setId(5L);
+        object2.setText("bone");
+        object2.setType(WordType.OBJECT);
+
+        AllowedCombination combo1 = new AllowedCombination(subjectWord, verbWord, objectWord);
+        AllowedCombination combo2 = new AllowedCombination(subject2, verbWord, objectWord);
+        AllowedCombination combo3 = new AllowedCombination(subjectWord, verbWord, object2);
+
+        when(combinationRepository.findByVerbId(verbId))
+                .thenReturn(List.of(combo1, combo2, combo3));
+        when(wordRepository.findAllById(argThat(ids -> {
+            if (ids == null) return false;
+            List<Long> idList = new ArrayList<>();
+            ids.forEach(idList::add);
+            return idList.size() == 2 && idList.contains(1L) && idList.contains(4L);
+        }))).thenReturn(List.of(subjectWord, subject2));
+        when(wordRepository.findAllById(argThat(ids -> {
+            if (ids == null) return false;
+            List<Long> idList = new ArrayList<>();
+            ids.forEach(idList::add);
+            return idList.size() == 2 && idList.contains(3L) && idList.contains(5L);
+        }))).thenReturn(List.of(objectWord, object2));
+
+        SuggestionResponse result = combinationService.getSuggestionsByVerb(verbId);
+
+        assertNotNull(result);
+        assertEquals(1, result.verbs().size());
+        assertEquals(2, result.subjects().size());
+        assertEquals(2, result.objects().size());
+
+        VerbSuggestion verbSuggestion = result.verbs().get(0);
+        assertEquals(verbId, verbSuggestion.id());
+        assertEquals("eats", verbSuggestion.text());
+        assertEquals(2, verbSuggestion.compatibleSubjectIds().size());
+        assertTrue(verbSuggestion.compatibleSubjectIds().contains(1L));
+        assertTrue(verbSuggestion.compatibleSubjectIds().contains(4L));
+        assertEquals(2, verbSuggestion.compatibleObjectIds().size());
+        assertTrue(verbSuggestion.compatibleObjectIds().contains(3L));
+        assertTrue(verbSuggestion.compatibleObjectIds().contains(5L));
+
+        verify(combinationRepository).findByVerbId(verbId);
+    }
+
+    @Test
+    void getSuggestionsByVerb_WithSingleCombination_ReturnsSingleSubjectAndObject() {
+        Long verbId = 2L;
+
+        when(combinationRepository.findByVerbId(verbId))
+                .thenReturn(List.of(allowedCombination));
+        when(wordRepository.findAllById(Set.of(1L))).thenReturn(List.of(subjectWord));
+        when(wordRepository.findAllById(Set.of(3L))).thenReturn(List.of(objectWord));
+
+        SuggestionResponse result = combinationService.getSuggestionsByVerb(verbId);
+
+        assertNotNull(result);
+        assertEquals(1, result.verbs().size());
+        assertEquals(1, result.subjects().size());
+        assertEquals(1, result.objects().size());
+
+        VerbSuggestion verbSuggestion = result.verbs().get(0);
+        assertEquals(1, verbSuggestion.compatibleSubjectIds().size());
+        assertEquals(1, verbSuggestion.compatibleObjectIds().size());
+    }
+
+    @Test
+    void getSuggestionsByVerb_WithNonExistentVerbId_ThrowsNoSuchElementException() {
+        Long verbId = 999L;
+        when(combinationRepository.findByVerbId(verbId)).thenReturn(List.of());
+
+        NoSuchElementException exception = assertThrows(NoSuchElementException.class,
+                () -> combinationService.getSuggestionsByVerb(verbId));
+
+        assertTrue(exception.getMessage().contains("No combinations found for verb ID: " + verbId));
+        verify(combinationRepository).findByVerbId(verbId);
+    }
+
+    @Test
+    void getSuggestionsByVerb_ExtractsGroupIdFromVerb() {
+        Long verbId = 2L;
+
+        when(combinationRepository.findByVerbId(verbId))
+                .thenReturn(List.of(allowedCombination));
+        when(wordRepository.findAllById(anySet())).thenReturn(List.of(subjectWord, objectWord));
+
+        SuggestionResponse result = combinationService.getSuggestionsByVerb(verbId);
+
+        VerbSuggestion verbSuggestion = result.verbs().get(0);
+        assertEquals(group.getId(), verbSuggestion.groupId());
+    }
+
+    // ========== findById Tests ==========
+
+    @Test
+    void findById_WithExistingId_ReturnsCombination() {
+        Long combinationId = 1L;
+        when(combinationRepository.findById(combinationId))
+                .thenReturn(Optional.of(allowedCombination));
+
+        AllowedCombination result = combinationService.findById(combinationId);
+
+        assertNotNull(result);
+        assertEquals(combinationId, result.getId());
+        assertEquals(subjectWord, result.getSubject());
+        assertEquals(verbWord, result.getVerb());
+        assertEquals(objectWord, result.getObject());
+        verify(combinationRepository).findById(combinationId);
+    }
+
+    @Test
+    void findById_WithNonExistentId_ThrowsNoSuchElementException() {
+        Long combinationId = 999L;
+        when(combinationRepository.findById(combinationId)).thenReturn(Optional.empty());
+
+        NoSuchElementException exception = assertThrows(NoSuchElementException.class,
+                () -> combinationService.findById(combinationId));
+
+        assertTrue(exception.getMessage().contains("Allowed combination not found with ID: " + combinationId));
+        verify(combinationRepository).findById(combinationId);
+    }
+
+    @Test
+    void findById_VerifiesCorrectRepositoryMethodCalled() {
+        Long combinationId = 5L;
+        when(combinationRepository.findById(combinationId))
+                .thenReturn(Optional.of(allowedCombination));
+
+        combinationService.findById(combinationId);
+
+        verify(combinationRepository, times(1)).findById(combinationId);
+        verify(combinationRepository, never()).findAll();
+        verify(combinationRepository, never()).findByVerbId(anyLong());
+    }
 }

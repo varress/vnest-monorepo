@@ -1,5 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Colors } from '@/constants/colors';
+import { Colors, getThemedColors } from '@/constants/colors';
+import { useTheme } from '@/contexts/ThemeContext';
 
 interface CongratsViewProps {
   currentSetId: number;
@@ -18,44 +19,40 @@ export function CongratsView({
   onReplay, 
   onNextSet 
 }: CongratsViewProps) {
-  const setNames = [
-    "Ruoka ja juoma",
-    "Liikenne ja liikunta", 
-    "Opiskelu ja työ",
-    "Vapaa-aika ja harrastukset"
-  ];
+  const { isDarkMode, highContrast } = useTheme();
+  const colors = getThemedColors(isDarkMode, highContrast);
   
   return (
     <>
       <View style={styles.congratsContainer}>
         <Text style={styles.congratsEmoji}>🎉</Text>
-        <Text style={styles.congratsTitle}>Onnittelut!</Text>
-        <Text style={styles.congratsSubtitle}>
+        <Text style={[styles.congratsTitle, { color: colors.success }]}>Onnittelut!</Text>
+        <Text style={[styles.congratsSubtitle, { color: colors.text }]}>
           Olet saanut {correctAnswersCount} oikeaa vastausta!
         </Text>
-        <Text style={styles.congratsMessage}>
+        <Text style={[styles.congratsMessage, { color: colors.textLight }]}>
           Hienoa työtä! Olet suorittanut {requiredAnswers} harjoitusta ja voit nyt siirtyä seuraavaan settiin.
         </Text>
         {currentSetId < 3 && (
-          <Text style={styles.nextSetInfo}>
-            Seuraavaksi: Setti {currentSetId + 2} - {setNames[currentSetId + 1]}
+          <Text style={[styles.nextSetInfo, { color: colors.success }]}>
+            Seuraavaksi: Setti {currentSetId + 2}
           </Text>
         )}
       </View>
       
       <View style={styles.congratsButtons}>
         <TouchableOpacity 
-          style={styles.replayButton} 
+          style={[styles.replayButton, { backgroundColor: colors.primary }]} 
           onPress={onReplay}
         >
-          <Text style={styles.replayButtonText}>🔄 Pelaa uudelleen</Text>
+          <Text style={[styles.replayButtonText, { color: isDarkMode ? colors.buttonText : '#ffffff' }]}>🔄 Pelaa uudelleen</Text>
         </TouchableOpacity>
         
         <TouchableOpacity 
-          style={styles.nextSetButton} 
+          style={[styles.nextSetButton, { backgroundColor: colors.success }]} 
           onPress={onNextSet}
         >
-          <Text style={styles.nextSetButtonText}>➡️ Seuraava setti</Text>
+          <Text style={[styles.nextSetButtonText, { color: colors.buttonText }]}>➡️ Seuraava setti</Text>
         </TouchableOpacity>
       </View>
     </>
@@ -77,20 +74,17 @@ const styles = StyleSheet.create({
   congratsTitle: {
     fontSize: 48,
     fontWeight: 'bold',
-    color: Colors.success,
     textAlign: 'center',
     marginBottom: 16,
   },
   congratsSubtitle: {
     fontSize: 24,
     fontWeight: '600',
-    color: Colors.text,
     textAlign: 'center',
     marginBottom: 12,
   },
   congratsMessage: {
     fontSize: 18,
-    color: Colors.textLight,
     textAlign: 'center',
     marginBottom: 20,
     lineHeight: 24,
@@ -99,7 +93,6 @@ const styles = StyleSheet.create({
   nextSetInfo: {
     fontSize: 20,
     fontWeight: '600',
-    color: Colors.success,
     textAlign: 'center',
     marginTop: 16,
     paddingHorizontal: 20,
@@ -110,13 +103,12 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   replayButton: {
-    backgroundColor: Colors.primary,
     paddingVertical: 16,
     paddingHorizontal: 24,
     borderRadius: 12,
     alignItems: 'center',
     elevation: 3,
-    shadowColor: Colors.shadow,
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
@@ -125,18 +117,16 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   replayButtonText: {
-    color: Colors.white,
     fontSize: 20,
     fontWeight: 'bold',
   },
   nextSetButton: {
-    backgroundColor: Colors.success,
     paddingVertical: 16,
     paddingHorizontal: 24,
     borderRadius: 12,
     alignItems: 'center',
     elevation: 3,
-    shadowColor: Colors.shadow,
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
@@ -145,7 +135,6 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   nextSetButtonText: {
-    color: Colors.white,
     fontSize: 20,
     fontWeight: 'bold',
   },

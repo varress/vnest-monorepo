@@ -1,8 +1,8 @@
 [
-  { "id": 0, "value": "luen" },
-  { "id": 1, "value": "kirjoitan" },
-  { "id": 2, "value": "ostan" },
-  { "id": 3, "value": "syön" },
-  { "id": 4, "value": "juon" },
-  { "id": 5, "value": "kuuntelen" }
+  { "id": 0, "value": "luen", "groupId": 1, "groupName": "1" },
+  { "id": 1, "value": "kirjoitan", "groupId": 1, "groupName": "1" },
+  { "id": 2, "value": "ostan", "groupId": 2, "groupName": "2" },
+  { "id": 3, "value": "syön", "groupId": 2, "groupName": "2" },
+  { "id": 4, "value": "juon", "groupId": 3, "groupName": "3" },
+  { "id": 5, "value": "kuuntelen", "groupId": 3, "groupName": "3" }
 ]

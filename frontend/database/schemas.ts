@@ -32,10 +32,10 @@ export type AgentVerbPatient_Trio = {
 };
 
 export type CorrectAnswer = {
-    id:        number;
-    trioId:    number;
-    createdAt: Date;
-    type:      "Correct Answer"
+    id:      number;
+    trioId:  number;
+    groupId: number;
+    type:    "Correct Answer"
 }
 
 // Realm Schemas
@@ -88,10 +88,10 @@ export const CorrectAnswer_Schema: ObjectSchema = {
     name:          'CorrectAnswer',
     primaryKey:    'id',
     properties: {
-        id:        'int',
-        trioId:    'int',
-        createdAt: 'date',
-        type:      { type: 'string', default: 'CorrectAnswer' }
+        id:      'int',
+        trioId:  'int',
+        groupId: 'int',
+        type:    { type: 'string', default: 'CorrectAnswer' }
     }
 }
 
@@ -107,17 +107,19 @@ export type ApiWord = {
     id: number;
     text: string;
     type: string;
-    group_id?: number;
+    groupId?: number;
+    groupName?: string;
     created_at: string;
 }
 
 export type ApiResponse<T> = {
   success: boolean;
-  data: T[];
+  data: T[] | T;
 };
 
 export function mapAVP_ApiToTrio(apiData: ApiResponse<ApiCombination>): AgentVerbPatient_Trio[] {
-    return apiData.data.map(item => ({
+    const dataArray = Array.isArray(apiData.data) ? apiData.data : [apiData.data];
+    return dataArray.map(item => ({
         id:        item.id,
         verbId:    item.verb.id,
         agentId:   item.subject.id,
@@ -129,14 +131,15 @@ export function mapAVP_ApiToTrio(apiData: ApiResponse<ApiCombination>): AgentVer
 }
 
 export function mapAPIWord_UIWord (apiData: ApiResponse<ApiWord>):  Word[] {
-    return apiData.data.map((item): Word =>  {
+    const dataArray = Array.isArray(apiData.data) ? apiData.data : [apiData.data];
+    return dataArray.map((item): Word =>  {
         switch (item.type) {
             case "VERB":
                 return {
                     id: item.id,
                     value: item.text,
-                    groupId: item.group_id ?? 0,
-                    groupName: "",
+                    groupId: item.groupId ?? 0,
+                    groupName: item.groupName ?? "",
                     type: "Verb"
                 };
             case "SUBJECT":

@@ -68,7 +68,7 @@ export class WebStorageAdapter implements DatabaseAdapter {
   private async seedData(): Promise<void> {
     try {
       // Load the seed data file (same as native app uses)
-      const seedDataModule = await import('../assets/seeding_data/finnish_v2.json');
+      const seedDataModule = await import('../assets/seeding_data/finnish_v3.json');
       const seedData = seedDataModule.default || seedDataModule;
       
       // Maps to track unique agents and patients
@@ -89,6 +89,7 @@ export class WebStorageAdapter implements DatabaseAdapter {
           id: verbId,
           value: verb,
           groupId: groupId || 0,
+          groupName: `Taso ${groupId + 1 || 1}`,
           type: "Verb"
         });
         

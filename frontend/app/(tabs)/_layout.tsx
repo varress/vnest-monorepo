@@ -27,10 +27,17 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="progress"
+        name="levelselect"
         options={{
           title: 'Tasot',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="instructions"
+        options={{
+          title: 'Ohjeet',
+          tabBarIcon: ({ color }) => <Ionicons size={28} name="information-circle" color={color} />,
         }}
       />
       <Tabs.Screen
@@ -40,15 +47,13 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <Ionicons size={28} name="settings-sharp" color={color} />,
         }}
       />
-      {Platform.OS !== 'web' && (
-        <Tabs.Screen
-          name="history"
-          options={{
-            title: 'Historia',
-            tabBarIcon: ({ color }) => <Ionicons size={28} name="trending-up-outline" color={color} />
-          }}
-        />
-      )}
+      <Tabs.Screen
+        name="history"
+        options={{
+        title: 'Edistyminen',
+          tabBarIcon: ({ color }) => <Ionicons size={28} name="trending-up-outline" color={color} />
+        }}
+      />
     </Tabs>
   );
 }
