@@ -31,7 +31,7 @@ SECTION;SUBJECT;VERB;OBJECT
 1;mato;MENNÄ;multa
 2;lapsi;AJAA;pyörä
 2;maanviljelijä;AJAA;traktori
-2;kuljettaja;AJAA;Kilpa-auto
+2;kuljettaja;AJAA;kilpa-auto
 2;puuseppä;RAKENTAA;pöytä
 2;tyttö;RAKENTAA;hiekkalinna
 2;insinööri;RAKENTAA;silta
@@ -51,15 +51,15 @@ SECTION;SUBJECT;VERB;OBJECT
 2;rakentaja;KORJATA;katto
 2;suutari;KORJATA;kengät
 2;urheilija;PELATA;jalkapallo
-2;lapset;PELATA;shakki
-2;isovanhemmat;PELATA;piiloleikki
+2;lapset;PELATA;piiloleikki
+2;isovanhemmat;PELATA;shakki
 2;isoäiti;TEHDÄ;ristikko
 2;pikkuveli;TEHDÄ;palapeli
 2;kokki;TEHDÄ;ruoka
 2;toimittaja;KIRJOITTAA;lehtiartikkeli
 2;oppilas;KIRJOITTAA;essee
 2;kirjailija;KIRJOITTAA;kirja
-2;Isä;AVATA;televisio
+2;isä;AVATA;televisio
 2;hovimestari;AVATA;ovi
 2;avain;AVATA;lukko
 2;torimyyjä;MYYDÄ;mansikka

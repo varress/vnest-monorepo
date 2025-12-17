@@ -142,7 +142,7 @@
     "pairs": [
         ["lapsi", "pyörä"],
         ["maanviljelijä", "traktori"],
-        ["kuljettaja", "Kilpa-auto"]
+        ["kuljettaja", "kilpa-auto"]
 
     ]
   },{
@@ -207,8 +207,8 @@
     "groupName": "Taso 2",
     "pairs": [
         ["urheilija", "jalkapallo"],
-        ["lapset", "shakki"],
-        ["isovanhemmat", "piiloleikki"]
+        ["lapset", "piiloleikki"],
+        ["isovanhemmat", "shakki"]
     ]
   },{
     "verb": "TEHDÄ",
@@ -233,7 +233,7 @@
     "groupId": 1, 
     "groupName": "Taso 2",
     "pairs": [
-        ["Isä", "televisio"],
+        ["isä", "televisio"],
         ["hovimestari", "ovi"],
         ["avain", "lukko"]
     ]
@@ -369,7 +369,7 @@
     "groupId": 2, 
     "groupName": "Taso 3",
     "pairs": [
-        ["veneilijä", "mekko"],
+        ["prinsessa", "mekko"],
         ["kokki", "essu"],
         ["rullalautailija", "polvisuojat"],
         ["poliisi", "uniformu"]
