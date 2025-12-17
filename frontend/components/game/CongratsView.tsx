@@ -33,11 +33,6 @@ export function CongratsView({
         <Text style={[styles.congratsMessage, { color: colors.textLight }]}>
           Hienoa työtä! Olet suorittanut {requiredAnswers} harjoitusta ja voit nyt siirtyä seuraavaan settiin.
         </Text>
-        {currentSetId < 3 && (
-          <Text style={[styles.nextSetInfo, { color: colors.success }]}>
-            Seuraavaksi: Setti {currentSetId + 2}
-          </Text>
-        )}
       </View>
       
       <View style={styles.congratsButtons}>
